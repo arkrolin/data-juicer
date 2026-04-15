@@ -173,8 +173,7 @@ class VideoFaceKeypointsMapper(Mapper):
             frames_root = os.path.join(self.frame_dir, temp_frame_name)
             frame_names = os.listdir(frames_root)
             frames_path = sorted([os.path.join(frames_root, frame_name) for frame_name in frame_names])
-            suffix = sample[self.video_key][0].split(".")[-1]
-            video_name = os.path.basename(sample[self.video_key][0]).replace("." + suffix, "")
+            video_name = os.path.splitext(os.path.basename(sample[self.video_key][0]))[0]
 
         if self.if_save_visualization:
             os.makedirs(os.path.join(self.save_visualization_dir, video_name), exist_ok=True)

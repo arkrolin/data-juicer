@@ -108,14 +108,24 @@ class VideoCameraCalibrationStaticMogeMapper(Mapper):
 
         # there is no video in this sample
         if (self.video_key not in sample or not sample[self.video_key]) and self.frame_field not in sample:
-            return []
+            sample[Fields.meta][self.tag_field_name] = {
+                "frames_folder": "",
+                "frame_names": [],
+                "intrinsics_list": [],
+                "hfov_list": [],
+                "vfov_list": [],
+                "points_list": [],
+                "depth_list": [],
+                "mask_list": [],
+            }
+            return sample
 
         if self.frame_field in sample:
             frames_path = sample[self.frame_field]
             frame_names = []
             for temp_frame_name in sample[self.frame_field]:
                 frame_names.append(temp_frame_name.split("/")[-1])
-            frames_root = frames_path[0].replace("/" + frames_path[0].split("/")[-1], "")
+            frames_root = os.path.dirname(frames_path[0])
             video_name = frames_path[0].split("/")[-2]
 
         else:

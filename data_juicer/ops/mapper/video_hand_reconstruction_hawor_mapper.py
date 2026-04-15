@@ -350,7 +350,20 @@ class VideoHandReconstructionHaworMapper(Mapper):
 
         # there is no video in this sample
         if (self.video_key not in sample or not sample[self.video_key]) and self.frame_field not in sample:
-            return []
+            sample[Fields.meta][self.tag_field_name] = {
+                "fov_x": -1,
+                "left_frame_id_list": [],
+                "left_beta_list": [],
+                "left_hand_pose_list": [],
+                "left_global_orient_list": [],
+                "left_transl_list": [],
+                "right_frame_id_list": [],
+                "right_beta_list": [],
+                "right_hand_pose_list": [],
+                "right_global_orient_list": [],
+                "right_transl_list": [],
+            }
+            return sample
 
         # --- 1. FoV Estimation (MoGe) ---
 

@@ -97,7 +97,14 @@ class VideoWholeBodyPoseEstimationMapper(Mapper):
 
         # there is no video in this sample
         if (self.video_key not in sample or not sample[self.video_key]) and self.frame_field not in sample:
-            return []
+            sample[Fields.meta][self.tag_field_name] = {
+                "body_keypoints": [],
+                "foot_keypoints": [],
+                "faces_keypoints": [],
+                "hands_keypoints": [],
+                "bbox_results_list": [],
+            }
+            return sample
 
         if self.frame_field in sample:
             frames_path = sample[self.frame_field]
