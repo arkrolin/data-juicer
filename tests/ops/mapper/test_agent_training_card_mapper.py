@@ -12,7 +12,7 @@ class TestAgentTrainingCardMapper(unittest.TestCase):
     def test_card_basic_tier_and_sft_ready(self):
         sample = {
             Fields.meta: {
-                MetaKeys.agent_delivery_tier: "gold",
+                MetaKeys.agent_training_dataset_tier: "gold",
                 MetaKeys.agent_tool_chain_complete: True,
                 MetaKeys.agent_error_taxonomy: {
                     "hard_drop_recommended": False,
@@ -32,7 +32,7 @@ class TestAgentTrainingCardMapper(unittest.TestCase):
         }
         out = AgentTrainingCardMapper().process_single(dict(sample))
         card = json.loads(out[Fields.meta][MetaKeys.agent_training_card])
-        self.assertEqual(card["delivery_tier"], "gold")
+        self.assertEqual(card["training_dataset_tier"], "gold")
         self.assertIsNotNone(card.get("learnable_value_json"))
         self.assertIn("score", json.loads(card["learnable_value_json"]))
         self.assertTrue(card["training_ready"]["sft"])
@@ -43,7 +43,7 @@ class TestAgentTrainingCardMapper(unittest.TestCase):
     def test_card_with_distill_and_rewrite_flags(self):
         sample = {
             Fields.meta: {
-                MetaKeys.agent_delivery_tier: "silver",
+                MetaKeys.agent_training_dataset_tier: "silver",
                 MetaKeys.agent_tool_chain_complete: True,
                 MetaKeys.agent_error_taxonomy: {"hard_drop_recommended": False, "buckets": {}},
                 MetaKeys.agent_distilled_trajectory: {

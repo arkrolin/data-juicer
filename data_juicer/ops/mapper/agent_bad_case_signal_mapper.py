@@ -35,10 +35,10 @@ _DIALOG_QUALITY_SCORE_META_KEYS = (
 _calibration_missing_path_warned: Optional[str] = None
 
 
-def _sls_or_harness_noise(meta: dict) -> bool:
-    sls = meta.get(MetaKeys.agent_sls_noise) or {}
+def _sys_log_or_harness_noise(meta: dict) -> bool:
+    sys_log = meta.get(MetaKeys.agent_sys_log_noise) or {}
     h = meta.get(MetaKeys.agent_harness_noise) or {}
-    if isinstance(sls, dict) and sls.get("is_likely_noise"):
+    if isinstance(sys_log, dict) and sys_log.get("is_likely_noise"):
         return True
     if isinstance(h, dict) and h.get("is_likely_noise"):
         return True
@@ -188,8 +188,8 @@ class AgentBadCaseSignalMapper(Mapper):
         signal_on_low_dialog_quality_meta: bool = True,
         dialog_quality_low_score_threshold: float = 2.0,
         min_dialog_quality_low_axes_for_signal: int = 1,
-        # --- delivery / noise (optional; keeps legacy audit tiers unchanged) ---
-        exclude_if_sls_or_harness_noise: bool = False,
+        # --- training-dataset gating / noise (optional; keeps legacy audit tiers unchanged) ---
+        exclude_if_sys_log_or_harness_noise: bool = False,
         signal_on_learnable_value_tier: bool = False,
         **kwargs,
     ):
@@ -248,7 +248,7 @@ class AgentBadCaseSignalMapper(Mapper):
         self.signal_on_low_dialog_quality_meta = bool(signal_on_low_dialog_quality_meta)
         self.dialog_quality_low_score_threshold = float(dialog_quality_low_score_threshold)
         self.min_dialog_quality_low_axes_for_signal = max(1, int(min_dialog_quality_low_axes_for_signal))
-        self.exclude_if_sls_or_harness_noise = bool(exclude_if_sls_or_harness_noise)
+        self.exclude_if_sys_log_or_harness_noise = bool(exclude_if_sys_log_or_harness_noise)
         self.signal_on_learnable_value_tier = bool(signal_on_learnable_value_tier)
 
     def _resolve_calibration_row(self, meta: dict) -> Dict[str, Any]:
@@ -380,7 +380,7 @@ class AgentBadCaseSignalMapper(Mapper):
         fail_count = int(meta.get(MetaKeys.tool_fail_count) or 0)
         if self.signal_on_tool_fail and fail_count >= self.min_tool_fail_count_for_signal:
             tw = "high"
-            if self.exclude_if_sls_or_harness_noise and _sls_or_harness_noise(meta):
+            if self.exclude_if_sys_log_or_harness_noise and _sys_log_or_harness_noise(meta):
                 tw = "medium"
             self._append(
                 signals,

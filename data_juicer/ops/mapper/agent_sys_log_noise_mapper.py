@@ -1,17 +1,18 @@
 # Copyright 2025 The Data-Juicer Authors. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# Heuristic flags for logging / streaming artifacts (SLS-like incomplete traces).
+# Heuristic flags for logging / streaming artifacts
+# (sys_log-like incomplete traces).
 
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 
 from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys
 
-OP_NAME = "agent_sls_noise_mapper"
+OP_NAME = "agent_sys_log_noise_mapper"
 
 
 def _coerce_message_list(val: Any) -> List[dict]:
@@ -68,8 +69,8 @@ def _content_to_str(content: Any) -> str:
 
 @TAGGING_OPS.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
-class AgentSlsNoiseMapper(Mapper):
-    """Write ``meta.agent_sls_noise`` with cheap structural checks on messages/choices."""
+class AgentSysLogNoiseMapper(Mapper):
+    """Write ``meta.agent_sys_log_noise`` with cheap structural checks."""
 
     def __init__(
         self,
@@ -119,14 +120,20 @@ class AgentSlsNoiseMapper(Mapper):
             msg = c0.get("message") or c0.get("delta") or {}
             if isinstance(msg, dict):
                 fr = msg.get("finish_reason") or c0.get("finish_reason")
-                if fr and str(fr).lower() not in ("stop", "end_turn", "completed", "none", ""):
+                if fr and str(fr).lower() not in (
+                    "stop",
+                    "end_turn",
+                    "completed",
+                    "none",
+                    "",
+                ):
                     flags.append("non_terminal_finish_reason")
                 body = _content_to_str(msg.get("content"))
                 if body == "" and (msg.get("tool_calls") or msg.get("tool_use")):
                     flags.append("empty_assistant_with_tool_calls_only")
 
         sev = min(1.0, 0.35 * len(set(flags)))
-        meta[MetaKeys.agent_sls_noise] = {
+        meta[MetaKeys.agent_sys_log_noise] = {
             "flags": sorted(set(flags)),
             "severity": float(sev),
             "is_likely_noise": bool(flags),

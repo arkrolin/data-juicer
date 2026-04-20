@@ -1,14 +1,14 @@
-# R1: delivery-oriented initial pass (cheap CPU; optional API only if you extend).
+# R1: training-dataset-oriented initial pass (cheap CPU; optional API only if you extend).
 # If you already ran ``agent_interaction_quality_analysis.yaml`` on raw logs, prefer
-# ``R0_bridge_from_analysis.yaml`` then ``R2_delivery_stack.yaml`` (see ``recipes/README.md``).
+# ``R0_bridge_from_analysis.yaml`` then ``R2_training_dataset_stack.yaml`` (see ``recipes/README.md``).
 # Order matters: cross-model pairing runs BEFORE any query-level dedup so PK rows are kept.
 # Exact dedup here uses ``text_key: id`` (file-level duplicate lines only). For semantic
 # dedup on ``query``, enable the commented ``document_minhash_deduplicator`` only when
 # the batch is single-model-per-query (otherwise cross-model rows may collapse).
-project_name: agent-delivery-R1-initial-filter
+project_name: agent-training-dataset-R1-initial-filter
 dataset_path: demos/agent/demo-data-100.jsonl
 np: 4
-export_path: ./outputs/agent_delivery_R1/processed.jsonl
+export_path: ./outputs/agent_training_dataset_R1/processed.jsonl
 keep_stats_in_res_ds: true
 use_checkpoint: true
 text_keys: "id"
@@ -61,7 +61,7 @@ process:
   #     window_size: 5
   #     jaccard_threshold: 0.85
 
-  - agent_sls_noise_mapper:
+  - agent_sys_log_noise_mapper:
       messages_key: "messages"
       choices_key: "response_choices"
 

@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys, StatsKeys
@@ -23,7 +23,8 @@ def _f(x: Any) -> float:
 @TAGGING_OPS.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
 class AgentLearnableValueScorer(Mapper):
-    """Write ``meta.agent_learnable_value`` and ``meta.agent_learnable_value_tier``."""
+    """Write ``meta.agent_learnable_value``, ``meta.agent_learnable_value_tier``,
+    and ``meta.agent_training_dataset_tier`` (same bucket label for export)."""
 
     def __init__(
         self,
@@ -97,13 +98,7 @@ class AgentLearnableValueScorer(Mapper):
             if delta is not None:
                 cross = min(1.0, max(0.0, _f(delta) * 2.0))
 
-        lv = (
-            self.wd * difficulty
-            + self.wt * focus
-            + self.wc * completeness
-            + self.wg * gen
-            + self.wx * cross
-        )
+        lv = self.wd * difficulty + self.wt * focus + self.wc * completeness + self.wg * gen + self.wx * cross
         lv = max(0.0, min(1.0, float(lv)))
 
         tax_hard = bool(tax.get("hard_drop_recommended")) if isinstance(tax, dict) else False
@@ -119,5 +114,5 @@ class AgentLearnableValueScorer(Mapper):
 
         meta[MetaKeys.agent_learnable_value] = lv
         meta[MetaKeys.agent_learnable_value_tier] = tier
-        meta[MetaKeys.agent_delivery_tier] = tier
+        meta[MetaKeys.agent_training_dataset_tier] = tier
         return sample

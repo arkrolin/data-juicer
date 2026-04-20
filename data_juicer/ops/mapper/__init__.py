@@ -4,16 +4,16 @@ from .agent_dialog_normalize_mapper import AgentDialogNormalizeMapper
 from .agent_distill_trajectory_mapper import AgentDistillTrajectoryMapper
 from .agent_error_taxonomy_mapper import AgentErrorTaxonomyMapper
 from .agent_harness_noise_mapper import AgentHarnessNoiseMapper
+from .agent_insight_llm_mapper import AgentInsightLLMMapper
 from .agent_learnable_value_scorer import AgentLearnableValueScorer
 from .agent_rewrite_hint_mapper import AgentRewriteHintMapper
 from .agent_safety_gate_mapper import AgentSafetyGateMapper
-from .agent_sls_noise_mapper import AgentSlsNoiseMapper
-from .agent_training_card_mapper import AgentTrainingCardMapper
-from .agent_insight_llm_mapper import AgentInsightLLMMapper
 from .agent_skill_insight_mapper import AgentSkillInsightMapper
+from .agent_sys_log_noise_mapper import AgentSysLogNoiseMapper
 from .agent_tool_relevance_mapper import AgentToolRelevanceMapper
 from .agent_tool_type_mapper import AgentToolTypeMapper
 from .agent_trace_coherence_mapper import AgentTraceCoherenceMapper
+from .agent_training_card_mapper import AgentTrainingCardMapper
 from .annotation.human_preference_annotation_mapper import (
     HumanPreferenceAnnotationMapper,
 )
@@ -152,7 +152,7 @@ __all__ = [
     "AgentLearnableValueScorer",
     "AgentRewriteHintMapper",
     "AgentSafetyGateMapper",
-    "AgentSlsNoiseMapper",
+    "AgentSysLogNoiseMapper",
     "AgentTrainingCardMapper",
     "AgentInsightLLMMapper",
     "AgentSkillInsightMapper",

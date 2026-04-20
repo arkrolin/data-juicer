@@ -1,4 +1,4 @@
-# Agent delivery recipes（训练数据价值）
+# Agent training-dataset recipes（训练数据价值）
 
 可组合DJ YAML，把 agent 交互数据 从 **分析审计洞察** 延伸到 **training-ready 数据**。与全量配方
 `demos/agent/agent_interaction_quality_analysis.yaml`（偏 stats / dialog_* / 报告）并列使用。
@@ -13,7 +13,7 @@
 
 | 路径 | 适用 | 顺序 |
 |------|------|------|
-| **A · 原始日志优先** | 手里是 raw JSONL，希望一条龙打上 lineage、PK、噪声与工具标签 | **R1** → **R2** → **R3** |
+| **A · 原始交互数据优先** | 手里是 raw JSONL，希望一条龙打上 lineage、PK、噪声与工具标签 | **R1** → **R2** → **R3** |
 | **B · 已跑全量分析** | 已有 `agent_interaction_quality_analysis` 的 `processed.jsonl`（含 `dialog_*`、`stats.llm_*`），只需补 **跨模型 cohort + id 去重** 再接价值栈 | **`agent_interaction_quality_analysis`** → **R0** → **R2** → **R3** |
 
 路径 B 下：将 **`R2_delivery_stack.yaml`** 的 `dataset_path` 指到 **`R0_bridge_from_analysis.yaml`** 的 `export_path`（默认 `./outputs/agent_delivery_R0/from_analysis.jsonl`）。  
@@ -31,9 +31,9 @@
 | Stage | File | Role |
 |--------|------|------|
 | **R0** | `R0_bridge_from_analysis.yaml` | 在 **全量分析导出** 上追加 **跨模型 pairwise** + **按 id 精确去重**；输出 `outputs/agent_delivery_R0/from_analysis.jsonl`。 |
-| **R1** | `R1_initial_filter.yaml` | 从 raw 做 normalize、跨模型、去重、SLS/harness、usage、tool 类型等。输出 `outputs/agent_delivery_R1/processed.jsonl`。 |
+| **R1** | `R1_initial_filter.yaml` | 从 raw 做 normalize、跨模型、去重、sys_log/harness、usage、tool 类型等。输出 `outputs/agent_delivery_R1/processed.jsonl`。 |
 | **R2** | `R2_delivery_stack.yaml` | Taxonomy、learnable value、bad-case signals；可选 `agent_insight_llm_mapper`。输入：R0 或 R1 导出。输出 `outputs/agent_delivery_R2/processed.jsonl`。 |
-| **R3** | `R3_post_process.yaml` | PII（regex + LLM）、copyright/HTML、**安全门 + 蒸馏 + 改写提示**（API），再写 `meta.agent_training_card`。交付：`outputs/agent_delivery_R3/delivery.jsonl`。 |
+| **R3** | `R3_post_process.yaml` | PII（regex + LLM）、copyright/HTML、**安全 + 蒸馏 + 改写提示**（API），再写 `meta.agent_training_card`。训练数据集输出：`outputs/agent_delivery_R3/delivery.jsonl`。 |
 | **R3 CPU** | `R3_post_process_cpu_only.yaml` | 无远程 LLM；确定性清洗 + training card（冒烟 / 离线）。 |
 
 **硬约束**
@@ -68,7 +68,7 @@ dj-process --config demos/agent/recipes/R3_post_process_cpu_only.yaml
 
 ---
 
-## R3 full stack（强模型 + 交付物）
+## R3 full stack（强模型 + 训练数据集产物）
 
 `R3_post_process.yaml` 顺序概要：
 

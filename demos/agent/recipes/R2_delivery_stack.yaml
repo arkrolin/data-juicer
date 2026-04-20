@@ -1,8 +1,8 @@
 # R2: training-value stack (ROI: taxonomy + learnable value + bad-case signals).
 #
 # ``dataset_path`` — pick **one**:
-#   A) ``./outputs/agent_delivery_R1/processed.jsonl`` after ``R1_initial_filter.yaml``, or
-#   B) ``./outputs/agent_delivery_R0/from_analysis.jsonl`` after ``R0_bridge_from_analysis.yaml``
+#   A) ``./outputs/agent_training_dataset_R1/processed.jsonl`` after ``R1_initial_filter.yaml``, or
+#   B) ``./outputs/agent_training_dataset_R0/from_analysis.jsonl`` after ``R0_bridge_from_analysis.yaml``
 #      (upstream: ``agent_interaction_quality_analysis.yaml`` export).
 #
 # Reuses ``dialog_*`` meta + ``stats.llm_*`` when present (path B). Path A may omit full §5b
@@ -12,16 +12,16 @@
 # ``agent_dialog_normalize_mapper`` block (same as R1) on **raw** JSONL first.
 #
 # Requires LLM API for ``agent_insight_llm_mapper`` only; comment that op out to skip.
-project_name: agent-delivery-R2-from-existing-tags
-dataset_path: ./outputs/agent_delivery_R1/processed.jsonl
+project_name: agent-training-dataset-R2-from-existing-tags
+dataset_path: ./outputs/agent_training_dataset_R1/processed.jsonl
 np: 4
-export_path: ./outputs/agent_delivery_R2/processed.jsonl
+export_path: ./outputs/agent_training_dataset_R2/processed.jsonl
 keep_stats_in_res_ds: true
 use_checkpoint: true
 text_keys: "id"
 
 process:
-  - agent_sls_noise_mapper:
+  - agent_sys_log_noise_mapper:
       messages_key: "messages"
       choices_key: "response_choices"
 
@@ -48,7 +48,7 @@ process:
       signal_on_llm_analysis_low: true
       signal_on_llm_text_quality_low: true
       signal_on_learnable_value_tier: true
-      exclude_if_sls_or_harness_noise: true
+      exclude_if_sys_log_or_harness_noise: true
       min_medium_signals_for_watchlist: 2
 
   # Optional (requires API). Uncomment when running on a machine with credentials.

@@ -9,12 +9,12 @@
 
 ## 1. 推荐归因链顺序
 
-1. **噪声**：`meta.agent_sls_noise` · `meta.agent_harness_noise` — 先判断红/黄是否来自日志/评测架，避免把 infra 当模型缺陷。  
+1. **噪声**：`meta.agent_sys_log_noise` · `meta.agent_harness_noise` — 先判断红/黄是否来自系统日志/harness内在问题，避免把 infra 当模型缺陷。  
 2. **对照能力**：`stats` 中 `llm_analysis_score` / `llm_quality_score` / `llm_difficulty_score` 及 `stats.*_record`（JSON 字符串）— 基模末轮质量。  
 3. **对话轴**：`meta.dialog_*`、`meta.agent_trace_coherence`、`meta.agent_tool_relevance` — 与 §5b 分析配方一致。  
 4. **跨模型 / 近似同题 PK**：`meta.agent_cross_model_pair` — 同 cohort 内 `delta_to_best`、`has_pairwise_contrast`；`match_basis` 标明分组依据：`exact_pair_key`（同 lineage id）、`normalized_query`（归一化 query 完全一致）、`simhash_lsh`（query+可选附加文本的 SimHash + LSH + Hamming，近似同题）。**跨代回归**可在同一 cohort 内比较 `my_version` vs `best_version`（无需单独算子）。  
 5. **能力分桶**：`meta.agent_error_taxonomy` — `buckets.*.severity` 与 **`evidence` 叶子（均为字符串）**；解析数值时请 `float(s)` 或按需 `json.loads`。  
-6. **ROI 分层**：`meta.agent_learnable_value`（标量）、`meta.agent_delivery_tier` / `meta.agent_learnable_value_tier`。  
+6. **ROI 分层**：`meta.agent_learnable_value`（标量）、`meta.agent_training_dataset_tier` / `meta.agent_learnable_value_tier`。  
 7. **人审优先级**：`meta.agent_bad_case_signals`、`meta.agent_bad_case_tier`。  
 8. **教师模型 + 数据卡片**（R3）：`agent_training_safety_gate`、`agent_distilled_trajectory`、`agent_rewrite_hints`、`agent_training_card`。
 
@@ -25,7 +25,7 @@
 | 字段 | 典型用途 | 说明 |
 |------|----------|------|
 | `text` / `query` / `response` / `dialog_history` | SFT 主语料 | R3 前做 PII/HTML/copyright；长轨迹注意截断与许可。 |
-| `meta.agent_delivery_tier` | **分桶导出** | `gold` / `silver` / `bronze` / `drop`；可与 `hard_drop_recommended` 联用。 |
+| `meta.agent_training_dataset_tier` | **训练数据集分桶** | `gold` / `silver` / `bronze` / `drop`；可与 `hard_drop_recommended` 联用。 |
 | `meta.agent_learnable_value` | **排序加权** | 标量分数；高优先入训或复制多 epoch。 |
 | `meta.agent_cross_model_pair` | **Preference / RM** | 多模型 + 近似同题 cohort；看 `match_basis` 理解分组可信度。`simhash_lsh` 有误合并风险，可把关键 env 拼进 `extra_group_text_key` 或收紧 `simhash_max_hamming`。 |
 | `meta.agent_error_taxonomy` | **课程学习 / 按能力混桶** | 按 `reasoning` / `tool_use` 等 severity 混比例；evidence 为字符串。 |
@@ -35,7 +35,7 @@
 | `meta.agent_training_safety_gate` | **训前合规** | 蒸馏默认 `require_safety_gate_ok: true` 时依赖 `ok`。 |
 | `meta.agent_distilled_trajectory` | **SFT 目标补充** | 教师对轨迹的 `distilled_final_reply` 等；注意 API 成本与闭源策略。 |
 | `meta.agent_rewrite_hints` | **改写 / 二次标注** | 低 tier 的结构化提示，不直接替代 messages。 |
-| `meta.agent_training_card` | **Dataset card / 交接** | **整段为 JSON 字符串**：`card = json.loads(row["__dj__meta__"]["agent_training_card"])`；内含 `safety_gate_ok`（`true`/`false`/`unknown`）、`llm_*_score`（缺省 `-1.0`）、`learnable_value_json`（内层 JSON 字符串）。 |
+| `meta.agent_training_card` | **Dataset card / 交接** | **整段为 JSON 字符串**：`card = json.loads(row["__dj__meta__"]["agent_training_card"])`；内含 `training_dataset_tier`、`safety_gate_ok`（`true`/`false`/`unknown`）、`llm_*_score`（缺省 `-1.0`）、`learnable_value_json`（内层 JSON 字符串）。 |
 
 ---
 
@@ -45,7 +45,7 @@
 python demos/agent/scripts/diff_agent_exports.py \
   --before ./outputs/agent_delivery_R2/processed.jsonl \
   --after ./outputs/agent_delivery_R3/delivery.jsonl \
-  --meta-keys agent_delivery_tier agent_training_card \
+  --meta-keys agent_training_dataset_tier agent_training_card \
   --stats-keys llm_analysis_score
 ```
 
@@ -56,7 +56,7 @@ python demos/agent/scripts/diff_agent_exports.py \
 ```bash
 # gold + 非 hard_drop，且安全门为 true（若已跑 R3 安全门）
 jq -c 'select(
-  (.__dj__meta__.agent_delivery_tier? == "gold")
+  (.__dj__meta__.agent_training_dataset_tier? == "gold")
   and (.__dj__meta__.agent_error_taxonomy.hard_drop_recommended? != true)
   and ((.__dj__meta__.agent_training_safety_gate.ok?) // true)
 )' delivery.jsonl > gold_sft_candidates.jsonl

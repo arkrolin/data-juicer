@@ -16,7 +16,11 @@ from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.lazy_loader import LazyLoader
 from data_juicer.utils.llm_semantic_ops import call_llm_sync
-from data_juicer.utils.model_utils import get_model, prepare_model, update_sampling_params
+from data_juicer.utils.model_utils import (
+    get_model,
+    prepare_model,
+    update_sampling_params,
+)
 
 vllm = LazyLoader("vllm")
 
@@ -72,7 +76,7 @@ def _parse_json_obj(raw: str) -> Optional[dict]:
 @TAGGING_OPS.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
 class AgentDistillTrajectoryMapper(Mapper):
-    """Write ``meta.agent_distilled_trajectory`` for selected delivery tiers (API)."""
+    """Write ``meta.agent_distilled_trajectory`` for selected training-dataset tiers (API)."""
 
     _accelerator = "cuda"
 
@@ -90,7 +94,7 @@ class AgentDistillTrajectoryMapper(Mapper):
         messages_key: str = "messages",
         query_key: str = "query",
         response_key: str = "response",
-        only_for_delivery_tiers: Optional[List[str]] = None,
+        only_for_training_dataset_tiers: Optional[List[str]] = None,
         require_safety_gate_ok: bool = True,
         max_context_chars: int = 12000,
         preferred_output_lang: str = "en",
@@ -100,7 +104,9 @@ class AgentDistillTrajectoryMapper(Mapper):
         self.messages_key = messages_key
         self.query_key = query_key
         self.response_key = response_key
-        self.only_for_delivery_tiers = [str(x).strip().lower() for x in (only_for_delivery_tiers or ["gold", "silver"])]
+        self.only_for_training_dataset_tiers = [
+            str(x).strip().lower() for x in (only_for_training_dataset_tiers or ["gold", "silver"])
+        ]
         self.require_safety_gate_ok = bool(require_safety_gate_ok)
         self.max_context_chars = max(2000, int(max_context_chars))
         self.try_num = try_num
@@ -153,8 +159,10 @@ class AgentDistillTrajectoryMapper(Mapper):
 
     def process_single(self, sample: dict, rank=None) -> dict:
         meta = _ensure_meta_dict(sample)
-        tier = str(meta.get(MetaKeys.agent_delivery_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or "").lower()
-        if tier not in self.only_for_delivery_tiers:
+        tier = str(
+            meta.get(MetaKeys.agent_training_dataset_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or ""
+        ).lower()
+        if tier not in self.only_for_training_dataset_tiers:
             return sample
         if self.require_safety_gate_ok:
             gate = meta.get(MetaKeys.agent_training_safety_gate)

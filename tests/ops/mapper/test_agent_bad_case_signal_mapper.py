@@ -169,15 +169,15 @@ class TestAgentBadCaseSignalMapper(DataJuicerTestCaseBase):
         self.assertIn("dialog_turn_quality_meta_low", codes)
         self.assertEqual(out[Fields.meta][MetaKeys.agent_bad_case_tier], "watchlist")
 
-    def test_tool_fail_demoted_when_sls_noise(self):
+    def test_tool_fail_demoted_when_sys_log_noise(self):
         op = AgentBadCaseSignalMapper(
-            exclude_if_sls_or_harness_noise=True,
+            exclude_if_sys_log_or_harness_noise=True,
             high_precision_on_tool_fail_alone=True,
         )
         sample = {
             Fields.meta: {
                 MetaKeys.tool_fail_count: 3,
-                "agent_sls_noise": {"is_likely_noise": True, "flags": ["x"], "severity": 0.5},
+                "agent_sys_log_noise": {"is_likely_noise": True, "flags": ["x"], "severity": 0.5},
             },
             Fields.stats: {},
             "query": "q",

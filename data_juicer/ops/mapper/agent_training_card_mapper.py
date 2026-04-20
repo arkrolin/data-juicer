@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys, StatsKeys
@@ -86,7 +86,7 @@ def _to_jsonable(x: Any) -> Any:
 @TAGGING_OPS.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
 class AgentTrainingCardMapper(Mapper):
-    """Aggregate delivery fields into ``meta.agent_training_card`` (JSON string for Arrow)."""
+    """Aggregate training-dataset fields into ``meta.agent_training_card`` (JSON string for Arrow)."""
 
     def __init__(
         self,
@@ -108,7 +108,9 @@ class AgentTrainingCardMapper(Mapper):
             stats = {}
 
         tax = meta.get(MetaKeys.agent_error_taxonomy) or {}
-        tier = str(meta.get(MetaKeys.agent_delivery_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or "none")
+        tier = str(
+            meta.get(MetaKeys.agent_training_dataset_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or "none"
+        )
         lv = meta.get(MetaKeys.agent_learnable_value)
         hard_drop = bool(tax.get("hard_drop_recommended")) if isinstance(tax, dict) else False
         chain_ok = meta.get(MetaKeys.agent_tool_chain_complete)
@@ -130,12 +132,10 @@ class AgentTrainingCardMapper(Mapper):
         rh = meta.get(MetaKeys.agent_rewrite_hints) if self.include_rewrite_hints else None
 
         # Avoid nested dict/list variance across rows in HF Arrow ``meta`` structs.
-        learnable_value_json = (
-            None if lv is None else json.dumps(_to_jsonable(lv), ensure_ascii=False)
-        )
+        learnable_value_json = None if lv is None else json.dumps(_to_jsonable(lv), ensure_ascii=False)
 
         card: Dict[str, Any] = {
-            "delivery_tier": tier,
+            "training_dataset_tier": tier,
             "learnable_value_json": learnable_value_json,
             "target_capabilities": _top_taxonomy_axes(tax, 2),
             "training_ready": {
@@ -155,13 +155,9 @@ class AgentTrainingCardMapper(Mapper):
                 has_distill=bool(has_distill),
             ),
             # Always set these keys so Arrow/HF infers a stable struct for every row.
-            "distilled_present": bool(
-                self.include_distilled and isinstance(distill, dict) and has_distill
-            ),
+            "distilled_present": bool(self.include_distilled and isinstance(distill, dict) and has_distill),
             "rewrite_hints_present": bool(
-                self.include_rewrite_hints
-                and isinstance(rh, dict)
-                and bool(rh.get("hints") or rh.get("parse_ok"))
+                self.include_rewrite_hints and isinstance(rh, dict) and bool(rh.get("hints") or rh.get("parse_ok"))
             ),
         }
 

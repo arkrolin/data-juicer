@@ -35,7 +35,7 @@ SIGNAL_SUPPORT_ROWS: List[Dict[str, Any]] = [
             "meta.tool_fail_count、tool_unknown_count；"
             "tool_success_tagger_mapper（messages role=tool）；"
             "第 9 步需 fail≥min_tool_fail_count_for_signal 才发本信号（减轻单条试错 bias）；"
-            "若 exclude_if_sls_or_harness_noise=true 且 meta.agent_sls_noise / agent_harness_noise "
+            "若 exclude_if_sys_log_or_harness_noise=true 且 meta.agent_sys_log_noise / agent_harness_noise "
             "标记 is_likely_noise，则本信号 weight 由 high 降为 medium"
         ),
     },
@@ -134,7 +134,7 @@ SIGNAL_SUPPORT_ROWS: List[Dict[str, Any]] = [
         "weight_hint": "medium",
         "upstream": (
             "meta.agent_learnable_value_tier、meta.agent_learnable_value；"
-            "agent_learnable_value_scorer（训练优先级 / delivery）"
+            "agent_learnable_value_scorer（训练优先级 / training-dataset tier）"
         ),
     },
     {

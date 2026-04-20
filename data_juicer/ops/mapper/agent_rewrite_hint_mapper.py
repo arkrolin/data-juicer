@@ -16,7 +16,11 @@ from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.lazy_loader import LazyLoader
 from data_juicer.utils.llm_semantic_ops import call_llm_sync
-from data_juicer.utils.model_utils import get_model, prepare_model, update_sampling_params
+from data_juicer.utils.model_utils import (
+    get_model,
+    prepare_model,
+    update_sampling_params,
+)
 
 vllm = LazyLoader("vllm")
 
@@ -74,14 +78,16 @@ class AgentRewriteHintMapper(Mapper):
         try_num: PositiveInt = 2,
         query_key: str = "query",
         response_key: str = "response",
-        only_for_delivery_tiers: Optional[List[str]] = None,
+        only_for_training_dataset_tiers: Optional[List[str]] = None,
         preferred_output_lang: str = "en",
         **kwargs,
     ):
         super().__init__(**kwargs)
         self.query_key = query_key
         self.response_key = response_key
-        self.only_for_delivery_tiers = [str(x).strip().lower() for x in (only_for_delivery_tiers or ["bronze"])]
+        self.only_for_training_dataset_tiers = [
+            str(x).strip().lower() for x in (only_for_training_dataset_tiers or ["bronze"])
+        ]
         self.try_num = try_num
         self.preferred_output_lang = (preferred_output_lang or "en").lower()
         self.is_hf_model = is_hf_model
@@ -130,8 +136,10 @@ class AgentRewriteHintMapper(Mapper):
 
     def process_single(self, sample: dict, rank=None) -> dict:
         meta = _ensure_meta_dict(sample)
-        tier = str(meta.get(MetaKeys.agent_delivery_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or "").lower()
-        if tier not in self.only_for_delivery_tiers:
+        tier = str(
+            meta.get(MetaKeys.agent_training_dataset_tier) or meta.get(MetaKeys.agent_learnable_value_tier) or ""
+        ).lower()
+        if tier not in self.only_for_training_dataset_tiers:
             return sample
 
         q = str(sample.get(self.query_key) or "")[:6000]

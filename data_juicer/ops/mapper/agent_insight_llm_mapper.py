@@ -27,9 +27,9 @@ _DEFAULT_INSIGHT_EXTRA_META_KEYS = (
     MetaKeys.agent_error_taxonomy,
     MetaKeys.agent_learnable_value,
     MetaKeys.agent_learnable_value_tier,
-    MetaKeys.agent_delivery_tier,
+    MetaKeys.agent_training_dataset_tier,
     MetaKeys.agent_cross_model_pair,
-    MetaKeys.agent_sls_noise,
+    MetaKeys.agent_sys_log_noise,
     MetaKeys.agent_harness_noise,
     MetaKeys.agent_tool_chain_complete,
 )
@@ -144,10 +144,10 @@ def _build_evidence_pack(
 
     dq_pack = _dialog_quality_llm_pack(meta)
 
-    training_delivery: Dict[str, Any] = {}
+    training_dataset: Dict[str, Any] = {}
     for k in extra_meta_keys or ():
         if k in meta and meta.get(k) is not None:
-            training_delivery[k] = _json_safe(meta.get(k))
+            training_dataset[k] = _json_safe(meta.get(k))
 
     return {
         "lineage": {
@@ -195,7 +195,7 @@ def _build_evidence_pack(
             "tier": meta.get(MetaKeys.agent_bad_case_tier),
         },
         "dialog_quality_llm": _truncate_record(dq_pack, max_chars=2800) if dq_pack else None,
-        "training_delivery": training_delivery if training_delivery else None,
+        "training_dataset": training_dataset if training_dataset else None,
         "query_preview": q[:query_max],
         "response_preview": r[:response_max],
     }
@@ -251,7 +251,9 @@ class AgentInsightLLMMapper(Mapper):
             **model_params,
         )
         if insight_extra_meta_keys is not None:
-            self.insight_extra_meta_keys: Tuple[str, ...] = tuple(str(x).strip() for x in insight_extra_meta_keys if str(x).strip())
+            self.insight_extra_meta_keys: Tuple[str, ...] = tuple(
+                str(x).strip() for x in insight_extra_meta_keys if str(x).strip()
+            )
         else:
             self.insight_extra_meta_keys = _DEFAULT_INSIGHT_EXTRA_META_KEYS
 

@@ -42,6 +42,7 @@ class TestAgentErrorTaxonomyAndLearnable(unittest.TestCase):
         self.assertIn("buckets", sample[Fields.meta][MetaKeys.agent_error_taxonomy])
         self.assertIn(MetaKeys.agent_learnable_value, sample[Fields.meta])
         self.assertIn(MetaKeys.agent_learnable_value_tier, sample[Fields.meta])
+        self.assertIn(MetaKeys.agent_training_dataset_tier, sample[Fields.meta])
 
 
 if __name__ == "__main__":
