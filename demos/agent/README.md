@@ -23,7 +23,7 @@ for other locales.
 端到端配置：**`agent_interaction_quality_analysis.yaml`**；无 API 冒烟：**`minimal_configs/09_bad_case_smoke.yaml`**。处理命令统一为 **`dj-process --config <yaml>`**。
 
 面向训练数据集的分段配方（R0 桥接 / R1 初筛 / R2 价值栈 / R3 后处理与训练数据集产物）：见 **[`recipes/README.md`](recipes/README.md)**。  
-字段如何映射到 SFT / Preference / 过滤：见 **[`recipes/DELIVERY_FIELD_GUIDE.md`](recipes/DELIVERY_FIELD_GUIDE.md)**。
+字段如何映射到 SFT / Preference / 过滤：见 **[`recipes/TRAIN_DATA_FIELD_GUIDE.md`](recipes/TRAIN_DATA_FIELD_GUIDE.md)**。
 
 ---
 

@@ -3,10 +3,10 @@
 # PII LLM / safety / distill / rewrite; still writes ``meta.agent_training_card`` from meta.
 #
 # Run: ``dj-process --config demos/agent/recipes/R3_post_process_cpu_only.yaml``
-project_name: agent-delivery-R3-post-process-cpu
-dataset_path: ./outputs/agent_delivery_R2/processed.jsonl
+project_name: agent-train-data-R3-post-process-cpu
+dataset_path: ./outputs/agent_train_data_R2/processed.jsonl
 np: 2
-export_path: ./outputs/agent_delivery_R3/delivery.jsonl
+export_path: ./outputs/agent_train_data_R3/train_data.jsonl
 keep_stats_in_res_ds: true
 use_checkpoint: true
 text_keys: "id"

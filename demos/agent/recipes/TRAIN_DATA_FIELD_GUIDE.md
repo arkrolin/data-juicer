@@ -43,8 +43,8 @@
 
 ```bash
 python demos/agent/scripts/diff_agent_exports.py \
-  --before ./outputs/agent_delivery_R2/processed.jsonl \
-  --after ./outputs/agent_delivery_R3/delivery.jsonl \
+  --before ./outputs/agent_train_data_R2/processed.jsonl \
+  --after ./outputs/agent_train_data_R3/train_data.jsonl \
   --meta-keys agent_training_dataset_tier agent_training_card \
   --stats-keys llm_analysis_score
 ```
@@ -59,12 +59,12 @@ jq -c 'select(
   (.__dj__meta__.agent_training_dataset_tier? == "gold")
   and (.__dj__meta__.agent_error_taxonomy.hard_drop_recommended? != true)
   and ((.__dj__meta__.agent_training_safety_gate.ok?) // true)
-)' delivery.jsonl > gold_sft_candidates.jsonl
+)' train_data.jsonl > gold_sft_candidates.jsonl
 ```
 
 ```bash
 # 解析 training_card 一行看推荐用法
-jq -r '.__dj__meta__.agent_training_card | fromjson | .recommended_usage' delivery.jsonl | head
+jq -r '.__dj__meta__.agent_training_card | fromjson | .recommended_usage' train_data.jsonl | head
 ```
 
 ---
@@ -73,10 +73,10 @@ jq -r '.__dj__meta__.agent_training_card | fromjson | .recommended_usage' delive
 
 | 路径 | 顺序 |
 |------|------|
-| **A · 从原始交互轨迹** | `R1_initial_filter` → `R2_delivery_stack` → `R3_*` |
-| **B · 从全量分析导出** | `agent_interaction_quality_analysis` → **`R0_bridge_from_analysis`** → `R2_delivery_stack` → `R3_*` |
+| **A · 从原始交互轨迹** | `R1_initial_filter` → `R2_train_data_stack` → `R3_*` |
+| **B · 从全量分析导出** | `agent_interaction_quality_analysis` → **`R0_bridge_from_analysis`** → `R2_train_data_stack` → `R3_*` |
 
-路径 B 下请将 **`R2_delivery_stack.yaml`** 的 `dataset_path` 改为 R0 的 `export_path`。
+路径 B 下请将 **`R2_train_data_stack.yaml`** 的 `dataset_path` 改为 R0 的 `export_path`。
 
 ---
 

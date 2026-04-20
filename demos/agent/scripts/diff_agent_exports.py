@@ -7,7 +7,7 @@ Usage (repo root)::
 
     python demos/agent/scripts/diff_agent_exports.py \\
         --before ./outputs/run_a/processed.jsonl \\
-        --after ./outputs/run_b/delivery.jsonl \\
+        --after ./outputs/run_b/train_data.jsonl \\
         --meta-keys agent_training_dataset_tier agent_bad_case_tier \\
         --stats-keys llm_analysis_score llm_difficulty_score
 
