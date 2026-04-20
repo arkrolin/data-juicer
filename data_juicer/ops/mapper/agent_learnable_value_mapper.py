@@ -1,7 +1,8 @@
 # Copyright 2025 The Data-Juicer Authors. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# Single scalar learnable-value score + tier for training prioritization (no LLM).
+# Single scalar learnable-value score + tier for
+# training-data prioritization (no LLM).
 
 from __future__ import annotations
 
@@ -10,7 +11,7 @@ from typing import Any
 from data_juicer.ops.base_op import OPERATORS, TAGGING_OPS, Mapper
 from data_juicer.utils.constant import Fields, MetaKeys, StatsKeys
 
-OP_NAME = "agent_learnable_value_scorer"
+OP_NAME = "agent_learnable_value_mapper"
 
 
 def _f(x: Any) -> float:
@@ -22,9 +23,21 @@ def _f(x: Any) -> float:
 
 @TAGGING_OPS.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
-class AgentLearnableValueScorer(Mapper):
-    """Write ``meta.agent_learnable_value``, ``meta.agent_learnable_value_tier``,
-    and ``meta.agent_training_dataset_tier`` (same bucket label for export)."""
+class AgentLearnableValueMapper(Mapper):
+    """Write training-value scalar and tier meta fields."""
+
+    # Key logic (rules only; no extra LLM calls in this op):
+    # - difficulty: stats.llm_difficulty_score (normalized to [0,1])
+    # - taxonomy focus: max(bucket severity) - mean(bucket severity)
+    # - completeness: turns + tool chain integrity + compression flag
+    # - generalizability: intent/topic label density per turn
+    # - cross-model signal: agent_cross_model_pair.delta_to_best
+    #
+    # Note (high-ceiling): keep this mapper as cheap coarse ranking, but add a
+    # post-hoc calibration/learning layer (or stronger judge + sampled human
+    # audit) so the ranking is less bottlenecked by weak upstream judges.
+    # Note (r3-semantic-shift): if R3 rewrite/distill changes response semantics,
+    # run a lightweight re-scoring chain for quality-related upstream signals.
 
     def __init__(
         self,

@@ -31,7 +31,7 @@ process:
   - agent_error_taxonomy_mapper:
       hard_drop_safety_severity: 0.75
 
-  - agent_learnable_value_scorer:
+  - agent_learnable_value_mapper:
       weight_difficulty: 0.35
       weight_taxonomy_focus: 0.25
       weight_completeness: 0.20

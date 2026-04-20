@@ -5,7 +5,7 @@ from .agent_distill_trajectory_mapper import AgentDistillTrajectoryMapper
 from .agent_error_taxonomy_mapper import AgentErrorTaxonomyMapper
 from .agent_harness_noise_mapper import AgentHarnessNoiseMapper
 from .agent_insight_llm_mapper import AgentInsightLLMMapper
-from .agent_learnable_value_scorer import AgentLearnableValueScorer
+from .agent_learnable_value_mapper import AgentLearnableValueMapper
 from .agent_rewrite_hint_mapper import AgentRewriteHintMapper
 from .agent_safety_gate_mapper import AgentSafetyGateMapper
 from .agent_skill_insight_mapper import AgentSkillInsightMapper
@@ -149,7 +149,7 @@ __all__ = [
     "AgentDistillTrajectoryMapper",
     "AgentErrorTaxonomyMapper",
     "AgentHarnessNoiseMapper",
-    "AgentLearnableValueScorer",
+    "AgentLearnableValueMapper",
     "AgentRewriteHintMapper",
     "AgentSafetyGateMapper",
     "AgentSysLogNoiseMapper",

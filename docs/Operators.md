@@ -188,7 +188,7 @@ All the specific operators are listed below, each featured with several capabili
 | agent_error_taxonomy_mapper | 💻CPU 🔴Alpha | Populate ``meta.agent_error_taxonomy`` from existing stats/meta (rules only). 从现有统计/元数据中填充“meta.agent_error_taxonomy”（仅规则）。 | - | - |
 | agent_harness_noise_mapper | 💻CPU 🔴Alpha | Write ``meta.agent_harness_noise`` when eval/harness patterns appear in messages. 当评估/测试框架模式出现在消息中时，写入“meta.agent_harness_noise”。 | - | - |
 | agent_insight_llm_mapper | 💻CPU 🔗API 🟡Beta | Synthesize stats + LLM eval text into ``meta.agent_insight_llm`` (JSON). 将stats LLM eval文本合成为 &#39;&#39;meta.agent_insight_llm &#39;&#39;(JSON)。 | - | - |
-| agent_learnable_value_scorer | 💻CPU 🔴Alpha | Write ``meta.agent_learnable_value``, ``meta.agent_learnable_value_tier``, and ``meta.agent_training_dataset_tier`` (same bucket label for export). 写入 &#39;&#39;meta.agent_learnable_value &#39;&#39;、 &#39;&#39;meta.agent_learnable_value_tier&#39;&#39; 和 &#39;&#39;&#39;meta.agent_training_dataset_tier &#39;&#39;(用于导出的相同桶标签)。 | - | - |
+| agent_learnable_value_mapper | 💻CPU 🔴Alpha | Write training-value scalar and tier meta fields. 编写训练值标量和层元字段。 | - | - |
 | agent_rewrite_hint_mapper | 🚀GPU 🌊vLLM 🧩HF 🔗API 🔴Alpha | Write ``meta.agent_rewrite_hints`` (JSON) for selected tiers. 为选定的层级编写“meta.agent_rewrite_hints”（JSON）。 | - | - |
 | agent_safety_gate_mapper | 🔤Text 🚀GPU 🌊vLLM 🧩HF 🔗API 🔴Alpha | Run a natural-language condition on ``text_key``; store result in meta (no drop). 对“text_key”字段执行自然语言条件查询；将结果存储到元数据中（不删除）。 | - | - |
 | agent_skill_insight_mapper | 💻CPU 🔗API 🔴Alpha | Summarize agent_tool_types and agent_skill_types into insights via LLM. 通过大语言模型将代理工具类型和代理技能类型总结为洞察。 | - | - |

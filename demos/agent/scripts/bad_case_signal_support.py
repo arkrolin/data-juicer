@@ -134,7 +134,7 @@ SIGNAL_SUPPORT_ROWS: List[Dict[str, Any]] = [
         "weight_hint": "medium",
         "upstream": (
             "meta.agent_learnable_value_tier、meta.agent_learnable_value；"
-            "agent_learnable_value_scorer（训练优先级 / training-dataset tier）"
+            "agent_learnable_value_mapper（训练优先级 / training-dataset tier）"
         ),
     },
     {

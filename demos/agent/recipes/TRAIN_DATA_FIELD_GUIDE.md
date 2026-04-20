@@ -80,8 +80,35 @@ jq -r '.__dj__meta__.agent_training_card | fromjson | .recommended_usage' train_
 
 ---
 
-## 6. 已知局限
+## 6. 训练前定量验证（不依赖训练）
+
+可用 `transition_report.py` 对同一批 `id` 的 before / after 导出做离线对比：
+
+```bash
+python demos/agent/scripts/transition_report.py \
+  --before ./outputs/agent_train_data_R2/processed.jsonl \
+  --after ./outputs/agent_train_data_R3/train_data.jsonl \
+  --require-safety-ok \
+  --out-json ./outputs/agent_train_data_R3/transition_report.json
+```
+
+默认输出要点：
+
+- 红/黄/绿迁移矩阵（before → after）
+- `net_green_gain`（红黄升绿概率 - 绿降黄红概率）
+- `harmful_promotion_rate`（Red→Green 中仍疑似风险样本比例）
+- `high/medium` signal burden 均值变化
+- `agent_learnable_value` 与 quality/hardness proxy 的 Spearman（排序一致性）
+- top-k（10/20/30%）绿色覆盖率、hard precision、hardness lift
+- （可选）stage retention：`raw->R1->R2->R3` 的 kept/dropped 规模与 drop profile（red/yellow/green、noise、hard_drop）
+
+建议把该报告作为每轮配方迭代的 gate，并固定抽样审计 `Red→Green` 与 `Green→Red`。
+
+> 说明：若要比较 **R3 蒸馏/改写后的文本语义质量**，建议在 R3 输出后跑一条轻量复评链（至少 quality/analysis + bad_case + learnable）。否则 R3 后的 quality 相关分数仍可能是改写前语义。
+
+## 7. 已知局限 / TODO
 
 - **跨代回归**、**session 时间线合并**、**流式末包空检测** 尚未单独算子化；当前用 lineage + 手工规则或后续 mapper 扩展。  
 - **蒸馏**当前为「教师阅读当前轨迹」生成目标，不自动从 PK 赢面模型 **拷贝** 异模型轨迹。  
 - **data-model co-dev 迭代** via DJ-Sandbox & DJ-Agents
+- **better judege**：将 `agent_learnable_value` 从规则线性分桶升级为可校准/可学习排序器，并引入更强评审信号（或人工抽样）作为对照，避免弱 judge 上限锁定。

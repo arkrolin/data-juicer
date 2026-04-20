@@ -5,7 +5,7 @@ import json
 import unittest
 
 from data_juicer.ops.mapper.agent_error_taxonomy_mapper import AgentErrorTaxonomyMapper
-from data_juicer.ops.mapper.agent_learnable_value_scorer import AgentLearnableValueScorer
+from data_juicer.ops.mapper.agent_learnable_value_mapper import AgentLearnableValueMapper
 from data_juicer.utils.constant import Fields, MetaKeys, StatsKeys
 
 
@@ -38,7 +38,7 @@ class TestAgentErrorTaxonomyAndLearnable(unittest.TestCase):
             },
         }
         sample = AgentErrorTaxonomyMapper().process_single(dict(sample))
-        sample = AgentLearnableValueScorer().process_single(sample)
+        sample = AgentLearnableValueMapper().process_single(sample)
         self.assertIn("buckets", sample[Fields.meta][MetaKeys.agent_error_taxonomy])
         self.assertIn(MetaKeys.agent_learnable_value, sample[Fields.meta])
         self.assertIn(MetaKeys.agent_learnable_value_tier, sample[Fields.meta])

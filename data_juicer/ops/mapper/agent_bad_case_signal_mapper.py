@@ -131,6 +131,11 @@ class AgentBadCaseSignalMapper(Mapper):
     ``meta.agent_request_model``. When ``calibration_manual_overrides_auto`` is
     true (default), explicit ``max_total_tokens`` / ``max_latency_ms`` / perplexity
     settings in YAML override the file; set it false to prefer calibration.
+
+    For pre-training effectiveness checks across recipe revisions, compare
+    before/after exports with ``demos/agent/scripts/transition_report.py`` to
+    quantify red/yellow/green transitions, signal burden changes, and stage
+    retention/drop profiles.
     """
 
     def __init__(
