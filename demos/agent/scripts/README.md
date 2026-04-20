@@ -17,8 +17,9 @@
 | `compute_percentile_thresholds.py` | 按 `agent_request_model` 汇总 token / 延迟 / `stats.perplexity`；控制台分位数，或 `--write-calibration` 生成 JSON |
 | `analyze_bad_case_cohorts.py` | 按 model / pt / tier 汇总；可选 `--out-csv`、`--pandas-priority` |
 | `slice_export_by_tier.py` | 按 `meta.agent_bad_case_tier`（及可选 `--model`）导出子集 jsonl |
+| `diff_agent_exports.py` | 按 `id` 对齐两次 **delivery / processed** JSONL，对比所选 `meta` / `stats` 键（验证迭代 diff） |
 
-依赖：`python>=3.8`；`analyze_bad_case_cohorts.py` 的 pandas 路径可选（无则标准库聚合）。
+依赖：`python>=3.8`；`analyze_bad_case_cohorts.py` 的 pandas 路径可选（无则标准库聚合）。`diff_agent_exports.py` 需 `jsonlines`。
 
 ---
 

@@ -1,0 +1,81 @@
+# R1: delivery-oriented initial pass (cheap CPU; optional API only if you extend).
+# If you already ran ``agent_interaction_quality_analysis.yaml`` on raw logs, prefer
+# ``R0_bridge_from_analysis.yaml`` then ``R2_delivery_stack.yaml`` (see ``recipes/README.md``).
+# Order matters: cross-model pairing runs BEFORE any query-level dedup so PK rows are kept.
+# Exact dedup here uses ``text_key: id`` (file-level duplicate lines only). For semantic
+# dedup on ``query``, enable the commented ``document_minhash_deduplicator`` only when
+# the batch is single-model-per-query (otherwise cross-model rows may collapse).
+project_name: agent-delivery-R1-initial-filter
+dataset_path: demos/agent/demo-data-100.jsonl
+np: 4
+export_path: ./outputs/agent_delivery_R1/processed.jsonl
+keep_stats_in_res_ds: true
+use_checkpoint: true
+text_keys: "id"
+
+process:
+  - agent_dialog_normalize_mapper:
+      messages_key: "messages"
+      choices_key: "response_choices"
+      text_key: "text"
+      history_key: "dialog_history"
+      query_key: "query"
+      response_key: "response"
+      extract_tool_skill_tags: true
+      copy_lineage_fields: true
+      copy_tag_object: true
+      lineage_extra_keys:
+        - "sample_id"
+        - "tag.model"
+        - "tag.version"
+        - "tag.category"
+        - "tag.quality"
+        - "tag.round"
+        - "tag.max_token_length"
+        - "tag.tool_call_failure_ratio"
+      history_tool_result_max_chars: 16384
+      history_max_assistant_trace_chars: 48000
+
+  - agent_cross_model_pair_mapper:
+      pair_key_meta: "agent_lineage_sample_id"
+      model_meta: "agent_lineage_tag_model"
+      version_meta: "agent_lineage_tag_version"
+      score_meta: "agent_lineage_tag_quality"
+      fallback_score_stat: "llm_quality_score"
+      min_group_size: 2
+      # group_key_mode: exact            # default: same ``agent_lineage_sample_id``
+      # group_key_mode: normalized_query # same normalized ``query`` (different lineage ok)
+      # group_key_mode: simhash_lsh      # near-duplicate ``query`` (+ optional ``extra_group_text_key``)
+      # simhash_max_hamming: 10
+      # extra_group_text_key: ""        # sample top-level key or meta key for env digest (optional)
+
+  - document_deduplicator:
+      text_key: "id"
+      lowercase: false
+      ignore_non_character: false
+
+  # Uncomment ONLY for single-model-per-query corpora (see header).
+  # - document_minhash_deduplicator:
+  #     text_key: "query"
+  #     tokenization: "character"
+  #     window_size: 5
+  #     jaccard_threshold: 0.85
+
+  - agent_sls_noise_mapper:
+      messages_key: "messages"
+      choices_key: "response_choices"
+
+  - agent_harness_noise_mapper:
+      messages_key: "messages"
+
+  - usage_counter_mapper:
+      choices_key: "response_choices"
+      usage_key: "response_usage"
+
+  - tool_success_tagger_mapper:
+      messages_key: "messages"
+      store_per_tool_results: true
+      default_label: "unknown"
+
+  - agent_tool_type_mapper:
+      top_k_dominant: 5

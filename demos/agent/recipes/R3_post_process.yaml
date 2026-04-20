@@ -1,0 +1,68 @@
+# R3: delivery post-process — PII / copyright / HTML cleanup, then LLM safety + teacher
+# distill + rewrite hints, then ``meta.agent_training_card``.
+#
+# Input: R2 ``processed.jsonl`` (``R2_delivery_stack.yaml``), whether R2 was fed from
+# R1 or from R0-after-analysis (see ``recipes/README.md`` paths A / B). Requires ``text``,
+# ``messages``, and R2 meta (``agent_delivery_tier``, taxonomy, learnable value, etc.).
+#
+# **交付物**: ``export_path`` (default ``./outputs/agent_delivery_R3/delivery.jsonl``).
+#
+# **强模型**: 将 ``api_or_hf_model`` / ``api_model`` 换成你账号下更强档（如 qwen-max、
+# gpt-4o）；蒸馏与安全门建议同档或略强，PII LLM 与 bronze 改写可用较轻模型控费。
+#
+# 无 API 时：整段注释掉四个 LLM 算子，仅保留确定性清洗 + ``agent_training_card_mapper``。
+#
+# Run: ``dj-process --config demos/agent/recipes/R3_post_process.yaml``
+project_name: agent-delivery-R3-post-process
+dataset_path: ./outputs/agent_delivery_R2/processed.jsonl
+np: 2
+export_path: ./outputs/agent_delivery_R3/delivery.jsonl
+keep_stats_in_res_ds: true
+use_checkpoint: true
+text_keys: "id"
+
+process:
+  - pii_redaction_mapper:
+      mask_urls: true
+      redact_keys: ["text", "query", "response", "dialog_history", "messages"]
+      messages_key: "messages"
+
+  - pii_llm_suspect_mapper:
+      api_model: "qwen-turbo"
+      preferred_output_lang: zh
+      gate_mode: heuristic
+      redaction_mode: whole_field
+      inspect_keys: ["text", "query", "response"]
+      messages_key: "messages"
+      try_num: 2
+      sampling_params: { max_tokens: 512, temperature: 0.1 }
+
+  - clean_copyright_mapper: {}
+
+  - clean_html_mapper: {}
+
+  - agent_safety_gate_mapper:
+      text_key: "text"
+      api_or_hf_model: "qwen-plus"
+      try_num: 2
+      sampling_params: { max_tokens: 64, temperature: 0.0 }
+
+  - agent_distill_trajectory_mapper:
+      api_model: "qwen-plus"
+      preferred_output_lang: zh
+      only_for_delivery_tiers: ["gold", "silver"]
+      require_safety_gate_ok: true
+      max_context_chars: 12000
+      try_num: 2
+      sampling_params: { max_tokens: 2048, temperature: 0.2 }
+
+  - agent_rewrite_hint_mapper:
+      api_model: "qwen-turbo"
+      preferred_output_lang: zh
+      only_for_delivery_tiers: ["bronze"]
+      try_num: 2
+      sampling_params: { max_tokens: 900, temperature: 0.2 }
+
+  - agent_training_card_mapper:
+      include_distilled: true
+      include_rewrite_hints: true
