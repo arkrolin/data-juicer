@@ -40,7 +40,8 @@ process:
       # simhash_max_hamming: 10
       # extra_group_text_key: "tools"
 
-  - document_deduplicator:
-      text_key: "id"
-      lowercase: false
-      ignore_non_character: false
+  - agent_session_deduplicator:
+      group_key_mode: regex_extract
+      timestamp_field: time
+      regex_pattern: "\n- Session ID:\\s*(?P<session_id>\\S+)\\s*\n- User ID:\\s*(?P<user_id>\\S+)\\s*\n"
+      regex_search_target: "messages.0.content.0.text"

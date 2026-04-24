@@ -433,6 +433,9 @@ class HashKeys(object):
     # duplicate flag
     is_unique = DEFAULT_PREFIX + "is_unique"
 
+    # agent session dedup: stores plain group_key (session_id::user_id), not a cryptographic hash
+    agent_session_group = DEFAULT_PREFIX + "agent_session_group__"
+
 
 class InterVars(object):
     #  === text ===
