@@ -21,24 +21,7 @@ use_checkpoint: true
 text_keys: "id"
 
 process:
-  - pii_redaction_mapper:
-      mask_urls: true
-      redact_keys: ["text", "query", "response", "dialog_history", "messages"]
-      messages_key: "messages"
 
-  - pii_llm_suspect_mapper:
-      api_model: "qwen-turbo"
-      preferred_output_lang: zh
-      gate_mode: heuristic
-      redaction_mode: whole_field
-      inspect_keys: ["text", "query", "response"]
-      messages_key: "messages"
-      try_num: 2
-      sampling_params: { max_tokens: 512, temperature: 0.1 }
-
-  - clean_copyright_mapper: {}
-
-  - clean_html_mapper: {}
 
   - agent_safety_gate_mapper:
       text_key: "text"

@@ -4,6 +4,7 @@
 # Normalize agent interaction format (messages + choices) to DJ fields for
 # dialog/text ops. Supports multi-platform, multi-agent tool formats.
 
+import json
 import re
 from typing import Any, List, Optional, Sequence, Tuple
 
@@ -78,6 +79,73 @@ def _get_tool_name_from_call(tc: dict) -> Optional[str]:
     if tc.get("name"):
         return tc["name"]
     return None
+
+
+def _arrow_stabilize_openai_message_dict(m: dict) -> None:
+    """Ensure common keys exist on every message so ``messages`` Arrow structs unify.
+
+    Some turns omit ``tool_calls`` / ``reasoning_content`` / ``content``; others include
+    ``tool_calls``. HF ``datasets`` then infers a narrow struct and later batches fail
+    with ``Couldn't cast ... tool_calls ... to {content, reasoning_content, role}``.
+    """
+    if not isinstance(m, dict):
+        return
+    if m.get("tool_calls") is None:
+        m["tool_calls"] = []
+    if m.get("tool_use") is None:
+        m["tool_use"] = []
+    if m.get("reasoning_content") is None:
+        m["reasoning_content"] = ""
+    if m.get("content") is None:
+        m["content"] = ""
+
+
+def _stringify_dict_tool_arguments_in_calls(tool_calls: Any) -> None:
+    """Coerce ``tool_calls[]`` / ``tool_use[]`` dict ``arguments`` to JSON strings.
+
+    Rows may mix ``{"command": "ls"}`` with ``{"command": "...", "timeout": 60}``.
+    HuggingFace ``datasets`` / Arrow then fails casting nested structs
+    (e.g. ``struct<command: string, timeout: int64>`` vs ``{"command": string}``).
+    OpenAI-style calls use ``function.arguments``; some stacks also put ``arguments``
+    at the call root.
+    """
+    if not tool_calls or not isinstance(tool_calls, list):
+        return
+    for tc in tool_calls:
+        if not isinstance(tc, dict):
+            continue
+        fn = tc.get("function") or tc.get("function_call")
+        if isinstance(fn, dict):
+            args = fn.get("arguments")
+            if isinstance(args, dict):
+                fn["arguments"] = json.dumps(args, ensure_ascii=False)
+        args_top = tc.get("arguments")
+        if isinstance(args_top, dict):
+            tc["arguments"] = json.dumps(args_top, ensure_ascii=False)
+
+
+def _stringify_tool_arguments_in_messages_list(messages: Any) -> None:
+    if not isinstance(messages, list):
+        return
+    for m in messages:
+        if not isinstance(m, dict):
+            continue
+        for key in ("tool_calls", "tool_use"):
+            _stringify_dict_tool_arguments_in_calls(m.get(key))
+        _arrow_stabilize_openai_message_dict(m)
+
+
+def _stringify_tool_arguments_in_choices(choices: Any) -> None:
+    if not isinstance(choices, list):
+        return
+    for ch in choices:
+        if not isinstance(ch, dict):
+            continue
+        msg = ch.get("message")
+        if isinstance(msg, dict):
+            for key in ("tool_calls", "tool_use"):
+                _stringify_dict_tool_arguments_in_calls(msg.get(key))
+            _arrow_stabilize_openai_message_dict(msg)
 
 
 def _tool_calls_summary(
@@ -484,6 +552,10 @@ class AgentDialogNormalizeMapper(Mapper):
 
         if not isinstance(messages, list):
             messages = []
+        else:
+            _stringify_tool_arguments_in_messages_list(messages)
+        if isinstance(choices, list):
+            _stringify_tool_arguments_in_choices(choices)
 
         compressed_ref = [False]
         history = _messages_to_history(

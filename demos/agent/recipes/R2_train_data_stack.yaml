@@ -7,6 +7,7 @@
 #
 # Reuses ``dialog_*`` meta + ``stats.llm_*`` when present (path B). Path A may omit full §5b
 # dialog LLM axes; taxonomy/learnable then lean on tool/cross-model/llm scalar scores only.
+# 路径 A 下具体缺哪些字段、对 taxonomy / learnable / bad_case 的影响见 ``TRAIN_DATA_FIELD_GUIDE.md`` §5.1。
 #
 # If your export lacks ``agent_lineage_*`` / ``agent_tag``, prepend one
 # ``agent_dialog_normalize_mapper`` block (same as R1) on **raw** JSONL first.

@@ -1,7 +1,7 @@
 # Agent training-dataset recipes（训练数据价值）
 
 可组合DJ YAML，把 agent 交互数据 从 **分析审计洞察** 延伸到 **training-ready 数据**。与全量配方
-`demos/agent/agent_interaction_quality_analysis.yaml`（偏 stats / dialog_* / 报告）并列使用。
+[`agent_interaction_quality_analysis.yaml`](agent_interaction_quality_analysis.yaml)（偏 stats / dialog_* / 报告）并列使用。
 
 **字段 → 训练用途**（归因链、jq 示例、局限）：[`TRAIN_DATA_FIELD_GUIDE.md`](TRAIN_DATA_FIELD_GUIDE.md)。
 
@@ -14,7 +14,7 @@
 | 路径 | 适用 | 顺序 |
 |------|------|------|
 | **A · 原始交互数据优先** | 手里是 raw JSONL，希望一条龙打上 lineage、PK、噪声与工具标签 | **R1** → **R2** → **R3** |
-| **B · 已跑全量分析** | 已有 `agent_interaction_quality_analysis` 的 `processed.jsonl`（含 `dialog_*`、`stats.llm_*`），只需补 **跨模型 cohort + id 去重** 再接价值栈 | **`agent_interaction_quality_analysis`** → **R0** → **R2** → **R3** |
+| **B · 已跑全量分析** | 已有 `agent_interaction_quality_analysis.yaml` 的 `processed.jsonl`（含 `dialog_*`、`stats.llm_*`），只需补 **跨模型 cohort + id 去重** 再接价值栈 | **[``agent_interaction_quality_analysis.yaml``](agent_interaction_quality_analysis.yaml)** → **R0** → **R2** → **R3** |
 
 路径 B 下：将 **`R2_train_data_stack.yaml`** 的 `dataset_path` 指到 **`R0_bridge_from_analysis.yaml`** 的 `export_path`（默认 `./outputs/agent_train_data_R0/from_analysis.jsonl`）。  
 路径 B 要求导出里已有与 R1 一致的 **`agent_lineage_*`**；若缺，请先在 **原始 JSONL** 上跑一段与 `R1_initial_filter.yaml` 相同的 `agent_dialog_normalize_mapper`（`lineage_extra_keys` 等），再跑分析或 R0。
@@ -52,7 +52,7 @@ dj-process --config demos/agent/recipes/R2_train_data_stack.yaml
 dj-process --config demos/agent/recipes/R3_post_process.yaml
 
 # 路径 B（先改 R0 / R2 的 dataset_path / export_path）
-dj-process --config demos/agent/agent_interaction_quality_analysis.yaml   # 已有可跳过
+dj-process --config demos/agent/recipes/agent_interaction_quality_analysis.yaml   # 已有可跳过
 dj-process --config demos/agent/recipes/R0_bridge_from_analysis.yaml
 dj-process --config demos/agent/recipes/R2_train_data_stack.yaml           # dataset_path → R0 输出
 dj-process --config demos/agent/recipes/R3_post_process.yaml

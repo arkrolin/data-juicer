@@ -1,6 +1,6 @@
 # R0: bridge from **analysis** export to **training-dataset** stack (R2 / R3).
 #
-# Use when your JSONL already ran ``demos/agent/agent_interaction_quality_analysis.yaml``
+# Use when your JSONL already ran ``demos/agent/recipes/agent_interaction_quality_analysis.yaml``
 # (or equivalent: ``text``, ``messages``, ``dialog_*``, ``stats.llm_*``, tool tags), but you
 # still need **cross-model pairwise cohorts** and **file-level id dedup** before R2.
 #

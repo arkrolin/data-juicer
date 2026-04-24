@@ -74,7 +74,20 @@ jq -r '.__dj__meta__.agent_training_card | fromjson | .recommended_usage' train_
 | 路径 | 顺序 |
 |------|------|
 | **A · 从原始交互轨迹** | `R1_initial_filter` → `R2_train_data_stack` → `R3_*` |
-| **B · 从全量分析导出** | `agent_interaction_quality_analysis` → **`R0_bridge_from_analysis`** → `R2_train_data_stack` → `R3_*` |
+| **B · 从全量分析导出** | `demos/agent/recipes/agent_interaction_quality_analysis.yaml` → **`R0_bridge_from_analysis`** → `R2_train_data_stack` → `R3_*` |
+
+### 5.1 路径 A（仅 R1）与全量分析配方的信号差
+
+路径 A **有意不写** 分析 YAML 里 §4（对话意图/情感/主题等）、§5b（末轮 LLM 质检 `meta.dialog_*` 等）、§8（`llm_quality_score` / `llm_analysis_score` / `llm_difficulty_score` 及 `*_record`）、`agent_skill_insight_mapper`、分析侧 `agent_bad_case_signal_mapper` / `agent_insight_llm_mapper` 等。  
+R1 只保证 **规范化 + lineage、跨模型 cohort、去重、sys_log/harness、用量与工具标签**。
+
+对下游的影响（算子实现上的「有则用、无则弱」）：
+
+- **`agent_error_taxonomy_mapper`**：会读 `stats` 里 LLM 记录与 `meta` 里已有 `dialog_*`；路径 A 下多数维度 **缺失**，taxonomy 桶与 severity **偏保守、信息量少**。
+- **`agent_learnable_value_mapper`**：`weight_difficulty` 依赖 **`stats.llm_difficulty_score`**；无该字段时难度项 **视为 0**；`weight_generalizability` 依赖 `meta` 里 intent/topic 标签，路径 A 下常 **无**，该项贡献弱。
+- **R2 的 `agent_bad_case_signal_mapper`**：`signal_on_llm_analysis_low` / `signal_on_llm_text_quality_low` 等依赖 **`stats.llm_*`**；路径 A 下通常 **不触发**（与 `exclude_if_sys_log_or_harness_noise` 等组合时，仍以 sys_log/harness、tool、learnable tier 为主）。
+
+需要与分析报告 **同密度** 的 bad-case / taxonomy / learnable 排序时，请走 **路径 B**，或在 R1 与 R2 之间 **插入** `agent_interaction_quality_analysis.yaml` 中对应 LLM 段落（见该文件 §4 / §5b / §8 注释与 `demos/agent/PERFORMANCE_LLM.md`）。
 
 路径 B 下请将 **`R2_train_data_stack.yaml`** 的 `dataset_path` 改为 R0 的 `export_path`。
 

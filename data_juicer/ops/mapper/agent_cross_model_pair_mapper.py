@@ -5,6 +5,12 @@
 # (e.g. same ``sample_id`` with different ``tag.model``). Writes per-row
 # ``meta.agent_cross_model_pair`` for downstream learnable-value / preference data.
 #
+# This operator **must see the full table at once** (grouping is global). The HF
+# executor uses a custom ``run()``; the Ray executor detects
+# :attr:`REQUIRES_FULL_DATASET_PASS` and runs :meth:`apply_full_dataset_annotations`
+# after ``take_all`` (see ``data_juicer.core.data.ray_dataset``). Very large
+# datasets may OOM; shard upstream or run on a node with enough RAM.
+#
 # When there is **no shared lineage id**, set ``group_key_mode`` to
 # ``normalized_query`` (exact match after normalizing ``query``) or
 # ``simhash_lsh`` (near-duplicate ``query`` + optional env text via SimHash + LSH +
@@ -135,6 +141,9 @@ def _pair_record(
 class AgentCrossModelPairMapper(Mapper):
     """Annotate rows that share the same cohort key.
 
+    Set :attr:`REQUIRES_FULL_DATASET_PASS` so Ray (and any executor) runs a
+    full-dataset pass instead of per-batch ``process``.
+
     Default: exact ``pair_key_meta`` (e.g. ``agent_lineage_sample_id``). Optional
     **similar cohorts** when lineage ids differ:
 
@@ -146,6 +155,11 @@ class AgentCrossModelPairMapper(Mapper):
     Cross-version regression uses the same groups: compare ``version_meta`` within
     a cohort found by any of the above modes.
     """
+
+    #: If True, RayData runs ``take_all`` → :meth:`apply_full_dataset_annotations` →
+    # ``from_items`` instead of ``map_batches`` (which would skip the custom
+    # ``run`` and leave pairs empty).
+    REQUIRES_FULL_DATASET_PASS = True
 
     def __init__(
         self,
@@ -188,6 +202,83 @@ class AgentCrossModelPairMapper(Mapper):
 
     def process_single(self, sample):
         return sample
+
+    def apply_full_dataset_annotations(self, rows: List[dict]) -> None:
+        """Compute cohorts and set ``meta.agent_cross_model_pair`` on each row in place.
+
+        Callers (HF ``run`` or Ray) must pass a list of **mutable** per-row dicts
+        (typically a ``deepcopy`` of the table). Empty input is a no-op.
+        """
+        if not rows:
+            return
+
+        if self.group_key_mode == "normalized_query":
+            groups, basis = self._groups_normalized_query(rows)
+        elif self.group_key_mode == "simhash_lsh":
+            groups, basis = self._groups_simhash_lsh(rows)
+        else:
+            groups, basis = self._groups_exact(rows)
+
+        for gk, members in groups.items():
+            scores: List[Optional[float]] = [self._score_for_row(r) for _, r in members]
+            models = [self._meta_get(r, self.model_meta) for _, r in members]
+
+            best_idx = 0
+            best_sc: Optional[float] = None
+            for j, sc in enumerate(scores):
+                if sc is None:
+                    continue
+                if best_sc is None or sc > best_sc:
+                    best_sc = sc
+                    best_idx = j
+            if best_sc is None and members:
+                best_idx = 0
+
+            _best_i, best_row = members[best_idx]
+            best_model = self._meta_get(best_row, self.model_meta)
+            best_version = self._meta_get(best_row, self.version_meta)
+            best_quality = self._score_for_row(best_row)
+
+            peer_models = sorted(
+                {str(m) for m in models if m is not None and str(m).strip()},
+            )
+            has_contrast = len(members) >= self.min_group_size and len(peer_models) >= 2
+
+            for _i, row in members:
+                m = self._meta_dict(row)
+                my_model = self._meta_get(row, self.model_meta)
+                my_version = self._meta_get(row, self.version_meta)
+                my_quality = self._score_for_row(row)
+                m[MetaKeys.agent_cross_model_pair] = _pair_record(
+                    group_key=str(gk),
+                    group_size=len(members),
+                    has_pairwise_contrast=has_contrast,
+                    best_model=str(best_model) if best_model is not None else None,
+                    best_quality=best_quality,
+                    best_version=str(best_version) if best_version is not None else None,
+                    my_model=str(my_model) if my_model is not None else None,
+                    my_quality=my_quality,
+                    my_version=str(my_version) if my_version is not None else None,
+                    peer_models=peer_models,
+                    match_basis=basis,
+                )
+
+        for row in rows:
+            m = self._meta_dict(row)
+            if MetaKeys.agent_cross_model_pair not in m:
+                m[MetaKeys.agent_cross_model_pair] = _pair_record(
+                    group_key="",
+                    group_size=0,
+                    has_pairwise_contrast=False,
+                    best_model=None,
+                    best_quality=None,
+                    best_version=None,
+                    my_model=None,
+                    my_quality=None,
+                    my_version=None,
+                    peer_models=[],
+                    match_basis=basis if groups else "exact_pair_key",
+                )
 
     def _meta_dict(self, row: dict) -> dict:
         """Ensure ``Fields.meta`` on the row is a mutable dict (HF may stringify)."""
@@ -319,74 +410,7 @@ class AgentCrossModelPairMapper(Mapper):
             )
 
         rows: List[dict] = copy.deepcopy(dataset.to_list())
-        if self.group_key_mode == "normalized_query":
-            groups, basis = self._groups_normalized_query(rows)
-        elif self.group_key_mode == "simhash_lsh":
-            groups, basis = self._groups_simhash_lsh(rows)
-        else:
-            groups, basis = self._groups_exact(rows)
-
-        for gk, members in groups.items():
-            scores: List[Optional[float]] = [self._score_for_row(r) for _, r in members]
-            models = [self._meta_get(r, self.model_meta) for _, r in members]
-
-            best_idx = 0
-            best_sc: Optional[float] = None
-            for j, sc in enumerate(scores):
-                if sc is None:
-                    continue
-                if best_sc is None or sc > best_sc:
-                    best_sc = sc
-                    best_idx = j
-            if best_sc is None and members:
-                best_idx = 0
-
-            best_i, best_row = members[best_idx]
-            best_model = self._meta_get(best_row, self.model_meta)
-            best_version = self._meta_get(best_row, self.version_meta)
-            best_quality = self._score_for_row(best_row)
-
-            peer_models = sorted(
-                {str(m) for m in models if m is not None and str(m).strip()},
-            )
-            has_contrast = len(members) >= self.min_group_size and len(peer_models) >= 2
-
-            for _i, row in members:
-                m = self._meta_dict(row)
-                my_model = self._meta_get(row, self.model_meta)
-                my_version = self._meta_get(row, self.version_meta)
-                my_quality = self._score_for_row(row)
-                m[MetaKeys.agent_cross_model_pair] = _pair_record(
-                    group_key=str(gk),
-                    group_size=len(members),
-                    has_pairwise_contrast=has_contrast,
-                    best_model=str(best_model) if best_model is not None else None,
-                    best_quality=best_quality,
-                    best_version=str(best_version) if best_version is not None else None,
-                    my_model=str(my_model) if my_model is not None else None,
-                    my_quality=my_quality,
-                    my_version=str(my_version) if my_version is not None else None,
-                    peer_models=peer_models,
-                    match_basis=basis,
-                )
-
-        for row in rows:
-            m = self._meta_dict(row)
-            if MetaKeys.agent_cross_model_pair not in m:
-                m[MetaKeys.agent_cross_model_pair] = _pair_record(
-                    group_key="",
-                    group_size=0,
-                    has_pairwise_contrast=False,
-                    best_model=None,
-                    best_quality=None,
-                    best_version=None,
-                    my_model=None,
-                    my_quality=None,
-                    my_version=None,
-                    peer_models=[],
-                    match_basis=basis if groups else "exact_pair_key",
-                )
-
+        self.apply_full_dataset_annotations(rows)
         new_ds = NestedDataset.from_list(rows)
         free_models()
         return new_ds
