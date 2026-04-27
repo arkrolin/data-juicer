@@ -83,6 +83,8 @@ BACKUP_MODEL_LINKS = {
     # HaWoR
     "hawor_model_path": "https://huggingface.co/ThunderVVV/HaWoR/resolve/main/hawor/checkpoints/hawor.ckpt",
     "hawor_config_path": "https://huggingface.co/ThunderVVV/HaWoR/resolve/main/hawor/model_config.yaml",
+    # Metric3D
+    "metric3d-vit-large": "https://huggingface.co/onnx-community/metric3d-vit-large/resolve/main/onnx/model.onnx",
 }
 
 
@@ -895,9 +897,54 @@ def prepare_nltk_pos_tagger(**model_params):
     return tagger
 
 
+def prepare_normal_map_metric3d(model_path, **model_params):
+    device = model_params.pop("device")
+
+    if device == "cpu":
+        raise ValueError("VideoNormalMapMapper requires 'cuda' to run, but the user has specified 'cpu'.")
+
+    rank = 0
+    if ":" in device:
+        rank = int(device.split(":")[-1])
+
+    providers = [
+        (
+            "CUDAExecutionProvider",
+            {"cudnn_conv_use_max_workspace": "1", "device_id": str(rank)},
+        )
+    ]
+
+    if not os.path.exists(model_path):
+        if not os.path.exists(DJMC):
+            os.makedirs(DJMC)
+
+        model_dir = os.path.join(DJMC, "metric3d-vit-large")
+        wget.download(BACKUP_MODEL_LINKS["metric3d-vit-large"], model_dir)
+        model_path = os.path.join(model_dir, "model.onnx")
+
+    import onnxruntime as ort
+
+    ort_session = ort.InferenceSession(model_path, providers=providers)
+
+    return ort_session
+
+
 def prepare_opencv_classifier(model_path, **model_params):
     model = cv2.CascadeClassifier(model_path)
     return model
+
+
+def prepare_optical_flow_raft(**model_params):
+    device = model_params.pop("device")
+
+    from torchvision.models.optical_flow import Raft_Large_Weights, raft_large
+
+    weights = Raft_Large_Weights.DEFAULT
+    transforms = weights.transforms()
+    model = raft_large(weights=weights).to(device)
+    model.eval()
+
+    return model, transforms
 
 
 def prepare_recognizeAnything_model(
@@ -1762,7 +1809,9 @@ MODEL_FUNCTION_MAPPING = {
     "moge": prepare_moge_model,
     "nltk": prepare_nltk_model,
     "nltk_pos_tagger": prepare_nltk_pos_tagger,
+    "normal_map_metric3d": prepare_normal_map_metric3d,
     "opencv_classifier": prepare_opencv_classifier,
+    "optical_flow_raft": prepare_optical_flow_raft,
     "recognizeAnything": prepare_recognizeAnything_model,
     "sdxl-prompt-to-prompt": prepare_sdxl_prompt2prompt,
     "sentencepiece": prepare_sentencepiece_for_lang,
