@@ -103,7 +103,7 @@ class VideoOpticalFlowMapper(Mapper):
 
         if self.frame_field in sample:
             frames_path = sample[self.frame_field]
-            video_name = frames_path[0].split("/")[-2]
+            video_name = os.path.basename(os.path.dirname(frames_path[0]))
         else:
             # load videos
             ds_list = [{"text": SpecialTokens.video, "videos": sample[self.video_key]}]
@@ -123,7 +123,7 @@ class VideoOpticalFlowMapper(Mapper):
 
         frame_arr_list = []
         for temp_img_path_id, temp_img_path in enumerate(frames_path):
-            frame_arr_list.append(cv2.imread(temp_img_path)[None, :])
+            frame_arr_list.append(cv2.imread(temp_img_path)[:, :, ::-1][None, :])
 
         frame_tensor = torch.from_numpy(np.concatenate(frame_arr_list, axis=0)).permute(0, 3, 1, 2)
         img1_batch = frame_tensor.clone()[:-1, :, :, :].to(device)
@@ -146,6 +146,6 @@ class VideoOpticalFlowMapper(Mapper):
                 )
 
         sample[Fields.meta][self.tag_field_name] = {}
-        sample[Fields.meta][self.tag_field_name]["pred_flow"] = predicted_flow
+        sample[Fields.meta][self.tag_field_name]["pred_flow"] = predicted_flow.detach().cpu().numpy()
 
         return sample

@@ -901,18 +901,20 @@ def prepare_normal_map_metric3d(model_path, **model_params):
     device = model_params.pop("device")
 
     if device == "cpu":
-        raise ValueError("VideoNormalMapMapper requires 'cuda' to run, but the user has specified 'cpu'.")
+        providers = ["CPUExecutionProvider"]
 
-    rank = 0
-    if ":" in device:
-        rank = int(device.split(":")[-1])
+    else:
+        rank = 0
+        if ":" in device:
+            rank = int(device.split(":")[-1])
 
-    providers = [
-        (
-            "CUDAExecutionProvider",
-            {"cudnn_conv_use_max_workspace": "1", "device_id": str(rank)},
-        )
-    ]
+        providers = [
+            (
+                "CUDAExecutionProvider",
+                {"cudnn_conv_use_max_workspace": "1", "device_id": str(rank)},
+            ),
+            "CPUExecutionProvider",
+        ]
 
     if not os.path.exists(model_path):
         if not os.path.exists(DJMC):

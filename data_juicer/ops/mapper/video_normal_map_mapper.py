@@ -57,7 +57,7 @@ class VideoNormalMapMapper(Mapper):
         """
 
         super().__init__(*args, **kwargs)
-        LazyLoader.check_packages(["onnxruntime"])
+        LazyLoader.check_packages(["onnxruntime-gpu"])
 
         self.model_key = prepare_model(model_type="normal_map_metric3d", model_path=model_path)
         self.if_save_visualization = if_save_visualization
@@ -115,14 +115,14 @@ class VideoNormalMapMapper(Mapper):
 
         # there is no video in this sample
         if (self.video_key not in sample or not sample[self.video_key]) and self.frame_field not in sample:
-            sample[Fields.meta][self.tag_field_name] = {"pred_norm": [], "pred_norm_rgb": [], "pred_depth": []}
+            sample[Fields.meta][self.tag_field_name] = {"pred_norm": []}
             return sample
 
         ort_session = get_model(model_key=self.model_key, rank=rank, use_cuda=self.use_cuda())
 
         if self.frame_field in sample:
             frames_path = sample[self.frame_field]
-            video_name = frames_path[0].split("/")[-2]
+            video_name = os.path.basename(os.path.dirname(frames_path[0]))
         else:
             # load videos
             ds_list = [{"text": SpecialTokens.video, "videos": sample[self.video_key]}]
@@ -140,8 +140,6 @@ class VideoNormalMapMapper(Mapper):
             os.makedirs(os.path.join(self.save_visualization_dir, video_name), exist_ok=True)
 
         final_pred_norm = []
-        final_pred_norm_rgb = []
-        final_pred_depth = []
 
         for temp_img_path_id, temp_img_path in enumerate(frames_path):
             rgb_image = cv2.imread(temp_img_path)[:, :, ::-1]  # BGR to RGB
@@ -158,33 +156,19 @@ class VideoNormalMapMapper(Mapper):
             ]
             normal = normal.transpose(1, 2, 0)
             normal = cv2.resize(normal, (original_shape[1], original_shape[0]), interpolation=cv2.INTER_LINEAR)
-
-            normal_vis = (normal + 1.0) / 2.0
-            normal_vis = (normal_vis * 255).clip(0, 255).astype(np.uint8)
-            normal_vis = normal_vis[..., ::-1]
-
             final_pred_norm.append(normal)
-            final_pred_norm_rgb.append(normal_vis)
 
             if self.if_save_visualization:
+                normal_vis = (normal + 1.0) / 2.0
+                normal_vis = (normal_vis * 255).clip(0, 255).astype(np.uint8)
+                normal_vis = normal_vis[..., ::-1]
+
                 cv2.imwrite(
                     os.path.join(self.save_visualization_dir, video_name, f"vis_{str(temp_img_path_id)}.jpg"),
                     normal_vis,
                 )
 
-            # depth
-            depth = outputs[0].squeeze()  # [H, W]
-            depth = depth[
-                pad_info[0] : self.input_size[0] - pad_info[1],
-                pad_info[2] : self.input_size[1] - pad_info[3],
-            ]
-            depth = cv2.resize(depth, (original_shape[1], original_shape[0]), interpolation=cv2.INTER_LINEAR)
-
-            final_pred_depth.append(depth)
-
         sample[Fields.meta][self.tag_field_name] = {}
         sample[Fields.meta][self.tag_field_name]["pred_norm"] = final_pred_norm
-        sample[Fields.meta][self.tag_field_name]["pred_norm_rgb"] = final_pred_norm_rgb
-        sample[Fields.meta][self.tag_field_name]["pred_depth"] = final_pred_depth
 
         return sample

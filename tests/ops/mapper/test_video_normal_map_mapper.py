@@ -28,13 +28,9 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
     tgt_list = [{
         "frame_length": 19,
         "pred_norm_shape": [756, 1008, 3], # H, W, 3
-        "pred_norm_rgb_shape": [756, 1008, 3], # H, W, 3
-        "pred_depth_shape": [756, 1008], # H, W
     }, {
         "frame_length": 11,
         "pred_norm_shape": [360, 640, 3], # H, W, 3
-        "pred_norm_rgb_shape": [360, 640, 3], # H, W, 3
-        "pred_depth_shape": [360, 640], # H, W
     }]
 
     def test(self):
@@ -64,8 +60,6 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
 
             self.assertEqual(len(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm"][0]).shape), target["pred_norm_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm_rgb"][0]).shape), target["pred_norm_rgb_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_depth"][0]).shape), target["pred_depth_shape"])
 
 
     def test_from_extracted_frames(self):
@@ -93,8 +87,6 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
 
             self.assertEqual(len(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm"][0]).shape), target["pred_norm_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_norm_rgb"][0]).shape), target["pred_norm_rgb_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_normal_map_tags]["pred_depth"][0]).shape), target["pred_depth_shape"])
 
 
 if __name__ == '__main__':
