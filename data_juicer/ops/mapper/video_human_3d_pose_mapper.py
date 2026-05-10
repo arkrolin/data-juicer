@@ -30,7 +30,7 @@ torchvision = LazyLoader("torchvision")
 @OPERATORS.register_module(OP_NAME)
 @LOADED_VIDEOS.register_module(OP_NAME)
 class VideoHuman3DPoseMapper(Mapper):
-    """Extract 3D human pose (with Human3R)."""
+    """Extract 3D human pose with Human3R (SMPL-X)."""
 
     _accelerator = "cuda"
 
