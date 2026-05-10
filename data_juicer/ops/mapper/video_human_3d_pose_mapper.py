@@ -7,6 +7,7 @@ from copy import deepcopy
 import cv2
 import numpy as np
 import PIL
+from loguru import logger
 from PIL.ImageOps import exif_transpose
 from pydantic import PositiveInt
 
@@ -156,12 +157,13 @@ class VideoHuman3DPoseMapper(Mapper):
         ImgNorm = self.tvf.Compose([self.tvf.ToTensor(), self.tvf.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         if isinstance(folder_or_list, str):
             if verbose:
-                print(f">> Loading images from {folder_or_list}")
+                logger.info(f">> Loading images from {folder_or_list}")
+
             root, folder_content = folder_or_list, sorted(os.listdir(folder_or_list))
 
         elif isinstance(folder_or_list, list):
             if verbose:
-                print(f">> Loading a list of {len(folder_or_list)} images")
+                logger.info(f">> Loading a list of {len(folder_or_list)} images")
             root, folder_content = "", folder_or_list
 
         else:
@@ -195,7 +197,7 @@ class VideoHuman3DPoseMapper(Mapper):
 
             W2, H2 = img.size
             if verbose:
-                print(f" - adding {path} with resolution {W1}x{H1} --> {W2}x{H2}")
+                logger.info(f" - adding {path} with resolution {W1}x{H1} --> {W2}x{H2}")
             imgs.append(
                 dict(
                     img=ImgNorm(img)[None],
@@ -205,9 +207,9 @@ class VideoHuman3DPoseMapper(Mapper):
                 )
             )
 
-        assert imgs, "no images foud at " + root
+        assert imgs, "no images found at " + root
         if verbose:
-            print(f" (Found {len(imgs)} images)")
+            logger.info(f" (Found {len(imgs)} images)")
         return imgs
 
     def get_focalLength_from_fieldOfView(self, fov=60, img_size=512):
@@ -254,7 +256,7 @@ class VideoHuman3DPoseMapper(Mapper):
                 raise ValueError(f"Error: Video FPS is 0 for {p}")
             frame_interval = 1
             frame_indices = list(range(0, total_frames, frame_interval))
-            print(
+            logger.info(
                 f" - Video FPS: {video_fps}, Frame Interval: {frame_interval}, Total Frames to Read: {len(frame_indices)}"
             )
             img_paths = []
