@@ -644,9 +644,7 @@ def prepare_face_keypoints_ldeq_model(model_path, **model_params):
         import gdown
 
         model_path = os.path.join(DJMC, "final.pth.tar")
-        gdown.download(
-            "https://drive.google.com/file/d/1w73vFdN2IZf4AcNfIULx695ptj1LHe_J/view?usp=drive_link", model_path
-        )
+        gdown.download("https://drive.google.com/uc?id=1w73vFdN2IZf4AcNfIULx695ptj1LHe_J", model_path)
 
     ckpt = torch.load(model_path, map_location="cuda", weights_only=False)
     train_args = ckpt["args"]
