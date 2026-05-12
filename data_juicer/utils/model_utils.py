@@ -635,13 +635,7 @@ def prepare_dwpose_model(onnx_det_model, onnx_pose_model, **model_params):
 def prepare_face_keypoints_ldeq_model(model_path, **model_params):
     device = model_params.pop("device", "cpu")
 
-    ldeq_repo_path = os.path.join(DATA_JUICER_ASSETS_CACHE, "LDEQ_RwR")
-    if not os.path.exists(ldeq_repo_path):
-        subprocess.run(["git", "clone", "https://github.com/polo5/LDEQ_RwR.git", ldeq_repo_path], check=True)
-    import sys
-
-    sys.path.append(ldeq_repo_path)
-    from models.ldeq import LDEQ
+    from data_juicer.ops.common.ldeq_face_keypoints_func import LDEQ
 
     if not os.path.exists(model_path):
         if not os.path.exists(DJMC):
