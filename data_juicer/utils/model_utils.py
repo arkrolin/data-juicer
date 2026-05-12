@@ -654,7 +654,7 @@ def prepare_face_keypoints_ldeq_model(model_path, **model_params):
             "https://drive.google.com/file/d/1w73vFdN2IZf4AcNfIULx695ptj1LHe_J/view?usp=drive_link", model_path
         )
 
-    ckpt = torch.load(model_path, map_location="cuda")
+    ckpt = torch.load(model_path, map_location="cuda", weights_only=False)
     train_args = ckpt["args"]
     ldeq_model = LDEQ(train_args).to(device)
     ldeq_model.load_state_dict(ckpt["state_dict"], strict=False)

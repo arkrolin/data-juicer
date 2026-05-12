@@ -86,8 +86,11 @@ class VideoAnimalPoseMapper(Mapper):
         try:
             importlib.import_module("mmpose")
         except Exception:
-            subprocess.run([sys.executable, "-m", "pip", "install", "-e", vitpose_repo_path], check=True)
-        subprocess.run([sys.executable, "-m", "pip", "install", "numpy==1.26.4"], check=True)
+            subprocess.run(
+                [sys.executable, "-m", "pip", "install", "chumpy", "--no-build-isolation", "--no-deps"], check=True
+            )
+            subprocess.run(["pip", "install", "-e", vitpose_repo_path], check=True)
+        subprocess.run(["pip", "install", "numpy==1.26.4"], check=True)
 
         from mmpose.apis import inference_top_down_pose_model
 
@@ -161,13 +164,13 @@ class VideoAnimalPoseMapper(Mapper):
         self.fused_ops = load_ops([{"video_extract_frames_mapper": self.video_extract_frames_mapper_args}])
 
     def _install_required_packages(self):
-        subprocess.run([sys.executable, "-m", "pip", "install", "numpy==1.26.4"], check=True)
+        subprocess.run(["pip", "install", "numpy==1.26.4"], check=True)
         try:
             importlib.import_module("mim")
         except ImportError:
             logger.info("Installing openmim...")
             try:
-                subprocess.run([sys.executable, "-m", "pip", "install", "openmim"], check=True)
+                subprocess.run(["pip", "install", "openmim"], check=True)
             except Exception:
                 raise ValueError(
                     "Failed to install openmim, please refer to the documentation at "
@@ -179,9 +182,7 @@ class VideoAnimalPoseMapper(Mapper):
         except ImportError:
             logger.info("Installing mmcv using mim...")
             try:
-                subprocess.run(
-                    [sys.executable, "-m", "mim", "install", "mmcv==1.3.9", "--no-build-isolation"], check=True
-                )
+                subprocess.run(["mim", "install", "mmcv==1.3.9", "--no-build-isolation"], check=True)
             except Exception:
                 raise ValueError(
                     "Failed to install mmcv, please refer to the documentation at "

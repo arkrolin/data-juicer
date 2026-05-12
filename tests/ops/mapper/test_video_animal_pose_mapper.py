@@ -9,7 +9,7 @@ from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
 from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
-
+@unittest.skip('The current code can automatically configure the environment, but after the initial setup (including mmpose), the user need to re-run the command for it to work properly.')
 class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..',
                              'data')

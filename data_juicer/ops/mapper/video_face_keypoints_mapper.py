@@ -61,7 +61,7 @@ class VideoFaceKeypointsMapper(Mapper):
         """
 
         super().__init__(*args, **kwargs)
-        LazyLoader.check_packages(["insightface"])
+        LazyLoader.check_packages(["insightface", "torchinfo"])
 
         self.model_key = prepare_model(model_type="face_keypoints_ldeq", model_path=ldeq_model_path)
         self.if_save_visualization = if_save_visualization
