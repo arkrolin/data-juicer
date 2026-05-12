@@ -60,12 +60,12 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
         "bbox_results_list_length": 16,
         "bbox_shape": [2, 4]
     }, {
-        "body_keypoints_shape": [3, 18, 2],
-        "foot_keypoints_shape": [3, 6, 2],
-        "faces_keypoints_shape": [3, 68, 2],
-        "hands_keypoints_shape": [6, 21, 2],
+        "body_keypoints_shape": [2, 18, 2],
+        "foot_keypoints_shape": [2, 6, 2],
+        "faces_keypoints_shape": [2, 68, 2],
+        "hands_keypoints_shape": [4, 21, 2],
         "bbox_results_list_length": 7,
-        "bbox_shape": [3, 4]
+        "bbox_shape": [2, 4]
     }]
 
     def test(self):
