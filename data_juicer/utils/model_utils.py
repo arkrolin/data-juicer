@@ -921,8 +921,10 @@ def prepare_normal_map_metric3d(model_path, **model_params):
             os.makedirs(DJMC)
 
         model_dir = os.path.join(DJMC, "metric3d-vit-large")
-        wget.download(BACKUP_MODEL_LINKS["metric3d-vit-large"], model_dir)
+        os.makedirs(model_dir, exist_ok=True)
         model_path = os.path.join(model_dir, "model.onnx")
+        if not os.path.exists(model_path):
+            wget.download(BACKUP_MODEL_LINKS["metric3d-vit-large"], model_dir)
 
     import onnxruntime as ort
 

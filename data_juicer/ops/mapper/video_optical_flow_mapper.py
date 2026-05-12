@@ -12,7 +12,7 @@ from data_juicer.utils.lazy_loader import LazyLoader
 from data_juicer.utils.mm_utils import SpecialTokens
 from data_juicer.utils.model_utils import get_model, prepare_model
 
-from ..base_op import OPERATORS, Mapper
+from ..base_op import OPERATORS, TAGGING_OPS, UNFORKABLE, Mapper
 from ..op_fusion import LOADED_VIDEOS
 
 OP_NAME = "video_optical_flow_mapper"
@@ -21,6 +21,8 @@ torch = LazyLoader("torch")
 torchvision = LazyLoader("torchvision")
 
 
+@TAGGING_OPS.register_module(OP_NAME)
+@UNFORKABLE.register_module(OP_NAME)
 @OPERATORS.register_module(OP_NAME)
 @LOADED_VIDEOS.register_module(OP_NAME)
 class VideoOpticalFlowMapper(Mapper):
