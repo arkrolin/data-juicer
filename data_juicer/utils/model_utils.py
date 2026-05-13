@@ -918,18 +918,22 @@ def prepare_normal_map_metric3d(model_path, **model_params):
         if not os.path.exists(DJMC):
             os.makedirs(DJMC)
 
-        model_dir = os.path.join(DJMC, "metric3d-vit-large")
+        model_dir = os.path.join(DJMC, "metric3d")
 
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
 
         model_path = os.path.join(model_dir, "onnx/model.onnx")
-        if not os.path.exists(model_path) and rank == 0:
+        placeholder = os.path.join(model_dir, "placeholder")
+        if not os.path.exists(model_path):
 
-            modelscope = LazyLoader("modelscope")
-            model_dir = modelscope.hub.file_download.model_file_download(
-                model_id="onnx-community/metric3d-vit-large", file_path="onnx/model.onnx", local_dir=model_dir
-            )
+            if not os.path.exists(placeholder):
+                os.makedirs(placeholder)
+
+                modelscope = LazyLoader("modelscope")
+                model_dir = modelscope.hub.file_download.model_file_download(
+                    model_id="onnx-community/metric3d-vit-large", file_path="onnx/model.onnx", local_dir=model_dir
+                )
 
     import time
 
