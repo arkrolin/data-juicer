@@ -930,9 +930,9 @@ def prepare_normal_map_metric3d(model_path, **model_params):
             if not os.path.exists(placeholder):
                 os.makedirs(placeholder)
 
-                modelscope = LazyLoader("modelscope")
-                model_dir = modelscope.hub.file_download.model_file_download(
-                    model_id="onnx-community/metric3d-vit-large", file_path="onnx/model.onnx", local_dir=model_dir
+                huggingface_hub = LazyLoader("huggingface_hub")
+                model_dir = huggingface_hub.snapshot_download(
+                    repo_id="onnx-community/metric3d-vit-large", filename="onnx/model.onnx", local_dir=model_dir
                 )
 
     import time
