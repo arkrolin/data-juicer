@@ -760,6 +760,7 @@ def prepare_human_3d_pose_human3r(model_path, **model_params):
         if count_turn >= 1000:
             raise ValueError("Model download failed.")
         time.sleep(10)
+        logger.info("Downloading model...")
         count_turn += 1
 
     model = ARCroco3DStereo.from_pretrained(model_path).to(device)
