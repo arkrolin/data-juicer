@@ -742,11 +742,25 @@ def prepare_human_3d_pose_human3r(model_path, **model_params):
     sys.path.remove(os.path.join(human3r_repo, "src"))
 
     if not os.path.exists(model_path):
-        LazyLoader.check_packages(["huggingface_hub"])
-        subprocess.run(
-            ["huggingface-cli", "download", "faneggg/human3r", "human3r_896L.pth", "--local-dir", DJMC], check=True
-        )
         model_path = os.path.join(DJMC, "human3r_896L.pth")
+        placeholder = os.path.join(DJMC, "human3r/placeholder")
+
+        if not os.path.exists(model_path):
+
+            if not os.path.exists(placeholder):
+                os.makedirs(placeholder)
+
+                huggingface_hub = LazyLoader("huggingface_hub")
+                huggingface_hub.hf_hub_download(repo_id="faneggg/human3r", filename="human3r_896L.pth", local_dir=DJMC)
+
+    import time
+
+    count_turn = 0
+    while not os.path.exists(model_path):
+        if count_turn >= 1000:
+            raise ValueError("Model download failed.")
+        time.sleep(10)
+        count_turn += 1
 
     model = ARCroco3DStereo.from_pretrained(model_path).to(device)
     model.eval()

@@ -64,7 +64,7 @@ class VideoHuman3DPoseMapper(Mapper):
 
         super().__init__(*args, **kwargs)
 
-        LazyLoader.check_packages(["gsplat", "roma", "pyrender"])
+        LazyLoader.check_packages(["gsplat", "roma", "pyrender", "smplx"])
 
         os.environ["PYOPENGL_PLATFORM"] = "egl"
         self.frame_field = MetaKeys.video_frames
