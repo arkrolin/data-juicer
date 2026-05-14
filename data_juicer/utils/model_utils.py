@@ -83,6 +83,8 @@ BACKUP_MODEL_LINKS = {
     # HaWoR
     "hawor_model_path": "https://huggingface.co/ThunderVVV/HaWoR/resolve/main/hawor/checkpoints/hawor.ckpt",
     "hawor_config_path": "https://huggingface.co/ThunderVVV/HaWoR/resolve/main/hawor/model_config.yaml",
+    # Metric3D
+    "metric3d-vit-large": "https://huggingface.co/onnx-community/metric3d-vit-large/resolve/main/onnx/model.onnx",
 }
 
 
@@ -923,17 +925,13 @@ def prepare_normal_map_metric3d(model_path, **model_params):
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
 
-        model_path = os.path.join(model_dir, "onnx/model.onnx")
+        model_path = os.path.join(model_dir, "model.onnx")
         placeholder = os.path.join(model_dir, "placeholder")
         if not os.path.exists(model_path):
 
             if not os.path.exists(placeholder):
                 os.makedirs(placeholder)
-
-                huggingface_hub = LazyLoader("huggingface_hub")
-                huggingface_hub.hf_hub_download(
-                    repo_id="onnx-community/metric3d-vit-large", filename="onnx/model.onnx", local_dir=model_dir
-                )
+                wget.download(BACKUP_MODEL_LINKS["metric3d-vit-large"], model_dir)
 
     import time
 
@@ -944,6 +942,7 @@ def prepare_normal_map_metric3d(model_path, **model_params):
         if count_turn >= 1000:
             raise ValueError("Model download failed.")
         time.sleep(10)
+        logger.info("Downloading model...")
         count_turn += 1
 
     ort_session = ort.InferenceSession(model_path, providers=providers)

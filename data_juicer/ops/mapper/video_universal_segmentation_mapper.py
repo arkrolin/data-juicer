@@ -231,17 +231,11 @@ class VideoUniversalSegmentationMapper(Mapper):
             if self.if_output_panoptic_segmentation:
                 os.makedirs(os.path.join(self.save_visualization_dir, video_name, "panoptic"), exist_ok=True)
 
-        final_semantic_segmentation_class_queries_logits = []
-        final_semantic_segmentation_masks_queries_logits = []
         final_semantic_segmentation_map = []
 
-        final_instance_segmentation_class_queries_logits = []
-        final_instance_segmentation_masks_queries_logits = []
         final_instance_segmentation_map = []
         final_instance_segmentation_info = []
 
-        final_panoptic_segmentation_class_queries_logits = []
-        final_panoptic_segmentation_masks_queries_logits = []
         final_panoptic_segmentation_map = []
         final_panoptic_segmentation_info = []
 
@@ -260,12 +254,6 @@ class VideoUniversalSegmentationMapper(Mapper):
                         semantic_outputs, target_sizes=[temp_img.size[::-1]]
                     )[0]
 
-                    final_semantic_segmentation_class_queries_logits.append(
-                        semantic_outputs.class_queries_logits.detach().cpu().numpy()
-                    )
-                    final_semantic_segmentation_masks_queries_logits.append(
-                        semantic_outputs.masks_queries_logits.detach().cpu().numpy()
-                    )
                     final_semantic_segmentation_map.append(predicted_semantic_map.detach().cpu().numpy())
 
                     if self.if_save_visualization:
@@ -287,12 +275,6 @@ class VideoUniversalSegmentationMapper(Mapper):
                         instance_outputs, target_sizes=[temp_img.size[::-1]]
                     )[0]
 
-                    final_instance_segmentation_class_queries_logits.append(
-                        instance_outputs.class_queries_logits.detach().cpu().numpy()
-                    )
-                    final_instance_segmentation_masks_queries_logits.append(
-                        instance_outputs.masks_queries_logits.detach().cpu().numpy()
-                    )
                     final_instance_segmentation_map.append(
                         predicted_instance_map["segmentation"].detach().cpu().numpy()
                     )
@@ -317,12 +299,6 @@ class VideoUniversalSegmentationMapper(Mapper):
                         panoptic_outputs, target_sizes=[temp_img.size[::-1]]
                     )[0]
 
-                    final_panoptic_segmentation_class_queries_logits.append(
-                        panoptic_outputs.class_queries_logits.detach().cpu().numpy()
-                    )
-                    final_panoptic_segmentation_masks_queries_logits.append(
-                        panoptic_outputs.masks_queries_logits.detach().cpu().numpy()
-                    )
                     final_panoptic_segmentation_map.append(
                         predicted_panoptic_segmentation_map["segmentation"].detach().cpu().numpy()
                     )
