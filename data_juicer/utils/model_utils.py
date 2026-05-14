@@ -931,7 +931,7 @@ def prepare_normal_map_metric3d(model_path, **model_params):
                 os.makedirs(placeholder)
 
                 huggingface_hub = LazyLoader("huggingface_hub")
-                model_dir = huggingface_hub.snapshot_download(
+                huggingface_hub.hf_hub_download(
                     repo_id="onnx-community/metric3d-vit-large", filename="onnx/model.onnx", local_dir=model_dir
                 )
 
@@ -939,8 +939,12 @@ def prepare_normal_map_metric3d(model_path, **model_params):
 
     import onnxruntime as ort
 
+    count_turn = 0
     while not os.path.exists(model_path):
+        if count_turn >= 1000:
+            raise ValueError("Model download failed.")
         time.sleep(10)
+        count_turn += 1
 
     ort_session = ort.InferenceSession(model_path, providers=providers)
 
