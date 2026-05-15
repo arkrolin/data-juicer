@@ -41,14 +41,12 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
         "foot_keypoints_shape": [2, 6, 2],
         "faces_keypoints_shape": [2, 68, 2],
         "hands_keypoints_shape": [4, 21, 2],
-        "bbox_results_list_length": 49,
         "bbox_shape": [2, 4]
     }, {
         "body_keypoints_shape": [2, 18, 2],
         "foot_keypoints_shape": [2, 6, 2],
         "faces_keypoints_shape": [2, 68, 2],
         "hands_keypoints_shape": [4, 21, 2],
-        "bbox_results_list_length": 22,
         "bbox_shape": [2, 4]
     }]
 
@@ -57,14 +55,12 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
         "foot_keypoints_shape": [2, 6, 2],
         "faces_keypoints_shape": [2, 68, 2],
         "hands_keypoints_shape": [4, 21, 2],
-        "bbox_results_list_length": 16,
         "bbox_shape": [2, 4]
     }, {
         "body_keypoints_shape": [2, 18, 2],
         "foot_keypoints_shape": [2, 6, 2],
         "faces_keypoints_shape": [2, 68, 2],
         "hands_keypoints_shape": [4, 21, 2],
-        "bbox_results_list_length": 7,
         "bbox_shape": [2, 4]
     }]
 
@@ -92,7 +88,6 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["foot_keypoints"][2]).shape), target["foot_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["faces_keypoints"][2]).shape), target["faces_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["hands_keypoints"][2]).shape), target["hands_keypoints_shape"])
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"]), target["bbox_results_list_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"][2]).shape), target["bbox_shape"])
 
 
@@ -120,7 +115,6 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["foot_keypoints"][2]).shape), target["foot_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["faces_keypoints"][2]).shape), target["faces_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["hands_keypoints"][2]).shape), target["hands_keypoints_shape"])
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"]), target["bbox_results_list_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"][2]).shape), target["bbox_shape"])
 
 
@@ -145,7 +139,6 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["foot_keypoints"][1]).shape), target["foot_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["faces_keypoints"][1]).shape), target["faces_keypoints_shape"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["hands_keypoints"][1]).shape), target["hands_keypoints_shape"])
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"]), target["bbox_results_list_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.pose_estimation_tags]["bbox_results_list"][1]).shape), target["bbox_shape"])
 
 

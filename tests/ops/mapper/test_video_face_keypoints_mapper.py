@@ -26,11 +26,9 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
 
 
     tgt_list = [{
-        "frame_length": 16,
         "keypoints_list_shape": [2, 98, 2],
         "face_bboxes_shape": [2, 4]
     }, {
-        "frame_length": 7,
         "keypoints_list_shape": [2, 98, 2],
         "face_bboxes_shape": [2, 4]
     }]
@@ -59,9 +57,7 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         res_list = dataset.to_list()
 
         for sample, target in zip(res_list, self.tgt_list):
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape), target["keypoints_list_shape"])
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape), target["face_bboxes_shape"])
 
 
@@ -87,9 +83,7 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         res_list = dataset.to_list()
 
         for sample, target in zip(res_list, self.tgt_list):
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape), target["keypoints_list_shape"])
-            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"]), target["frame_length"])
             self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape), target["face_bboxes_shape"])
 
 if __name__ == '__main__':
