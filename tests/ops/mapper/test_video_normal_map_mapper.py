@@ -10,6 +10,7 @@ from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
 from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
+@unittest.skip('The unit test passes locally, but fails on GitHub Actions due to slow model download speeds.')
 class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..',
                              'data')
