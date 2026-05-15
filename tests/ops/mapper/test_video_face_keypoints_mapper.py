@@ -35,7 +35,6 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         "face_bboxes_shape": [2, 4]
     }]
 
-    # The unit test passes locally, but fails on GitHub Actions with the error 'daemonic processes are not allowed to have children'. Therefore, it has been commented out.
     def test(self):
         ds_list = [{
             'videos': [self.vid3_path]
