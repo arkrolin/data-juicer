@@ -66,43 +66,43 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
         "panoptic_segmentation_info_keys": sorted(['id', 'label_id', 'was_fused', 'score']),
     }]
 
-    # The unit test passes locally, but fails on GitHub Actions with the error 'daemonic processes are not allowed to have children'. Therefore, it has been commented out.
-    # def test(self):
-    #     ds_list = [{
-    #         'videos': [self.vid3_path]
-    #     },  {
-    #         'videos': [self.vid10_path]
-    #     }]
 
-    #     op = VideoUniversalSegmentationMapper(
-    #         model_path="shi-labs/oneformer_ade20k_swin_large",
-    #         if_output_semantic_segmentation=True,
-    #         if_output_instance_segmentation=True,
-    #         if_output_panoptic_segmentation=True,
-    #         if_save_visualization=True,
-    #         save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
-    #         frame_num=1,
-    #         duration=1,
-    #         frame_dir=DATA_JUICER_ASSETS_CACHE
-    #     )
+    def test(self):
+        ds_list = [{
+            'videos': [self.vid3_path]
+        },  {
+            'videos': [self.vid10_path]
+        }]
 
-    #     dataset = Dataset.from_list(ds_list)
-    #     if Fields.meta not in dataset.features:
-    #         dataset = dataset.add_column(name=Fields.meta,
-    #                                      column=[{}] * dataset.num_rows)
-    #     dataset = dataset.map(op.process, num_proc=2, with_rank=True)
-    #     res_list = dataset.to_list()
+        op = VideoUniversalSegmentationMapper(
+            model_path="shi-labs/oneformer_ade20k_swin_large",
+            if_output_semantic_segmentation=True,
+            if_output_instance_segmentation=True,
+            if_output_panoptic_segmentation=True,
+            if_save_visualization=True,
+            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_num=1,
+            duration=1,
+            frame_dir=DATA_JUICER_ASSETS_CACHE
+        )
 
-    #     for sample, target in zip(res_list, self.tgt_list):
+        dataset = Dataset.from_list(ds_list)
+        if Fields.meta not in dataset.features:
+            dataset = dataset.add_column(name=Fields.meta,
+                                         column=[{}] * dataset.num_rows)
+        dataset = dataset.map(op.process, num_proc=2, with_rank=True)
+        res_list = dataset.to_list()
 
-    #         self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["semantic_segmentation_map"]), target["frame_length"])
-    #         self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["semantic_segmentation_map"]).shape), target["semantic_segmentation_map_shape"])
-    #         self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_map"]).shape), target["instance_segmentation_map_shape"])
-    #         self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_info"]), target["instance_segmentation_info_length"])
-    #         self.assertEqual(sorted(list(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_info"][0][0].keys())), target["instance_segmentation_info_keys"])
-    #         self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_map"]).shape), target["panoptic_segmentation_map_shape"])
-    #         self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_info"]), target["panoptic_segmentation_info_length"])
-    #         self.assertEqual(sorted(list(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_info"][0][0].keys())), target["panoptic_segmentation_info_keys"])
+        for sample, target in zip(res_list, self.tgt_list):
+
+            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["semantic_segmentation_map"]), target["frame_length"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["semantic_segmentation_map"]).shape), target["semantic_segmentation_map_shape"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_map"]).shape), target["instance_segmentation_map_shape"])
+            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_info"]), target["instance_segmentation_info_length"])
+            self.assertEqual(sorted(list(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["instance_segmentation_info"][0][0].keys())), target["instance_segmentation_info_keys"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_map"]).shape), target["panoptic_segmentation_map_shape"])
+            self.assertEqual(len(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_info"]), target["panoptic_segmentation_info_length"])
+            self.assertEqual(sorted(list(sample[Fields.meta][MetaKeys.video_universal_segmentation_tags]["panoptic_segmentation_info"][0][0].keys())), target["panoptic_segmentation_info_keys"])
            
 
 
