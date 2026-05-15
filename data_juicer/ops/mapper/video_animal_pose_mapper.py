@@ -36,7 +36,7 @@ class VideoAnimalPoseMapper(Mapper):
         vitpose_config: str = "configs/animal/2d_kpt_sview_rgb_img/topdown_heatmap/apt36k/ViTPose_huge_apt36k_256x192.py",
         yoloe_model_path: str = "yoloe-26x-seg.pt",
         animal_class: list = [],
-        if_save_visualization: bool = False,
+        if_save_visualization: bool = True,
         save_visualization_dir: str = DATA_JUICER_ASSETS_CACHE,
         frame_num: PositiveInt = 3,
         duration: float = 0,
@@ -160,6 +160,8 @@ class VideoAnimalPoseMapper(Mapper):
             "duration": duration,
             "frame_dir": frame_dir,
             "frame_key": MetaKeys.video_frames,
+            "num_proc": None,  # Disable multiprocessing to avoid nested process pool issue
+            "auto_op_parallelism": False,  # Disable auto parallelism to avoid nested process pool issue
         }
         self.fused_ops = load_ops([{"video_extract_frames_mapper": self.video_extract_frames_mapper_args}])
 
