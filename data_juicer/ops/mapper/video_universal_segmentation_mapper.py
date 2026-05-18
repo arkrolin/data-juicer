@@ -256,7 +256,7 @@ class VideoUniversalSegmentationMapper(Mapper):
                         semantic_outputs, target_sizes=[temp_img.size[::-1]]
                     )[0]
 
-                    final_semantic_segmentation_map.append(predicted_semantic_map.detach().cpu().numpy())
+                    final_semantic_segmentation_map.append(predicted_semantic_map.detach().cpu().tolist())
 
                     if self.if_save_visualization:
                         seg_img = self.visualization_semantic(predicted_semantic_map, model, temp_img)
@@ -278,7 +278,7 @@ class VideoUniversalSegmentationMapper(Mapper):
                     )[0]
 
                     final_instance_segmentation_map.append(
-                        predicted_instance_map["segmentation"].detach().cpu().numpy()
+                        predicted_instance_map["segmentation"].detach().cpu().tolist()
                     )
                     final_instance_segmentation_info.append(predicted_instance_map["segments_info"])
 
@@ -302,7 +302,7 @@ class VideoUniversalSegmentationMapper(Mapper):
                     )[0]
 
                     final_panoptic_segmentation_map.append(
-                        predicted_panoptic_segmentation_map["segmentation"].detach().cpu().numpy()
+                        predicted_panoptic_segmentation_map["segmentation"].detach().cpu().tolist()
                     )
                     final_panoptic_segmentation_info.append(predicted_panoptic_segmentation_map["segments_info"])
 
