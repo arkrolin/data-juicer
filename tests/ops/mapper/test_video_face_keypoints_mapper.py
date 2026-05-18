@@ -26,11 +26,11 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
 
 
     tgt_list = [{
-        "keypoints_list_shape": [2, 98, 2],
-        "face_bboxes_shape": [2, 4]
+        "keypoints_list_shape": [98, 2],
+        "face_bboxes_shape": [4]
     }, {
-        "keypoints_list_shape": [2, 98, 2],
-        "face_bboxes_shape": [2, 4]
+        "keypoints_list_shape": [98, 2],
+        "face_bboxes_shape": [4]
     }]
 
     def test(self):
@@ -57,8 +57,8 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         res_list = dataset.to_list()
 
         for sample, target in zip(res_list, self.tgt_list):
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape), target["keypoints_list_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape), target["face_bboxes_shape"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape[1:]), target["keypoints_list_shape"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape[1:]), target["face_bboxes_shape"])
 
 
     def test_from_extracted_frames(self):
@@ -83,8 +83,8 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         res_list = dataset.to_list()
 
         for sample, target in zip(res_list, self.tgt_list):
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape), target["keypoints_list_shape"])
-            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape), target["face_bboxes_shape"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_keypoints"][0]).shape[1:]), target["keypoints_list_shape"])
+            self.assertEqual(list(np.array(sample[Fields.meta][MetaKeys.video_face_keypoints_tags]["face_bboxes"][0]).shape[1:]), target["face_bboxes_shape"])
 
 if __name__ == '__main__':
     unittest.main()

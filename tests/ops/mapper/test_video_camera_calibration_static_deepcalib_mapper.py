@@ -17,7 +17,7 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
     vid4_path = os.path.join(data_path, 'video4.mp4')
     vid12_path = os.path.join(data_path, 'video12.mp4')
 
-    def _run_and_assert(self, num_proc):
+    def _run_and_assert(self, num_proc, output_frame_dir):
         ds_list = [{
             'videos': [self.vid3_path]
         },  {
@@ -46,7 +46,7 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
             model_path="weights_10_0.02.h5",
             frame_num=1,
             duration=1,
-            frame_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_dir=output_frame_dir,
             if_output_info=True,
             output_info_dir=DATA_JUICER_ASSETS_CACHE,
         )
@@ -66,10 +66,10 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
 
 
     def test(self):
-        self._run_and_assert(num_proc=1)
+        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test1"))
 
     def test_mul_proc(self):
-        self._run_and_assert(num_proc=2)
+        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test2"))
 
 
 if __name__ == '__main__':
