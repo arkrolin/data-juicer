@@ -72,9 +72,9 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             frame_num=1,
             duration=1,
             tag_field_name=MetaKeys.pose_estimation_tags,
-            frame_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "dwpose_test1"),
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "dwpose_vis1")
         )
         dataset = Dataset.from_list(self.ds_list)
         if Fields.meta not in dataset.features:
@@ -99,9 +99,9 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             frame_num=1,
             duration=1,
             tag_field_name=MetaKeys.pose_estimation_tags,
-            frame_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "dwpose_test2"),
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "dwpose_vis2")
         )
         dataset = Dataset.from_list(self.ds_list)
         if Fields.meta not in dataset.features:
@@ -125,7 +125,7 @@ class VideoWholeBodyPoseEstimationMapperTest(DataJuicerTestCaseBase):
             onnx_pose_model="dw-ll_ucoco_384.onnx",
             tag_field_name=MetaKeys.pose_estimation_tags,
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "dwpose_vis3")
         )
         dataset = Dataset.from_list(self.ds_from_frames_list)
         if Fields.meta not in dataset.features:

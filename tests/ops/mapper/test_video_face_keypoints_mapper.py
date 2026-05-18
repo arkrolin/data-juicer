@@ -43,10 +43,10 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         op = VideoFaceKeypointsMapper(
             ldeq_model_path="final.pth.tar",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "facekeypoints_vis"),
             frame_num = 1,
             duration = 3,
-            frame_dir = DATA_JUICER_ASSETS_CACHE
+            frame_dir = os.path.join(DATA_JUICER_ASSETS_CACHE, "facekeypoints_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -72,7 +72,7 @@ class VideoFaceKeypointsMapperTest(DataJuicerTestCaseBase):
         op = VideoFaceKeypointsMapper(
             ldeq_model_path="final.pth.tar",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "facekeypoints_vis")
         )
 
         dataset = Dataset.from_list(ds_list)

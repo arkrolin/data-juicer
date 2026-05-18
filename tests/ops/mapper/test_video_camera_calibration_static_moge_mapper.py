@@ -67,7 +67,7 @@ class VideoCameraCalibrationStaticMogeMapperTest(DataJuicerTestCaseBase):
             duration=1,
             frame_dir=output_frame_dir,
             if_output_info=True,
-            output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "moge_info"),
             if_output_points_info=True,
             if_output_depth_info=True,
             if_output_mask_info=True,
@@ -92,10 +92,10 @@ class VideoCameraCalibrationStaticMogeMapperTest(DataJuicerTestCaseBase):
 
 
     def test(self):
-        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test1"))
+        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "moge_test1"))
 
     def test_mul_proc(self):
-        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test2"))
+        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "moge_test2"))
 
 
     def _run_and_assert_for_extracted_frames(self, num_proc):
@@ -132,7 +132,7 @@ class VideoCameraCalibrationStaticMogeMapperTest(DataJuicerTestCaseBase):
         op = VideoCameraCalibrationStaticMogeMapper(
             model_path="Ruicheng/moge-2-vitl",
             if_output_info=True,
-            output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "moge_info"),
             if_output_points_info=True,
             if_output_depth_info=True,
             if_output_mask_info=True,

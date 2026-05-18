@@ -44,10 +44,10 @@ class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
             vitpose_config="configs/animal/2d_kpt_sview_rgb_img/topdown_heatmap/apt36k/ViTPose_huge_apt36k_256x192.py",
             yoloe_model_path="yoloe-26x-seg.pt",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=DATA_JUICER_ASSETS_CACHE
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -76,7 +76,7 @@ class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
             vitpose_config="configs/animal/2d_kpt_sview_rgb_img/topdown_heatmap/apt36k/ViTPose_huge_apt36k_256x192.py",
             yoloe_model_path="yoloe-26x-seg.pt",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)

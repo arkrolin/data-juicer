@@ -47,9 +47,9 @@ class VideoCameraPoseMapperTest(DataJuicerTestCaseBase):
             duration=1,
             frame_dir=output_frame_dir,
             if_output_moge_info=False,
-            moge_output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            moge_output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "moge_info"),
             if_save_info=True,
-            output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "camera_pose_info"),
             num_proc=num_proc,
         )
 
@@ -68,10 +68,10 @@ class VideoCameraPoseMapperTest(DataJuicerTestCaseBase):
 
 
     def test(self):
-        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test1"))
+        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "camera_pose_test1"))
 
     def test_mul_proc(self):
-        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test2"))
+        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "camera_pose_test2"))
 
 
 if __name__ == '__main__':

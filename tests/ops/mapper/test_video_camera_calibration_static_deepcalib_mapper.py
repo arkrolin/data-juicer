@@ -48,7 +48,7 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
             duration=1,
             frame_dir=output_frame_dir,
             if_output_info=True,
-            output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_info"),
         )
         dataset = Dataset.from_list(ds_list)
         if Fields.meta not in dataset.features:
@@ -66,10 +66,10 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
 
 
     def test(self):
-        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test1"))
+        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_test1"))
 
     def test_mul_proc(self):
-        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "test2"))
+        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_test2"))
 
 
 if __name__ == '__main__':
