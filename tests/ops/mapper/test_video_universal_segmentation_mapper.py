@@ -80,10 +80,10 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
             if_output_instance_segmentation=True,
             if_output_panoptic_segmentation=True,
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=DATA_JUICER_ASSETS_CACHE
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -120,7 +120,7 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
             if_output_instance_segmentation=True,
             if_output_panoptic_segmentation=True,
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)

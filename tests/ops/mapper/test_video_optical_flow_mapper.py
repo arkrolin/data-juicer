@@ -42,10 +42,10 @@ class VideoOpticalFlowMapperTest(DataJuicerTestCaseBase):
 
         op = VideoOpticalFlowMapper(
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "optical_flow_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=DATA_JUICER_ASSETS_CACHE
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "optical_flow_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -71,7 +71,7 @@ class VideoOpticalFlowMapperTest(DataJuicerTestCaseBase):
 
         op = VideoOpticalFlowMapper(
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "optical_flow_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)

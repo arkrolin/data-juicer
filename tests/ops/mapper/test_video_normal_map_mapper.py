@@ -44,10 +44,10 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
         op = VideoNormalMapMapper(
             model_path="onnx-community/metric3d-vit-large/onnx/model.onnx",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=DATA_JUICER_ASSETS_CACHE
+            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_test1")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -74,7 +74,7 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
         op = VideoNormalMapMapper(
             model_path="onnx-community/metric3d-vit-large/onnx/model.onnx",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)
