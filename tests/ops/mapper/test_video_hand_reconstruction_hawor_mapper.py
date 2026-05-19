@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_hand_reconstruction_hawor_mapper import VideoHandReconstructionHaworMapper
 from data_juicer.utils.mm_utils import SpecialTokens
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
 @unittest.skip('Users need to download MANO_RIGHT.pkl.')
@@ -85,6 +86,16 @@ class VideoHandReconstructionHaworMapperTest(DataJuicerTestCaseBase):
         "right_transl_list_shape": (2, 3),
     }]
 
+
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
     def test(self):
 
         op = VideoHandReconstructionHaworMapper(
@@ -96,8 +107,8 @@ class VideoHandReconstructionHaworMapperTest(DataJuicerTestCaseBase):
             frame_num=1,
             duration=1,
             thresh=0.2,
-            frame_dir=DATA_JUICER_ASSETS_CACHE,
-            moge_output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_dir=self.tmp_dir,
+            moge_output_info_dir=self.tmp_dir,
         )
         dataset = Dataset.from_list(self.ds_list)
         if Fields.meta not in dataset.features:
@@ -129,8 +140,8 @@ class VideoHandReconstructionHaworMapperTest(DataJuicerTestCaseBase):
             frame_num=1,
             duration=1,
             thresh=0.2,
-            frame_dir=DATA_JUICER_ASSETS_CACHE,
-            moge_output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            frame_dir=self.tmp_dir,
+            moge_output_info_dir=self.tmp_dir,
         )
         dataset = Dataset.from_list(self.ds_list)
         if Fields.meta not in dataset.features:
@@ -160,7 +171,7 @@ class VideoHandReconstructionHaworMapperTest(DataJuicerTestCaseBase):
             moge_model_path="Ruicheng/moge-2-vitl",
             mano_right_path="path_to_mano_right_pkl",
             thresh=0.2,
-            moge_output_info_dir=DATA_JUICER_ASSETS_CACHE,
+            moge_output_info_dir=self.tmp_dir,
         )
         dataset = Dataset.from_list(self.ds_for_extracted_frames_list)
         if Fields.meta not in dataset.features:

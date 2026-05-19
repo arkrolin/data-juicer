@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_animal_pose_mapper import \
     VideoAnimalPoseMapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 @unittest.skip('The current code can automatically configure the environment, but after the initial setup (including mmpose), the user need to re-run the command for it to work properly.')
 class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
@@ -32,6 +33,17 @@ class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
         "frame3_animal_bboxes_shape": [3, 4],
     }]
 
+
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
+
     def test(self):
         ds_list = [{
             'videos': [self.vid13_path]
@@ -44,10 +56,10 @@ class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
             vitpose_config="configs/animal/2d_kpt_sview_rgb_img/topdown_heatmap/apt36k/ViTPose_huge_apt36k_256x192.py",
             yoloe_model_path="yoloe-26x-seg.pt",
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_vis1"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "animal_pose_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_test")
+            frame_dir=os.path.join(self.tmp_dir, "animal_pose_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -76,7 +88,7 @@ class VideoAnimalPoseMapperTest(DataJuicerTestCaseBase):
             vitpose_config="configs/animal/2d_kpt_sview_rgb_img/topdown_heatmap/apt36k/ViTPose_huge_apt36k_256x192.py",
             yoloe_model_path="yoloe-26x-seg.pt",
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "animal_pose_vis2"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "animal_pose_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)

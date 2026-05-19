@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_camera_calibration_static_deepcalib_mapper import VideoCameraCalibrationStaticDeepcalibMapper
 from data_juicer.utils.mm_utils import SpecialTokens
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
 class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
@@ -16,6 +17,15 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
     vid3_path = os.path.join(data_path, 'video3.mp4')
     vid4_path = os.path.join(data_path, 'video4.mp4')
     vid12_path = os.path.join(data_path, 'video12.mp4')
+
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
 
     def _run_and_assert(self, num_proc, output_frame_dir):
         ds_list = [{
@@ -48,7 +58,7 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
             duration=1,
             frame_dir=output_frame_dir,
             if_output_info=True,
-            output_info_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_info"),
+            output_info_dir=os.path.join(self.tmp_dir, "deepcalib_info"),
         )
         dataset = Dataset.from_list(ds_list)
         if Fields.meta not in dataset.features:
@@ -66,10 +76,10 @@ class VideoCameraCalibrationStaticDeepcalibMapperTest(DataJuicerTestCaseBase):
 
 
     def test(self):
-        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_test1"))
+        self._run_and_assert(num_proc=1, output_frame_dir=os.path.join(self.tmp_dir, "deepcalib_test1"))
 
     def test_mul_proc(self):
-        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "deepcalib_test2"))
+        self._run_and_assert(num_proc=2, output_frame_dir=os.path.join(self.tmp_dir, "deepcalib_test2"))
 
 
 if __name__ == '__main__':

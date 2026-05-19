@@ -1,13 +1,15 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_depth_estimation_mapper import \
     VideoDepthEstimationMapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
+
 
 @unittest.skip("sys.path.append works locally but fails in the unittest pipeline.")
 class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
@@ -40,6 +42,15 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
         "fps": 30.0
     }]
 
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
     def test(self):
         ds_list = [{
             'videos': [self.vid4_path]
@@ -49,11 +60,11 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
 
         op = VideoDepthEstimationMapper(
             video_depth_model_path="video_depth_anything_vits.pth",
-            point_cloud_dir_for_metric=DATA_JUICER_ASSETS_CACHE,
+            point_cloud_dir_for_metric=self.tmp_dir,
             max_res=1280,
             torch_dtype="fp16",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=self.tmp_dir,
             grayscale=False,
         )
 
@@ -78,11 +89,11 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
 
         op = VideoDepthEstimationMapper(
             video_depth_model_path="metric_video_depth_anything_vits.pth",
-            point_cloud_dir_for_metric=DATA_JUICER_ASSETS_CACHE,
+            point_cloud_dir_for_metric=self.tmp_dir,
             max_res=1280,
             torch_dtype="fp16",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=self.tmp_dir,
             grayscale=False,
         )
 
@@ -107,11 +118,11 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
 
         op = VideoDepthEstimationMapper(
             video_depth_model_path="video_depth_anything_vits.pth",
-            point_cloud_dir_for_metric=DATA_JUICER_ASSETS_CACHE,
+            point_cloud_dir_for_metric=self.tmp_dir,
             max_res=1280,
             torch_dtype="fp16",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=self.tmp_dir,
             grayscale=False,
         )
 
@@ -136,11 +147,11 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
 
         op = VideoDepthEstimationMapper(
             video_depth_model_path="metric_video_depth_anything_vits.pth",
-            point_cloud_dir_for_metric=DATA_JUICER_ASSETS_CACHE,
+            point_cloud_dir_for_metric=self.tmp_dir,
             max_res=1280,
             torch_dtype="fp16",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=self.tmp_dir,
             grayscale=False,
         )
 
@@ -167,12 +178,12 @@ class VideoDepthEstimationMapperTest(DataJuicerTestCaseBase):
 
         op = VideoDepthEstimationMapper(
             video_depth_model_path="metric_video_depth_anything_vits.pth",
-            point_cloud_dir_for_metric=DATA_JUICER_ASSETS_CACHE,
+            point_cloud_dir_for_metric=self.tmp_dir,
             if_save_point_cloud=True,
             max_res=1280,
             torch_dtype="fp16",
             if_save_visualization=True,
-            save_visualization_dir=DATA_JUICER_ASSETS_CACHE,
+            save_visualization_dir=self.tmp_dir,
             grayscale=False,
         )
 
