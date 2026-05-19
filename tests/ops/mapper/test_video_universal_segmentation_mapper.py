@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_universal_segmentation_mapper import \
     VideoUniversalSegmentationMapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
 class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
@@ -66,6 +67,15 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
         "panoptic_segmentation_info_keys": sorted(['id', 'label_id', 'was_fused', 'score']),
     }]
 
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
 
     def test(self):
         ds_list = [{
@@ -80,10 +90,10 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
             if_output_instance_segmentation=True,
             if_output_panoptic_segmentation=True,
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_vis1"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "universal_segmentation_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_test")
+            frame_dir=os.path.join(self.tmp_dir, "universal_segmentation_test")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -120,7 +130,7 @@ class VideoUniversalSegmentationMapperTest(DataJuicerTestCaseBase):
             if_output_instance_segmentation=True,
             if_output_panoptic_segmentation=True,
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "universal_segmentation_vis2"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "universal_segmentation_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)

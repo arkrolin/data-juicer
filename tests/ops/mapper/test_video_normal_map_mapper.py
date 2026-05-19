@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_normal_map_mapper import \
     VideoNormalMapMapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
 @unittest.skip('The unit test passes locally, but fails on GitHub Actions due to slow model download speeds.')
@@ -34,6 +35,17 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
         "pred_norm_shape": [360, 640, 3], # H, W, 3
     }]
 
+
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
+
     def test(self):
         ds_list = [{
             'videos': [self.vid10_path]
@@ -44,10 +56,10 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
         op = VideoNormalMapMapper(
             model_path="onnx-community/metric3d-vit-large/onnx/model.onnx",
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_vis1"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "normal_vis1"),
             frame_num=1,
             duration=1,
-            frame_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_test1")
+            frame_dir=os.path.join(self.tmp_dir, "normal_test1")
         )
 
         dataset = Dataset.from_list(ds_list)
@@ -74,7 +86,7 @@ class VideoNormalMapMapperTest(DataJuicerTestCaseBase):
         op = VideoNormalMapMapper(
             model_path="onnx-community/metric3d-vit-large/onnx/model.onnx",
             if_save_visualization=True,
-            save_visualization_dir=os.path.join(DATA_JUICER_ASSETS_CACHE, "normal_vis2"),
+            save_visualization_dir=os.path.join(self.tmp_dir, "normal_vis2"),
         )
 
         dataset = Dataset.from_list(ds_list)
