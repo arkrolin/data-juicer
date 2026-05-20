@@ -1,13 +1,14 @@
 import os
 import unittest
 import numpy as np
+import tempfile
+import shutil
 
 from data_juicer.core.data import NestedDataset as Dataset
 from data_juicer.ops.mapper.video_human_3d_pose_mapper import \
     VideoHuman3DPoseMapper
 from data_juicer.utils.constant import Fields, MetaKeys
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
-from data_juicer.utils.cache_utils import DATA_JUICER_ASSETS_CACHE
 
 
 @unittest.skip("Please refer to the Human3R repository to set up the environment and download the model.")
@@ -47,6 +48,15 @@ class VideoHuman3DPoseMapperTest(DataJuicerTestCaseBase):
         "smpl_loc_shape": [2, 2]
     }]
 
+    def setUp(self):
+        self.tmp_dir = tempfile.TemporaryDirectory().name
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+        if os.path.exists(self.tmp_dir):
+            shutil.rmtree(self.tmp_dir)
+
     def test(self):
         ds_list = [{
             'videos': [self.vid3_path]
@@ -58,7 +68,7 @@ class VideoHuman3DPoseMapperTest(DataJuicerTestCaseBase):
             model_path="human3r_896L.pth",
             frame_num = 1,
             duration = 3,
-            frame_dir = DATA_JUICER_ASSETS_CACHE
+            frame_dir = self.tmp_dir
         )
 
         dataset = Dataset.from_list(ds_list)
