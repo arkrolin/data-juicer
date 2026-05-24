@@ -23,6 +23,7 @@ class ResourcePolicyUtilsTest(DataJuicerTestCaseBase):
                 "DJ_RESOURCE_OFFLINE_MODE",
                 "DJ_RESOURCE_ALLOW_PUBLIC_FALLBACK",
                 "DJ_RESOURCE_LOCAL_CACHE_ROOTS",
+                "DJ_RESOURCE_BASE_URL",
                 "DJ_MODEL_BASE_URL",
                 "DJ_ASSET_BASE_URL",
                 "DJ_HF_ENDPOINT",
@@ -39,6 +40,7 @@ class ResourcePolicyUtilsTest(DataJuicerTestCaseBase):
             self.assertTrue(should_auto_install_package(policy))
             self.assertIsNone(policy["model_base_url"])
             self.assertIsNone(policy["asset_base_url"])
+            self.assertIsNone(policy["resource_base_url"])
 
     def test_offline_policy(self):
         with patch.dict(
@@ -64,9 +66,9 @@ class ResourcePolicyUtilsTest(DataJuicerTestCaseBase):
 
             with patch.dict(os.environ, {"DJ_RESOURCE_LOCAL_CACHE_ROOTS": tmpdir}, clear=False):
                 source = resolve_model_source(model_name)
-                self.assertEqual(source["kind"], "local_path")
-                self.assertEqual(source["source"], "local_cache_root")
-                self.assertEqual(source["value"], model_path)
+                self.assertTrue(source.is_local)
+                self.assertEqual(source.origin, "local_cache_root")
+                self.assertEqual(source.uri, model_path)
 
     def test_resolve_asset_source_offline_without_local_copy(self):
         with patch.dict(os.environ, {"DJ_RESOURCE_OFFLINE_MODE": "true"}, clear=False):
@@ -74,11 +76,74 @@ class ResourcePolicyUtilsTest(DataJuicerTestCaseBase):
                 resolve_asset_source("stopwords")
 
     def test_resolve_asset_source_from_mirror(self):
-        with patch.dict(os.environ, {"DJ_ASSET_BASE_URL": "https://mirror.example.com/data_juicer"}, clear=False):
-            source = resolve_asset_source("stopwords")
-            self.assertEqual(source["kind"], "remote_url")
-            self.assertEqual(source["source"], "mirror")
-            self.assertEqual(source["value"], "https://mirror.example.com/data_juicer/stopwords.json")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch("data_juicer.utils.resource_policy_utils.DATA_JUICER_ASSETS_CACHE", tmpdir):
+                with patch.dict(os.environ, {"DJ_ASSET_BASE_URL": "https://mirror.example.com/data_juicer"}, clear=False):
+                    source = resolve_asset_source("stopwords")
+                    self.assertTrue(source.is_remote)
+                    self.assertEqual(source.origin, "mirror")
+                    self.assertEqual(source.uri, "https://mirror.example.com/data_juicer/stopwords.json")
+
+    def test_resolve_asset_source_default_public_returns_url(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with patch("data_juicer.utils.resource_policy_utils.DATA_JUICER_ASSETS_CACHE", tmpdir):
+                with patch.dict(os.environ, {}, clear=False):
+                    for key in [
+                        "DJ_RESOURCE_OFFLINE_MODE",
+                        "DJ_RESOURCE_ALLOW_PUBLIC_FALLBACK",
+                        "DJ_RESOURCE_BASE_URL",
+                        "DJ_ASSET_BASE_URL",
+                    ]:
+                        os.environ.pop(key, None)
+                    source = resolve_asset_source("stopwords")
+                    self.assertTrue(source.is_remote)
+                    self.assertEqual(source.origin, "default_public")
+                    self.assertEqual(
+                        source.uri,
+                        "https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/data_juicer/stopwords.json",
+                    )
+
+    def test_resolve_model_source_default_public_returns_url(self):
+        with patch.dict(os.environ, {}, clear=False):
+            for key in [
+                "DJ_RESOURCE_OFFLINE_MODE",
+                "DJ_RESOURCE_ALLOW_PUBLIC_FALLBACK",
+                "DJ_RESOURCE_BASE_URL",
+                "DJ_MODEL_BASE_URL",
+            ]:
+                os.environ.pop(key, None)
+            source = resolve_model_source("lid.176.bin", force=True)
+            self.assertTrue(source.is_remote)
+            self.assertEqual(source.origin, "default_public")
+            self.assertEqual(
+                source.uri,
+                "https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/data_juicer/models/lid.176.bin",
+            )
+
+    def test_resource_base_url_derives_model_and_asset_mirrors(self):
+        with patch.dict(
+            os.environ,
+            {"DJ_RESOURCE_BASE_URL": "https://mirror.example.com/data_juicer/"},
+            clear=False,
+        ):
+            policy = get_resource_policy()
+            self.assertEqual(policy["resource_base_url"], "https://mirror.example.com/data_juicer/")
+            self.assertEqual(policy["model_base_url"], "https://mirror.example.com/data_juicer/models")
+            self.assertEqual(policy["asset_base_url"], "https://mirror.example.com/data_juicer")
+
+    def test_explicit_model_and_asset_base_urls_override_resource_base_url(self):
+        with patch.dict(
+            os.environ,
+            {
+                "DJ_RESOURCE_BASE_URL": "https://mirror.example.com/data_juicer",
+                "DJ_MODEL_BASE_URL": "https://mirror.example.com/custom-models",
+                "DJ_ASSET_BASE_URL": "https://mirror.example.com/custom-assets",
+            },
+            clear=False,
+        ):
+            policy = get_resource_policy()
+            self.assertEqual(policy["model_base_url"], "https://mirror.example.com/custom-models")
+            self.assertEqual(policy["asset_base_url"], "https://mirror.example.com/custom-assets")
 
 
 class ResourcePolicyNltkTest(DataJuicerTestCaseBase):

@@ -23,9 +23,11 @@ from data_juicer.utils.nltk_utils import (
 )
 from data_juicer.utils.ray_utils import is_ray_mode
 from data_juicer.utils.resource_policy_utils import (
+    DEFAULT_MODEL_BASE_URL,
     configure_hf_env,
     configure_nltk_env,
     is_nltk_download_allowed,
+    join_resource_url,
     resolve_model_source,
     should_allow_public_fallback,
 )
@@ -58,7 +60,7 @@ transformers_stream_generator = LazyLoader(
 MODEL_ZOO = {}
 
 # Default cached models links for downloading
-MODEL_LINKS = "https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/" "data_juicer/models/"
+MODEL_LINKS = DEFAULT_MODEL_BASE_URL + "/"
 
 # Backup cached models links for downloading
 BACKUP_MODEL_LINKS = {
@@ -99,32 +101,36 @@ def get_backup_model_link(model_name):
     return None
 
 
+def _resolve_backup_model_url(model_name):
+    backup_model_link = get_backup_model_link(model_name)
+    if backup_model_link is None:
+        return None
+    if backup_model_link.endswith(model_name):
+        return backup_model_link
+    return join_resource_url(backup_model_link, model_name)
+
+
 def _download_model_to_path(model_name, cached_model_path, source=None):
     if source is None:
         source = resolve_model_source(model_name, force=True)
-    allow_public_fallback = source["source"] != "mirror" or should_allow_public_fallback()
 
-    model_link = os.path.join(MODEL_LINKS, model_name)
-    backup_model_link = get_backup_model_link(model_name)
-    if backup_model_link is not None:
-        backup_model_link = os.path.join(backup_model_link, model_name)
+    primary_url = source.uri
+    default_model_url = join_resource_url(MODEL_LINKS, model_name)
+    backup_model_url = _resolve_backup_model_url(model_name)
+    fallback_urls = []
+    if source.is_mirror and should_allow_public_fallback():
+        fallback_urls.append(default_model_url)
+    if backup_model_url is not None:
+        fallback_urls.append(backup_model_url)
 
     try:
-        if source["source"] == "mirror":
-            wget.download(source["value"], cached_model_path)
-        else:
-            wget.download(model_link, cached_model_path)
+        wget.download(primary_url, cached_model_path)
     except Exception:  # noqa: BLE001
-        if source["source"] == "mirror" and allow_public_fallback:
-            if backup_model_link and source["value"] != backup_model_link:
-                try:
-                    wget.download(backup_model_link, cached_model_path)
-                    return cached_model_path
-                except Exception:  # noqa: BLE001
-                    pass
-        elif source["source"] != "mirror" and backup_model_link is not None:
+        for fallback_url in fallback_urls:
+            if fallback_url == primary_url:
+                continue
             try:
-                wget.download(backup_model_link, cached_model_path)
+                wget.download(fallback_url, cached_model_path)
                 return cached_model_path
             except Exception:  # noqa: BLE001
                 pass
@@ -135,8 +141,8 @@ def _download_model_to_path(model_name, cached_model_path, source=None):
         raise RuntimeError(
             f"Downloading model [{model_name}] error. "
             f"Please retry later or download it into {DJMC} "
-            f"manually from {source['value'] if source['source'] == 'mirror' else model_link} "
-            f"or {backup_model_link} "
+            f"manually from {primary_url} "
+            f"or {backup_model_url} "
         )
 
     return cached_model_path
@@ -158,8 +164,8 @@ def check_model(model_name, force=False):
 
     cached_model_path = os.path.join(DJMC, model_name)
     source = resolve_model_source(model_name, force=force)
-    if source["kind"] == "local_path":
-        return source["value"]
+    if source.is_local:
+        return source.uri
 
     if force:
         if os.path.exists(cached_model_path):
@@ -177,8 +183,8 @@ def check_model(model_name, force=False):
 
 def check_model_home(model_name):
     source = resolve_model_source(model_name, force=False)
-    if source["kind"] == "local_path":
-        return source["value"]
+    if source.is_local:
+        return source.uri
     return model_name
 
 

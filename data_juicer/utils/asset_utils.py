@@ -5,16 +5,13 @@ import requests
 from loguru import logger
 
 from .cache_utils import DATA_JUICER_ASSETS_CACHE
-from .resource_policy_utils import resolve_asset_source
+from .resource_policy_utils import DEFAULT_ASSET_URLS, resolve_asset_source
 
 # Default directory to store auxiliary resources
 ASSET_DIR = DATA_JUICER_ASSETS_CACHE
 
 # Default cached assets links for downloading
-ASSET_LINKS = {
-    "flagged_words": "https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/" "data_juicer/flagged_words.json",
-    "stopwords": "https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/" "data_juicer/stopwords.json",
-}
+ASSET_LINKS = DEFAULT_ASSET_URLS
 
 
 def load_words_asset(words_dir: str, words_type: str):
@@ -50,13 +47,12 @@ def load_words_asset(words_dir: str, words_type: str):
         if words_type not in ASSET_LINKS:
             raise ValueError(f"{words_type} is not in remote server.")
         source = resolve_asset_source(words_type)
-        if source["kind"] == "local_path":
-            with open(source["value"], "r") as file:
+        if source.is_local:
+            with open(source.uri, "r") as file:
                 words_dict = json.load(file)
             return words_dict
 
-        asset_url = ASSET_LINKS[words_type] if source["source"] == "default_public" else source["value"]
-        response = requests.get(asset_url)
+        response = requests.get(source.uri)
         response.raise_for_status()
         words_dict = response.json()
         # cache the asset file locally
