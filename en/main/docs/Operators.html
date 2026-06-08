@@ -797,7 +797,7 @@ Data-Juicer 中的算子分为以下 8 种类型。</p>
 <td><p>Edits and transforms samples. 对数据样本进行编辑和转换。</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../api/data_juicer.ops.pipeline.html#module-data_juicer.ops.pipeline" title="data_juicer.ops.pipeline"><span class="xref myst py py-mod">pipeline</span></a></p></td>
-<td class="text-center"><p>2</p></td>
+<td class="text-center"><p>3</p></td>
 <td><p>Applies dataset-level processing; both input and output are datasets. 执行数据集级别的操作，输入和输出均为完整数据集。</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/data_juicer.ops.selector.html#module-data_juicer.ops.selector" title="data_juicer.ops.selector"><span class="xref myst py py-mod">selector</span></a></p></td>
@@ -2185,7 +2185,13 @@ Data-Juicer 中的算子分为以下 8 种类型。</p>
 <td><p>-</p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-odd"><td><p>vlm_inference_with_ray_vllm_pipeline</p></td>
+<tr class="row-odd"><td><p>ray_repartition_pipeline</p></td>
+<td><p>💻CPU 🟡Beta</p></td>
+<td><p>Repartition a Ray Dataset into a target number of blocks. 将 Ray 数据集重新分区为目标数量的块。</p></td>
+<td><p><a class="reference internal" href="operators/pipeline/ray_repartition_pipeline.html"><span class="std std-doc">info</span></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p>vlm_inference_with_ray_vllm_pipeline</p></td>
 <td><p>🏞Image 🚀GPU 🟡Beta</p></td>
 <td><p>Pipeline to generate response using vLLM engine on Ray. 使用Ray上的vLLM引擎生成响应的管道。</p></td>
 <td><p>-</p></td>
