@@ -932,7 +932,7 @@
 <h2>📊 Effect demonstration 效果演示<a class="headerlink" href="#effect-demonstration" title="Link to this heading">#</a></h2>
 <section id="test">
 <h3>test<a class="headerlink" href="#test" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PairPreferenceMapper</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen2.5-72b-instruct&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PairPreferenceMapper</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen3.7-max&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="input-data">
@@ -948,7 +948,7 @@
 </section>
 <section id="test-no-reference">
 <h3>test_no_reference<a class="headerlink" href="#test-no-reference" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PairPreferenceMapper</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen2.5-72b-instruct&#39;</span><span class="p">,</span> <span class="n">system_prompt</span><span class="o">=</span><span class="s1">&#39;修改问答对中的回答，在语言风格、事实性、人物身份、立场等任一方面与原回答相反。必须按照以下标记格式输出，不要输出其他多余内容。</span><span class="se">\n</span><span class="s1">【回答】</span><span class="se">\n</span><span class="s1">生成的新回答</span><span class="se">\n</span><span class="s1">【原因】</span><span class="se">\n</span><span class="s1">生成该回答的原因&#39;</span><span class="p">,</span> <span class="n">input_template</span><span class="o">=</span><span class="s1">&#39;以下是原始问答对：</span><span class="se">\n</span><span class="s1">【问题】</span><span class="se">\n</span><span class="si">{query}</span><span class="se">\n</span><span class="s1">【回答】</span><span class="se">\n</span><span class="si">{response}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PairPreferenceMapper</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen3.7-max&#39;</span><span class="p">,</span> <span class="n">system_prompt</span><span class="o">=</span><span class="s1">&#39;修改问答对中的回答，在语言风格、事实性、人物身份、立场等任一方面与原回答相反。必须按照以下标记格式输出，不要输出其他多余内容。</span><span class="se">\n</span><span class="s1">【回答】</span><span class="se">\n</span><span class="s1">生成的新回答</span><span class="se">\n</span><span class="s1">【原因】</span><span class="se">\n</span><span class="s1">生成该回答的原因&#39;</span><span class="p">,</span> <span class="n">input_template</span><span class="o">=</span><span class="s1">&#39;以下是原始问答对：</span><span class="se">\n</span><span class="s1">【问题】</span><span class="se">\n</span><span class="si">{query}</span><span class="se">\n</span><span class="s1">【回答】</span><span class="se">\n</span><span class="si">{response}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="id1">
