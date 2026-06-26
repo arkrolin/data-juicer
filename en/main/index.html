@@ -276,6 +276,13 @@
           main
         </a>
         
+        <a href="./../v1.5.3/index.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.3
+        </a>
+        
         <a href="./../v1.5.2/index.html"
            class="dropdown-item "
            role="menuitem"
@@ -525,6 +532,13 @@
           main
         </a>
         
+        <a href="./../v1.5.3/index.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.3
+        </a>
+        
         <a href="./../v1.5.2/index.html"
            class="dropdown-item "
            role="menuitem"
@@ -726,6 +740,16 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <section id="news">
 <h2>📰 News<a class="headerlink" href="#news" title="Link to this heading">#</a></h2>
 <details open>
+<summary>[2026-06-26] Release v1.5.3: <b>VLA Ops Enhancements; Ray Repartition Pipeline; Scalability & Robustness</b></summary>
+<ul class="simple">
+<li><p>🤖 <em>VLA Ops Enhancements</em> — Expanded embodied-AI processing with 10+ new/renamed VLA operators (camera calibration via DeepCalib/DroidCalib/MoGe, atomic action segmentation, hand action computation &amp; motion smoothing, clip reassembly, trajectory overlay, LeRobot export) and a complete VLA pipeline demo.</p></li>
+<li><p>🔄 <em>Ray Repartition Pipeline</em> — New <code class="docutils literal notranslate"><span class="pre">ray_repartition_pipeline</span></code> for dataset-level block repartitioning in Ray mode.</p></li>
+<li><p>⚡ <em>Scalable Ray Data Reads</em> — Wired <code class="docutils literal notranslate"><span class="pre">override_num_blocks</span></code> through the full call chain for controlling block parallelism on PB-scale datasets.</p></li>
+<li><p>🧪 <em>Test Coverage Expansion</em> — Added 409 new test cases across 18 test files.</p></li>
+<li><p>🐳 <em>Stability &amp; Robustness Fixes</em> — JSONStreamDatasource schema unification, OP env version resolution, FUSE-safe rmtree for PartitionedRayExecutor, deprecated model name updates, and num_proc handling fixes.</p></li>
+</ul>
+</details>
+<details open>
 <summary>[2026-05-29] Release v1.5.2: <b>Semantic LLM OPs, Cross-doc Line Dedup & Leaner Dependencies</b></summary>
 <ul class="simple">
 <li><p>🧹 <em>New Deduplicator</em> — Added <code class="docutils literal notranslate"><span class="pre">DocumentLineDeduplicator</span></code> for cross-document line-level dedup, removing boilerplate lines (templates, copyright notices, navigation bars) by global document frequency.</p></li>
@@ -735,7 +759,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🧠 <em>Semantic LLM Operators</em> — Introduced <code class="docutils literal notranslate"><span class="pre">llm_extract_mapper</span></code>, <code class="docutils literal notranslate"><span class="pre">llm_condition_filter</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm_structured_ops</span></code> with unified <code class="docutils literal notranslate"><span class="pre">llm_*</span></code> naming and configurable inference strategies (join/agg/top-k planned).</p></li>
 </ul>
 </details>
-<details open>
+<details>
 <summary>[2026-03-17] Release v1.5.1: <b>LaTeX OPs; Compressed Format Support; Operator Robustness Fixes</b></summary>
 <ul class="simple">
 <li><p>📄 Two new LaTeX-focused mapper OPs shipped, extending data-juicer’s document processing capabilities to handle <code class="docutils literal notranslate"><span class="pre">.tex</span></code> archives and figure contexts.</p></li>
