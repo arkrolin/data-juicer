@@ -979,7 +979,14 @@
                         <span class="n">process_batch_arrow</span><span class="p">,</span> <span class="n">batch_format</span><span class="o">=</span><span class="s2">&quot;pyarrow&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">DEFAULT_BATCH_SIZE</span>
                     <span class="p">)</span>
                     <span class="n">cached_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">():</span>
+                <span class="n">prepare_for_ray_map_batches</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="s2">&quot;_prepare_for_ray_map_batches&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">use_instance_for_ray_tasks</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">prepare_for_ray_map_batches</span> <span class="ow">and</span> <span class="n">prepare_for_ray_map_batches</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">use_instance_for_ray_tasks</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">():</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">: overriding ray_execution_mode from actor to task &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;to preserve shared dedup state across workers&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">use_instance_for_ray_tasks</span><span class="p">:</span>
                     <span class="n">compute</span> <span class="o">=</span> <span class="n">get_compute_strategy</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">concurrency</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span>
                         <span class="n">op</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
@@ -1005,6 +1012,8 @@
                         <span class="n">compute</span><span class="o">=</span><span class="n">compute</span><span class="p">,</span>
                         <span class="n">runtime_env</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">runtime_env</span><span class="p">,</span>
                     <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">use_instance_for_ray_tasks</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">materialize</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">stats_export_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">write_json</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">stats_export_path</span><span class="p">,</span> <span class="n">force_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="c1"># Wrap process method with tracer for sample-level collection</span>

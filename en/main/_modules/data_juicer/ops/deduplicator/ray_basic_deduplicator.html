@@ -771,6 +771,13 @@
             <span class="n">RemoteDedupSet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RemoteDedupSet</span> <span class="ow">or</span> <span class="n">get_remote_dedup_set</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dedup_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">RemoteDedupSet</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dedup_set_num</span><span class="p">)]</span>
 
+<div class="viewcode-block" id="ActorBackend.prepare_for_ray_execution">
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_basic_deduplicator.html#data_juicer.ops.deduplicator.ray_basic_deduplicator.ActorBackend.prepare_for_ray_execution">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_for_ray_execution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create shared actors before this backend is serialized to Ray tasks.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_actors</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="ActorBackend.is_unique">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_basic_deduplicator.html#data_juicer.ops.deduplicator.ray_basic_deduplicator.ActorBackend.is_unique">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_unique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -847,6 +854,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown backend: </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_for_ray_map_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">,</span> <span class="n">ActorBackend</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">prepare_for_ray_execution</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RayBasicDeduplicator.calculate_hash">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_basic_deduplicator.html#data_juicer.ops.deduplicator.ray_basic_deduplicator.RayBasicDeduplicator.calculate_hash">[docs]</a>
