@@ -674,6 +674,8 @@
 <span class="c1"># https://github.com/togethercomputer/RedPajama-Data/tree/rp_v1/</span>
 <span class="c1"># --------------------------------------------------------</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
@@ -713,6 +715,9 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CleanHtmlMapper.process_batched">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">_clean_html</span><span class="p">(</span><span class="n">raw_html</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_html</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Invalid input text! Expected a string.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">raw_html</span>
             <span class="n">raw_html</span> <span class="o">=</span> <span class="n">raw_html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;li&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">*&quot;</span><span class="p">)</span>
             <span class="n">raw_html</span> <span class="o">=</span> <span class="n">raw_html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/li&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="n">raw_html</span> <span class="o">=</span> <span class="n">raw_html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;ol&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">*&quot;</span><span class="p">)</span>
