@@ -675,6 +675,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">redirect_stderr</span>
@@ -2558,6 +2559,278 @@
 
 
 
+<div class="viewcode-block" id="prepare_SenseVoiceSmall_model">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.model_utils.html#data_juicer.utils.model_utils.prepare_SenseVoiceSmall_model">[文档]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_SenseVoiceSmall_model</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and load light sharegpt4video.</span>
+
+<span class="sd">    :param model_name: input model name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models&quot;</span><span class="p">))</span>
+    <span class="n">diff_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models/SenseVoice_changes.diff&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">repo_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/FunAudioLLM/SenseVoice.git&quot;</span>
+
+    <span class="n">final_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s2">&quot;SenseVoice&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">final_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting direct clone from </span><span class="si">{</span><span class="n">repo_url</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="s2">&quot;--depth&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">diff_file</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying patch: </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">,</span> <span class="s2">&quot;apply&quot;</span><span class="p">,</span> <span class="n">diff_file</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Patch file not found at </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">final_dir</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">final_dir</span><span class="p">)</span>
+            <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory </span><span class="si">{</span><span class="n">final_dir</span><span class="si">}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">thirdparty.humanvbench_models.SenseVoice.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">SenseVoiceSmall</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading ASR_model model...&quot;</span><span class="p">)</span>
+    <span class="n">ASR_Emo_model</span><span class="p">,</span> <span class="n">kwargs1</span> <span class="o">=</span> <span class="n">SenseVoiceSmall</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">pretrained_model_name_or_path</span><span class="p">)</span>
+
+    <span class="n">ASR_Emo_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ASR_Emo_model</span><span class="p">,</span> <span class="n">kwargs1</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_light_asd_model">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.model_utils.html#data_juicer.utils.model_utils.prepare_light_asd_model">[文档]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_light_asd_model</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="s2">&quot;weight/finetuning_TalkSet.model&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and load light asd model.</span>
+
+<span class="sd">    :param model_name: input model name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models&quot;</span><span class="p">))</span>
+    <span class="n">pretrained_model_name_or_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s2">&quot;Light-ASD/weight/finetuning_TalkSet.model&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading light_asd model...&quot;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ASD</span><span class="w"> </span><span class="kn">import</span> <span class="n">ASD</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ASD</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">loadParameters</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+<span class="c1"># import sys</span>
+<span class="c1"># sys.path.append(&quot;../thirdparty/humanvbench_models/Light-ASD&quot;)</span>
+<div class="viewcode-block" id="prepare_YOLOv8_human_model">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.model_utils.html#data_juicer.utils.model_utils.prepare_YOLOv8_human_model">[文档]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_YOLOv8_human_model</span><span class="p">(</span>
+    <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="s2">&quot;./thirdparty/humanvbench_models/YOLOv8_human/weights/best.pt&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and load light YOLOv8_human.</span>
+
+<span class="sd">    :param model_name: input model name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models&quot;</span><span class="p">))</span>
+    <span class="n">diff_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models/YOLOv8_human_changes.diff&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">repo_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/jahongir7174/YOLOv8-human.git&quot;</span>
+
+    <span class="n">old_name</span> <span class="o">=</span> <span class="s2">&quot;YOLOv8-human&quot;</span>
+    <span class="n">new_name</span> <span class="o">=</span> <span class="s2">&quot;YOLOv8_human&quot;</span>
+
+    <span class="n">target_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">old_name</span><span class="p">)</span>
+    <span class="n">final_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">final_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting direct clone from </span><span class="si">{</span><span class="n">repo_url</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="s2">&quot;--depth&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">target_dir</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Renaming </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">diff_file</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying patch: </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">,</span> <span class="s2">&quot;apply&quot;</span><span class="p">,</span> <span class="n">diff_file</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setup completed successfully.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Patch file not found at </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cleanup finished.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory </span><span class="si">{</span><span class="n">final_dir</span><span class="si">}</span><span class="s2"> already exists. Skipping setup.&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading YOLOv8_human model...&quot;</span><span class="p">)</span>
+    <span class="n">pretrained_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models/YOLOv8_human/weights/best.pt&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">human_detection_model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pretrained_model_path</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">human_detection_model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>
+    <span class="n">human_detection_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">human_detection_model</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_face_detect_S3FD_model">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.model_utils.html#data_juicer.utils.model_utils.prepare_face_detect_S3FD_model">[文档]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_face_detect_S3FD_model</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and load light asd model.</span>
+
+<span class="sd">    :param model_name: input model name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models&quot;</span><span class="p">))</span>
+    <span class="n">diff_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models/Light-ASD_changes.diff&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">repo_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/Junhua-Liao/Light-ASD.git&quot;</span>
+
+    <span class="n">final_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s2">&quot;Light-ASD&quot;</span><span class="p">)</span>
+    <span class="n">model_save_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">final_dir</span><span class="p">,</span> <span class="s2">&quot;model/faceDetector/s3fd&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">final_dir</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting direct clone from </span><span class="si">{</span><span class="n">repo_url</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="s2">&quot;--depth&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">diff_file</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying patch: </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">final_dir</span><span class="p">,</span> <span class="s2">&quot;apply&quot;</span><span class="p">,</span> <span class="n">diff_file</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Patch file not found at </span><span class="si">{</span><span class="n">diff_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">final_dir</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">final_dir</span><span class="p">)</span>
+            <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory </span><span class="si">{</span><span class="n">final_dir</span><span class="si">}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">download_sfd_model</span><span class="p">(</span><span class="n">target_dir</span><span class="p">):</span>
+        <span class="n">model_url</span> <span class="o">=</span> <span class="s2">&quot;https://huggingface.co/lithiumice/syncnet/resolve/main/sfd_face.pth&quot;</span>
+        <span class="n">mirror_model_url</span> <span class="o">=</span> <span class="s2">&quot;https://hf-mirror.com/lithiumice/syncnet/resolve/main/sfd_face.pth&quot;</span>
+
+        <span class="n">target_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="s2">&quot;sfd_face.pth&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_path</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model file </span><span class="si">{</span><span class="n">target_path</span><span class="si">}</span><span class="s2"> already exists. Skipping download.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading sfd_face.pth to </span><span class="si">{</span><span class="n">target_dir</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;wget&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="n">model_url</span><span class="p">,</span> <span class="s2">&quot;-O&quot;</span><span class="p">,</span> <span class="n">target_path</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model download completed successfully.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;wget&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="n">mirror_model_url</span><span class="p">,</span> <span class="s2">&quot;-O&quot;</span><span class="p">,</span> <span class="n">target_path</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model download completed successfully.&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to download model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">target_path</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">target_path</span><span class="p">)</span>
+
+    <span class="n">download_sfd_model</span><span class="p">(</span><span class="n">model_save_dir</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setup and model preparation completed.&quot;</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;../../thirdparty/humanvbench_models/Light-ASD&quot;</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading face_detect_S3FD_model model...&quot;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">model.faceDetector.s3fd</span><span class="w"> </span><span class="kn">import</span> <span class="n">S3FD</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">S3FD</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+<div class="viewcode-block" id="prepare_wav2vec2_age_gender_model">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.model_utils.html#data_juicer.utils.model_utils.prepare_wav2vec2_age_gender_model">[文档]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_wav2vec2_age_gender_model</span><span class="p">(</span>
+    <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="s2">&quot;audeering/wav2vec2-large-robust-24-ft-age-gender&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+<span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wav2Vec2Processor</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers.models.wav2vec2.modeling_wav2vec2</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+        <span class="n">Wav2Vec2Model</span><span class="p">,</span>
+        <span class="n">Wav2Vec2PreTrainedModel</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">pretrained_model_name_or_path</span> <span class="o">=</span> <span class="n">check_model_home</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">ModelHead</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Classification head.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">):</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dense</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">final_dropout</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">features</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">AgeGenderModel</span><span class="p">(</span><span class="n">Wav2Vec2PreTrainedModel</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Speech emotion classifier.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wav2vec2</span> <span class="o">=</span> <span class="n">Wav2Vec2Model</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">ModelHead</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gender</span> <span class="o">=</span> <span class="n">ModelHead</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">input_values</span><span class="p">,</span>
+        <span class="p">):</span>
+
+            <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wav2vec2</span><span class="p">(</span><span class="n">input_values</span><span class="p">)</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">hidden_states</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">logits_age</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span>
+            <span class="n">logits_gender</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gender</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">logits_age</span><span class="p">,</span> <span class="n">logits_gender</span>
+
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">Wav2Vec2Processor</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">AgeGenderModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pretrained_model_name_or_path</span><span class="p">,</span> <span class="n">use_safetensors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">processor</span></div>
+
+
+
 <span class="n">MODEL_FUNCTION_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;api&quot;</span><span class="p">:</span> <span class="n">prepare_api_model</span><span class="p">,</span>
     <span class="s2">&quot;deepcalib&quot;</span><span class="p">:</span> <span class="n">prepare_deepcalib_model</span><span class="p">,</span>
@@ -2586,9 +2859,23 @@
     <span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">prepare_embedding_model</span><span class="p">,</span>
     <span class="s2">&quot;sam_3d_body&quot;</span><span class="p">:</span> <span class="n">prepare_sam_3d_body_model</span><span class="p">,</span>
     <span class="s2">&quot;mmlab&quot;</span><span class="p">:</span> <span class="n">prepare_mmlab_model</span><span class="p">,</span>
+    <span class="s2">&quot;Light_ASD&quot;</span><span class="p">:</span> <span class="n">prepare_light_asd_model</span><span class="p">,</span>
+    <span class="s2">&quot;SenseVoiceSmall&quot;</span><span class="p">:</span> <span class="n">prepare_SenseVoiceSmall_model</span><span class="p">,</span>
+    <span class="s2">&quot;YOLOv8_human&quot;</span><span class="p">:</span> <span class="n">prepare_YOLOv8_human_model</span><span class="p">,</span>
+    <span class="s2">&quot;face_detect_S3FD&quot;</span><span class="p">:</span> <span class="n">prepare_face_detect_S3FD_model</span><span class="p">,</span>
+    <span class="s2">&quot;wav2vec2_age_gender&quot;</span><span class="p">:</span> <span class="n">prepare_wav2vec2_age_gender_model</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">_MODELS_WITHOUT_FILE_LOCK</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fasttext&quot;</span><span class="p">,</span> <span class="s2">&quot;fastsam&quot;</span><span class="p">,</span> <span class="s2">&quot;kenlm&quot;</span><span class="p">,</span> <span class="s2">&quot;nltk&quot;</span><span class="p">,</span> <span class="s2">&quot;recognizeAnything&quot;</span><span class="p">,</span> <span class="s2">&quot;sentencepiece&quot;</span><span class="p">,</span> <span class="s2">&quot;spacy&quot;</span><span class="p">}</span>
+<span class="n">_MODELS_WITHOUT_FILE_LOCK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;fasttext&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fastsam&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;kenlm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nltk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recognizeAnything&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sentencepiece&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;spacy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wav2vec2_age_gender&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="prepare_model">

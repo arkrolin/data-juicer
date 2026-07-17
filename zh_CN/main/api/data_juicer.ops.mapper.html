@@ -8333,6 +8333,344 @@ comprehensive list of whitespace characters, which can be found at
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoActiveSpeakerDetectMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_active_speaker_detect_mapper.html#VideoActiveSpeakerDetectMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Detect active speakers in a video by analyzing visual face tracks and
+audio signals, including consistency checks for gender and age.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_save_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./temp_path'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Light_ASD_model_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./thirdparty/humanvbench_models/Light-ASD/weight/finetuning_TalkSet.model'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_speaker_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'active_speaker_flag'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_active_speaker_detect_mapper.html#VideoActiveSpeakerDetectMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blur_type</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.active_speaker_detection_revise">
+<span class="sig-name descname"><span class="pre">active_speaker_detection_revise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_child_descrip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speech_audio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_gender</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_active_speaker_detect_mapper.html#VideoActiveSpeakerDetectMapper.active_speaker_detection_revise"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.active_speaker_detection_revise" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_active_speaker_detect_mapper.html#VideoActiveSpeakerDetectMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioASRMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoAudioASRMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_ASR_mapper.html#VideoAudioASRMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioASRMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Mapper to generate video tags from audio streams extracted by video
+using the Audio Spectrogram Transformer.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioASRMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir_ASR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FunAudioLLM/SenseVoiceSmall'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speech_ASR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'speech_ASR'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_ASR_mapper.html#VideoAudioASRMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioASRMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> -- extra args</p></li>
+<li><p><strong>kwargs</strong> -- extra args</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioASRMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_ASR_mapper.html#VideoAudioASRMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioASRMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoAudioDetectAgeGenderMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_detect_age_gender_mapper.html#VideoAudioDetectAgeGenderMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Detect age and gender (male, female, child) from video audio signals using a pretrained wav2vec2 model.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hf_audio_mapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'audio_speech_attribute'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_detect_age_gender_mapper.html#VideoAudioDetectAgeGenderMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keep_original_sample</strong> -- whether to keep the original sample. If
+it's set to False, there will be only captioned sample in the
+final datasets and the original sample will be removed. It's True
+in default.</p></li>
+<li><p><strong>args</strong> -- extra args</p></li>
+<li><p><strong>kwargs</strong> -- extra args</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_detect_age_gender_mapper.html#VideoAudioDetectAgeGenderMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoAudioSpeechEmotionMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_speech_emotion_mapper.html#VideoAudioSpeechEmotionMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Mapper to generate video tags from audio streams extracted by video
+using the Audio Spectrogram Transformer.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_dir_emo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FunAudioLLM/SenseVoiceSmall'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speech_Emo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'speech_emotion'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_speech_emotion_mapper.html#VideoAudioSpeechEmotionMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> -- extra args</p></li>
+<li><p><strong>kwargs</strong> -- extra args</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_audio_speech_emotion_mapper.html#VideoAudioSpeechEmotionMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoCaptioningFaceAttributeEmotionMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_face_attribute_emotion_mapper.html#VideoCaptioningFaceAttributeEmotionMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Generate facial attribute and emotion descriptions for each person
+tracked in a video using a video-to-text model.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_track_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&quot;Please</span> <span class="pre">describe</span> <span class="pre">the</span> <span class="pre">person's</span> <span class="pre">facial</span> <span class="pre">expression,</span> <span class="pre">tell</span> <span class="pre">me</span> <span class="pre">the</span> <span class="pre">person's</span> <span class="pre">emotion</span> <span class="pre">through</span> <span class="pre">the</span> <span class="pre">video,</span> <span class="pre">like</span> <span class="pre">Happiness,</span> <span class="pre">Excitement,</span> <span class="pre">Love,</span> <span class="pre">Gratitude,</span> <span class="pre">Relief,</span> <span class="pre">Pride,</span> <span class="pre">Anger,</span> <span class="pre">Sadness,</span> <span class="pre">Fear,</span> <span class="pre">Guilt,</span> <span class="pre">Shame,</span> <span class="pre">Disgust,</span> <span class="pre">Surprise,</span> <span class="pre">Confusion,</span> <span class="pre">Curiosity,</span> <span class="pre">Boredom</span> <span class="pre">...&quot;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_remote_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropping_face_video_temp_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./temp_video_path'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_describe_model_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'DAMO-NLP-SG/VideoLLaMA3-7B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_facetrack_attribute_emotion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'video_facetrack_attribute_emotion'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_face_attribute_emotion_mapper.html#VideoCaptioningFaceAttributeEmotionMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hf_video_blip</strong> -- video-blip model name on huggingface
+to generate caption</p>
+</dd>
+</dl>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_face_attribute_emotion_mapper.html#VideoCaptioningFaceAttributeEmotionMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoCaptioningFromHumanTracksMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_from_human_tracks_mapper.html#VideoCaptioningFromHumanTracksMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Mapper to generate samples whose captions are generated based on
+a video-to-text model and sampled video frame.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">human_track_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&quot;Descibe</span> <span class="pre">the</span> <span class="pre">person's</span> <span class="pre">apperance.</span> <span class="pre">Less</span> <span class="pre">than</span> <span class="pre">80</span> <span class="pre">words.</span> <span class="pre">&quot;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_remote_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_describe_model_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'DAMO-NLP-SG/VideoLLaMA3-7B'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_video_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name_track_video_caption</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'track_video_caption'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name_video_track_is_child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'video_track_is_child'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_from_human_tracks_mapper.html#VideoCaptioningFromHumanTracksMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hf_video_blip</strong> -- video-blip model name on huggingface
+to generate caption</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_captioning_from_human_tracks_mapper.html#VideoCaptioningFromHumanTracksMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumanTracksExtractionMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoHumanTracksExtractionMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_extraction_mapper.html#VideoHumanTracksExtractionMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Extract face and human bounding box tracks from videos.</p>
+<p>This operator performs multi-stage processing including scene detection,
+face detection (S3FD), face tracking, and human detection (YOLOv8).
+It eventually generates synchronized face and human tracks and saves
+the bbox sequences into pickle files.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_track_bbox_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./HumanVBenchRecipe/dj_human_track'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">YOLOv8_human_model_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./thirdparty/humanvbench_models/YOLOv8_human/weights/best.pt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_detect_S3FD_model_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./thirdparty/humanvbench_models/Light-ASD/model/faceDetector/s3fd/sfd_face.pth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name_human_track_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'human_track_data_path'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name_people_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'number_people_in_video'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_extraction_mapper.html#VideoHumanTracksExtractionMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.get_face_and_human_tracks">
+<span class="sig-name descname"><span class="pre">get_face_and_human_tracks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">human_detection_pipeline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_extraction_mapper.html#VideoHumanTracksExtractionMapper.get_face_and_human_tracks"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.get_face_and_human_tracks" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_extraction_mapper.html#VideoHumanTracksExtractionMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.mapper.</span></span><span class="sig-name descname"><span class="pre">VideoHumantrackFaceDemographicMapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper" title="链接到此定义。">#</a></dt>
+<dd><p>基类：<a class="reference internal" href="data_juicer.ops.base_op.html#data_juicer.ops.base_op.Mapper" title="data_juicer.ops.base_op.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a></p>
+<p>Mapper to generate samples whose captions are generated based on
+a video-to-text model and sampled video frame.</p>
+<p>Source: This operator is a part of HumanVBench (CVPR 2026).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_data_save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'video_facetrack_attribute_demographic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.__init__" title="链接到此定义。">#</a></dt>
+<dd><p>Initialization method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hf_video_blip</strong> -- video-blip model name on huggingface
+to generate caption</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.process_single">
+<span class="sig-name descname"><span class="pre">process_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper.process_single"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.process_single" title="链接到此定义。">#</a></dt>
+<dd><p>For sample level, sample --&gt; sample</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sample</strong> -- sample to process</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>processed sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.find_median">
+<span class="sig-name descname"><span class="pre">find_median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper.find_median"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.find_median" title="链接到此定义。">#</a></dt>
+<dd><p>Finds the median of a list of integers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>int_list</strong> -- List of integers.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The median of the list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.most_frequent_element_ratio">
+<span class="sig-name descname"><span class="pre">most_frequent_element_ratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper.most_frequent_element_ratio"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.most_frequent_element_ratio" title="链接到此定义。">#</a></dt>
+<dd><p>Finds the most frequent element in a list of strings and its proportion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str_list</strong> -- List of strings.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple (most_frequent_element, proportion).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.top_3_emotions">
+<span class="sig-name descname"><span class="pre">top_3_emotions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emotion_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/mapper/video_human_tracks_face_demographic_mapper.html#VideoHumantrackFaceDemographicMapper.top_3_emotions"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.top_3_emotions" title="链接到此定义。">#</a></dt>
+<dd><p>Calculates the average score for each emotion and returns the top 3 emotions with the highest average scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emotion_list</strong> -- List of dictionaries, each containing seven emotions and their corresponding scores.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples containing the top 3 emotions and their average scores.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -9177,6 +9515,51 @@ comprehensive list of whitespace characters, which can be found at
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.WhitespaceNormalizationMapper"><code class="docutils literal notranslate"><span class="pre">WhitespaceNormalizationMapper</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.WhitespaceNormalizationMapper.__init__"><code class="docutils literal notranslate"><span class="pre">WhitespaceNormalizationMapper.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.WhitespaceNormalizationMapper.process_batched"><code class="docutils literal notranslate"><span class="pre">WhitespaceNormalizationMapper.process_batched()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper"><code class="docutils literal notranslate"><span class="pre">VideoActiveSpeakerDetectMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoActiveSpeakerDetectMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.active_speaker_detection_revise"><code class="docutils literal notranslate"><span class="pre">VideoActiveSpeakerDetectMapper.active_speaker_detection_revise()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoActiveSpeakerDetectMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioASRMapper"><code class="docutils literal notranslate"><span class="pre">VideoAudioASRMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioASRMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoAudioASRMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioASRMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoAudioASRMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper"><code class="docutils literal notranslate"><span class="pre">VideoAudioDetectAgeGenderMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoAudioDetectAgeGenderMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoAudioDetectAgeGenderMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper"><code class="docutils literal notranslate"><span class="pre">VideoAudioSpeechEmotionMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoAudioSpeechEmotionMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoAudioSpeechEmotionMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoAudioSpeechEmotionMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFaceAttributeEmotionMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFaceAttributeEmotionMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFaceAttributeEmotionMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFaceAttributeEmotionMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFromHumanTracksMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFromHumanTracksMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoCaptioningFromHumanTracksMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoCaptioningFromHumanTracksMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper"><code class="docutils literal notranslate"><span class="pre">VideoHumanTracksExtractionMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoHumanTracksExtractionMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.get_face_and_human_tracks"><code class="docutils literal notranslate"><span class="pre">VideoHumanTracksExtractionMapper.get_face_and_human_tracks()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumanTracksExtractionMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoHumanTracksExtractionMapper.process_single()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.__init__"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.process_single"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper.process_single()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.find_median"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper.find_median()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.most_frequent_element_ratio"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper.most_frequent_element_ratio()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.mapper.VideoHumantrackFaceDemographicMapper.top_3_emotions"><code class="docutils literal notranslate"><span class="pre">VideoHumantrackFaceDemographicMapper.top_3_emotions()</span></code></a></li>
 </ul>
 </li>
 </ul>
