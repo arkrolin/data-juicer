@@ -688,7 +688,7 @@
 <span class="n">python_speech_features</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;python_speech_features&quot;</span><span class="p">)</span>
 <span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="n">DeepFace</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
-<span class="n">VideoManager</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
+<span class="n">open_video</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_deepface</span><span class="p">():</span>
@@ -701,21 +701,27 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_scenedetect</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">VideoManager</span>
-    <span class="k">if</span> <span class="n">VideoManager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">scenedetect.video_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">VideoManager</span> <span class="k">as</span> <span class="n">_VM</span>
+    <span class="k">global</span> <span class="n">open_video</span>
+    <span class="k">if</span> <span class="n">open_video</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scenedetect</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_video</span> <span class="k">as</span> <span class="n">_open_video</span>
 
-        <span class="n">VideoManager</span> <span class="o">=</span> <span class="n">_VM</span>
-    <span class="k">return</span> <span class="n">VideoManager</span>
+        <span class="n">open_video</span> <span class="o">=</span> <span class="n">_open_video</span>
+    <span class="k">return</span> <span class="n">open_video</span>
 
 
 <div class="viewcode-block" id="scene_detect">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.scene_detect">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scene_detect</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">):</span>
-    <span class="c1"># CPU: Scene detection, output is the list of each shot&#39;s time duration</span>
-    <span class="n">_VideoManager</span> <span class="o">=</span> <span class="n">_ensure_scenedetect</span><span class="p">()</span>
-    <span class="n">videoManager</span> <span class="o">=</span> <span class="n">_VideoManager</span><span class="p">([</span><span class="n">videoFilePath</span><span class="p">])</span>
-    <span class="n">sceneList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">videoManager</span><span class="o">.</span><span class="n">base_timecode</span><span class="p">,</span> <span class="n">videoManager</span><span class="o">.</span><span class="n">duration</span><span class="p">)]</span>
+    <span class="c1"># CPU: Scene detection, output is the list of each shot&#39;s time duration.</span>
+    <span class="c1"># The whole video is treated as a single shot: (start, end) where</span>
+    <span class="c1"># start.frame_num == 0 and end.frame_num == total number of frames.</span>
+    <span class="c1"># Note: open_video() returns a VideoStream that is not a context manager</span>
+    <span class="c1"># in scenedetect (e.g. VideoStreamCv2 in 0.7), so we must not use `with`.</span>
+    <span class="n">_open_video</span> <span class="o">=</span> <span class="n">_ensure_scenedetect</span><span class="p">()</span>
+    <span class="n">video</span> <span class="o">=</span> <span class="n">_open_video</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">)</span>
+    <span class="n">base_timecode</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">base_timecode</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">base_timecode</span> <span class="o">+</span> <span class="n">video</span><span class="o">.</span><span class="n">duration</span>
+    <span class="n">sceneList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">base_timecode</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">sceneList</span></div>
 
 
