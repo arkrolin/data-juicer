@@ -703,6 +703,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">fuse_operators</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ckpt_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointStrategy</span><span class="p">,</span> <span class="n">RayCheckpointManager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.config_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigAccessor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_remote_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
 <span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
@@ -871,7 +872,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">=</span> <span class="s2">&quot;ray_partitioned&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">work_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_local_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">work_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># Initialize temporary directory for Ray operations</span>
@@ -893,7 +894,9 @@
 
         <span class="c1"># Checkpoint configuration and manager initialization</span>
         <span class="n">checkpoint_cfg</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;checkpoint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">&quot;checkpoints&quot;</span><span class="p">))</span>
+        <span class="n">checkpoint_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_local_path</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">&quot;checkpoints&quot;</span><span class="p">))</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">checkpoint_cfg</span><span class="p">:</span>
             <span class="c1"># Use ConfigAccessor to handle both dict and object configurations</span>
@@ -965,6 +968,22 @@
             <span class="o">**</span><span class="n">export_extra_args</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_local_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a local, non-empty path to an absolute path.</span>
+
+<span class="sd">        Ray&#39;s writers (e.g. write_parquet) run on workers whose working</span>
+<span class="sd">        directory may differ from the main process, so relative paths like</span>
+<span class="sd">        &#39;./tmp/...&#39; cannot be resolved correctly and lead to empty checkpoint</span>
+<span class="sd">        directories. Absolute conversion is applied only to local, non-empty</span>
+<span class="sd">        paths: remote URIs (e.g. s3://, gs://, hdfs://) are left untouched to</span>
+<span class="sd">        avoid corrupting their scheme, and empty/None values pass through</span>
+<span class="sd">        unchanged to avoid raising TypeError.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_remote_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_configure_partitioning</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure partitioning based on manual or auto mode.&quot;&quot;&quot;</span>
