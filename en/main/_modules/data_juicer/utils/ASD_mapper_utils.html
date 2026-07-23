@@ -691,8 +691,6 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">wavfile</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
@@ -700,6 +698,8 @@
 <span class="n">mp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;moviepy&quot;</span><span class="p">)</span>
 <span class="n">python_speech_features</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;python_speech_features&quot;</span><span class="p">)</span>
 <span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">scipy_interpolate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;scipy.interpolate&quot;</span><span class="p">,</span> <span class="s2">&quot;scipy&quot;</span><span class="p">)</span>
+<span class="n">wavfile</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;scipy.io.wavfile&quot;</span><span class="p">,</span> <span class="s2">&quot;scipy&quot;</span><span class="p">)</span>
 <span class="n">DeepFace</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
 <span class="n">open_video</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
 
@@ -839,7 +839,7 @@
             <span class="n">frameI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frameNum</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frameNum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">bboxesI</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">ij</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-                <span class="n">interpfn</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">frameNum</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">[:,</span> <span class="n">ij</span><span class="p">])</span>
+                <span class="n">interpfn</span> <span class="o">=</span> <span class="n">scipy_interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">frameNum</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">[:,</span> <span class="n">ij</span><span class="p">])</span>
                 <span class="n">bboxesI</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interpfn</span><span class="p">(</span><span class="n">frameI</span><span class="p">))</span>
             <span class="n">bboxesI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>

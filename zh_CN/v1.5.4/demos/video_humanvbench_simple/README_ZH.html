@@ -842,25 +842,36 @@
 </div>
 </section>
 <section id="id4">
-<h2>快速开始<a class="headerlink" href="#id4" title="链接到此标题。">#</a></h2>
-<p>由于 HumanVBench 算子涉及外部仓库的修改，这些经过调整的仓库存储在 <code class="docutils literal notranslate"><span class="pre">thirdparty/humanvbench_models</span></code>。</p>
+<h2>安装<a class="headerlink" href="#id4" title="链接到此标题。">#</a></h2>
+<blockquote>
+<div><p><strong>注意：</strong> 这些算子需要 <code class="docutils literal notranslate"><span class="pre">thirdparty/humanvbench_models/</span></code> 下的第三方补丁/模型，目前需<strong>源码安装</strong>。</p>
+</div></blockquote>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datajuicer/data-juicer.git
+<span class="nb">cd</span><span class="w"> </span>data-juicer
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
 <section id="id5">
-<h3>方式一：自动模式（推荐）<a class="headerlink" href="#id5" title="链接到此标题。">#</a></h3>
+<h2>快速开始<a class="headerlink" href="#id5" title="链接到此标题。">#</a></h2>
+<p>由于 HumanVBench 算子涉及外部仓库的修改，这些经过调整的仓库存储在 <code class="docutils literal notranslate"><span class="pre">thirdparty/humanvbench_models</span></code>。</p>
+<section id="id6">
+<h3>方式一：自动模式（推荐）<a class="headerlink" href="#id6" title="链接到此标题。">#</a></h3>
 <p>直接运行即可——相关算子会自动处理 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> 和 <code class="docutils literal notranslate"><span class="pre">.diff</span></code> 补丁合并：</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>demos/video_humanvbench_simple/analyzer.yaml
 </pre></div>
 </div>
 </section>
-<section id="id6">
-<h3>方式二：手动模式<a class="headerlink" href="#id6" title="链接到此标题。">#</a></h3>
+<section id="id7">
+<h3>方式二：手动模式<a class="headerlink" href="#id7" title="链接到此标题。">#</a></h3>
 <p>按照 <code class="docutils literal notranslate"><span class="pre">thirdparty/humanvbench_models/README.md</span></code> 的指引手动完成 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> 和 <code class="docutils literal notranslate"><span class="pre">.diff</span></code> 补丁合并，然后运行：</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>demos/video_humanvbench_simple/analyzer.yaml
 </pre></div>
 </div>
 </section>
 </section>
-<section id="id7">
-<h2>管线依赖<a class="headerlink" href="#id7" title="链接到此标题。">#</a></h2>
+<section id="id8">
+<h2>管线依赖<a class="headerlink" href="#id8" title="链接到此标题。">#</a></h2>
 <p>算子构成一个处理管线，推荐执行顺序如下：</p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">video_face_ratio_filter</span></code> — 过滤以人为中心的视频</p></li>
@@ -927,12 +938,13 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">论文</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">相关文件</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">算子列表</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">快速开始</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">方式一：自动模式（推荐）</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">方式二：手动模式</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">安装</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">快速开始</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">方式一：自动模式（推荐）</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">方式二：手动模式</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">管线依赖</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">管线依赖</a></li>
 </ul>
   </nav></div>
 
