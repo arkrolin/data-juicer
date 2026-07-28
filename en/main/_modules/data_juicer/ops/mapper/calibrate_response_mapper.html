@@ -710,6 +710,12 @@
 <div class="viewcode-block" id="CalibrateResponseMapper.parse_output">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CalibrateResponseMapper.parse_output">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_pattern</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_OUTPUT_PATTERN</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_pattern</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">lastindex</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">raw_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 </div>
 
