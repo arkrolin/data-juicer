@@ -690,7 +690,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">HashKeys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizes</span><span class="p">,</span> <span class="n">byte_size_to_size_str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizes</span><span class="p">,</span> <span class="n">byte_size_to_size_str</span><span class="p">,</span> <span class="n">is_remote_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">filter_arguments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.webdataset_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">reconstruct_custom_webdataset_format</span>
 
@@ -762,17 +762,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="n">encrypt_before_export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">encrypt_before_export</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;encrypt_before_export is True but export_path is an S3 &quot;</span>
-                    <span class="s2">&quot;path. Local-file encryption is skipped for S3 exports. &quot;</span>
-                    <span class="s2">&quot;Use S3 server-side encryption (SSE) to protect data at rest.&quot;</span>
+                    <span class="s2">&quot;encrypt_before_export is True but export_path is a remote &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;path (</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">). Local-file encryption is skipped. &quot;</span>
+                    <span class="s2">&quot;Use server-side encryption to protect data at rest.&quot;</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.encryption_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_fernet_key</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="n">load_fernet_key</span><span class="p">(</span><span class="n">encryption_key_path</span><span class="p">)</span>
+
+        <span class="c1"># Check if export_path is HDFS and create filesystem if needed.</span>
+        <span class="c1"># PyArrow&#39;s HadoopFileSystem expects paths WITHOUT the hdfs:// scheme,</span>
+        <span class="c1"># so we also strip the scheme and use the bare path for writing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_pyarrow_hdfs_filesystem</span>
+
+            <span class="n">hdfs_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">export_path</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hdfs_host&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_port&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_user&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
+                    <span class="n">hdfs_config</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="o">=</span> <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">(</span><span class="n">hdfs_config</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. HDFS filesystem configured.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Check if export_path is S3 and create filesystem if needed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span> <span class="o">=</span> <span class="kc">None</span>
@@ -885,6 +899,16 @@
         <span class="c1"># Add S3 filesystem if available</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;export_extra_args&quot;</span><span class="p">][</span><span class="s2">&quot;filesystem&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span>
+        <span class="c1"># Add HDFS filesystem if available; PyArrow needs the bare path</span>
+        <span class="c1"># (without the hdfs:// scheme) when a filesystem is provided.</span>
+        <span class="c1"># Keep the original path for remote-path checks below;</span>
+        <span class="c1"># only strip the scheme when passing it to export_method.</span>
+        <span class="n">export_path_for_checks</span> <span class="o">=</span> <span class="n">export_path</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">strip_hdfs_scheme</span>
+
+            <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;export_extra_args&quot;</span><span class="p">][</span><span class="s2">&quot;filesystem&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span>
+            <span class="n">export_path</span> <span class="o">=</span> <span class="n">strip_hdfs_scheme</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># compute the min_rows_per_file for export methods</span>
             <span class="n">dataset_nbytes</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">size_bytes</span><span class="p">()</span>
@@ -894,14 +918,16 @@
             <span class="n">rows_per_file</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dataset_num_rows</span> <span class="o">/</span> <span class="n">num_shards</span><span class="p">)</span>
             <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;export_extra_args&quot;</span><span class="p">][</span><span class="s2">&quot;min_rows_per_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rows_per_file</span>
 
-        <span class="c1"># Ensure export directory exists (Ray&#39;s write_json treats export_path as a directory)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Ensure export directory exists (Ray&#39;s write_json treats export_path as a directory).</span>
+        <span class="c1"># Skip for any remote path (s3://, hdfs://, ...); the remote filesystem</span>
+        <span class="c1"># creates directories automatically during write.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_remote_path</span><span class="p">(</span><span class="n">export_path_for_checks</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">export_path_for_checks</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">export_method</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="o">**</span><span class="n">export_kwargs</span><span class="p">)</span>
 
         <span class="c1"># Encrypt all exported files in-place after Ray has finished writing</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_remote_path</span><span class="p">(</span><span class="n">export_path_for_checks</span><span class="p">):</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.encryption_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">encrypt_file</span>
 
             <span class="n">export_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span>

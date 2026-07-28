@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="zh-CN" data-content_root="../" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>data_juicer.ops.deduplicator.ray_image_deduplicator module &#8212; Data Juicer</title>
+    <title>data_juicer.utils.hdfs_utils module &#8212; Data Juicer</title>
   
   
   
@@ -42,22 +42,21 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script>window.JUICER_API_URL = 'https://datajuicer.online:443';</script>
-    <script src="../_static/documentation_options.js?v=91bfbbb6"></script>
+    <script src="../_static/documentation_options.js?v=8a448e45"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/translations.js?v=540d3cec"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/data_juicer.ops.deduplicator.ray_image_deduplicator';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/data_juicer.utils.hdfs_utils';</script>
     <script src="../_static/sidebar.js?v=3fc1065c"></script>
     <script src="../_static/switcher-mobile.js?v=07875724"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../_static/ask-ai-widget.js?v=7a5b498f"></script>
     <link rel="icon" href="../_static/icon.png"/>
-    <link rel="index" title="索引" href="../genindex.html" />
-    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="zh-CN"/>
+  <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   </head>
   
@@ -66,12 +65,12 @@
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳转至主要内容</a></div>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>回到顶部</button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <dialog id="pst-search-dialog">
@@ -94,13 +93,13 @@
   </dialog>
 
   <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="版本警告"></aside>
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 
   
     <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="网页导航">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -113,7 +112,7 @@
     
   
 
-<a class="navbar-brand logo" href="../index_ZH.html">
+<a class="navbar-brand logo" href="../index.html">
   
   
   
@@ -143,8 +142,8 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../docs_index_ZH.html">
-    文档
+  <a class="nav-link nav-internal" href="../docs_index.html">
+    DOCS
   </a>
 </li>
 
@@ -157,21 +156,21 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
     Sandbox
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
     Hub
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
     Agents
   </a>
 </li>
@@ -187,7 +186,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="搜索" aria-label="搜索" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
         </div>
@@ -212,8 +211,8 @@
         <div class="navbar-item">
 
 <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="亮色"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="暗色"></i>
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
   <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
 </button></div>
       
@@ -224,9 +223,9 @@
             class="navbar-dropdown-trigger" 
             aria-haspopup="true"
             aria-expanded="false"
-            aria-label="Select language: zh-CN">
+            aria-label="Select language: en">
       <span class="switcher-icon" aria-hidden="true">🌐</span>
-      <span class="switcher-text">zh-CN</span>
+      <span class="switcher-text">en</span>
       <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
     </button>
     <div class="navbar-dropdown-panel" role="menu">
@@ -234,19 +233,19 @@
         
           
           
-          <a href="../../../en/v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-             class="dropdown-item "
+          <a href="../../../en/main/api/data_juicer.utils.hdfs_utils.html"
+             class="dropdown-item active"
              role="menuitem"
-             >
+             aria-current="true">
             English
           </a>
         
           
           
-          <a href="../../../zh_CN/v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-             class="dropdown-item active"
+          <a href="../../../zh_CN/main/api/data_juicer.utils.hdfs_utils.html"
+             class="dropdown-item "
              role="menuitem"
-             aria-current="true">
+             >
             简体中文
           </a>
         
@@ -261,99 +260,99 @@
             class="navbar-dropdown-trigger" 
             aria-haspopup="true"
             aria-expanded="false"
-            aria-label="Select version: v1.5.0">
+            aria-label="Select version: main">
       <span class="switcher-icon" aria-hidden="true">📦</span>
-      <span class="switcher-text">v1.5.0</span>
+      <span class="switcher-text">main</span>
       <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
     </button>
     <div class="navbar-dropdown-panel" role="menu">
       <div class="dropdown-content">
         
-        <a href="../../main/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-           class="dropdown-item "
+        <a href="../../main/api/data_juicer.utils.hdfs_utils.html"
+           class="dropdown-item active"
            role="menuitem"
-           >
+           aria-current="true">
           main
         </a>
         
-        <a href="../../v1.5.4/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.4/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.4
         </a>
         
-        <a href="../../v1.5.3/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.3/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.3
         </a>
         
-        <a href="../../v1.5.2/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.2/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.2
         </a>
         
-        <a href="../../v1.5.1/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.1/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.1
         </a>
         
-        <a href="../../v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-           class="dropdown-item active"
+        <a href="../../v1.5.0/api/data_juicer.utils.hdfs_utils.html"
+           class="dropdown-item "
            role="menuitem"
-           aria-current="true">
+           >
           v1.5.0
         </a>
         
-        <a href="../../v1.4.6/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.6/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.6
         </a>
         
-        <a href="../../v1.4.5/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.5/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.5
         </a>
         
-        <a href="../../v1.4.4/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.4/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.4
         </a>
         
-        <a href="../../v1.4.3/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.3/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.3
         </a>
         
-        <a href="../../v1.4.2/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.2/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.2
         </a>
         
-        <a href="../../v1.4.1/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.1/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.1
         </a>
         
-        <a href="../../v1.4.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.0/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
@@ -373,14 +372,14 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="搜索" aria-label="搜索" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
     </div>
   
 
   
-    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="当前页面">
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
       <span class="fa-solid fa-outdent"></span>
     </button>
   
@@ -413,8 +412,8 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../docs_index_ZH.html">
-    文档
+  <a class="nav-link nav-internal" href="../docs_index.html">
+    DOCS
   </a>
 </li>
 
@@ -427,21 +426,21 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
     Sandbox
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
     Hub
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/zh_CN/main/">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
     Agents
   </a>
 </li>
@@ -475,8 +474,8 @@
           <div class="navbar-item">
 
 <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="亮色"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="暗色"></i>
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
   <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
 </button></div>
         
@@ -487,9 +486,9 @@
             class="navbar-dropdown-trigger" 
             aria-haspopup="true"
             aria-expanded="false"
-            aria-label="Select language: zh-CN">
+            aria-label="Select language: en">
       <span class="switcher-icon" aria-hidden="true">🌐</span>
-      <span class="switcher-text">zh-CN</span>
+      <span class="switcher-text">en</span>
       <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
     </button>
     <div class="navbar-dropdown-panel" role="menu">
@@ -497,19 +496,19 @@
         
           
           
-          <a href="../../../en/v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-             class="dropdown-item "
+          <a href="../../../en/main/api/data_juicer.utils.hdfs_utils.html"
+             class="dropdown-item active"
              role="menuitem"
-             >
+             aria-current="true">
             English
           </a>
         
           
           
-          <a href="../../../zh_CN/v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-             class="dropdown-item active"
+          <a href="../../../zh_CN/main/api/data_juicer.utils.hdfs_utils.html"
+             class="dropdown-item "
              role="menuitem"
-             aria-current="true">
+             >
             简体中文
           </a>
         
@@ -524,99 +523,99 @@
             class="navbar-dropdown-trigger" 
             aria-haspopup="true"
             aria-expanded="false"
-            aria-label="Select version: v1.5.0">
+            aria-label="Select version: main">
       <span class="switcher-icon" aria-hidden="true">📦</span>
-      <span class="switcher-text">v1.5.0</span>
+      <span class="switcher-text">main</span>
       <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
     </button>
     <div class="navbar-dropdown-panel" role="menu">
       <div class="dropdown-content">
         
-        <a href="../../main/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-           class="dropdown-item "
+        <a href="../../main/api/data_juicer.utils.hdfs_utils.html"
+           class="dropdown-item active"
            role="menuitem"
-           >
+           aria-current="true">
           main
         </a>
         
-        <a href="../../v1.5.4/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.4/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.4
         </a>
         
-        <a href="../../v1.5.3/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.3/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.3
         </a>
         
-        <a href="../../v1.5.2/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.2/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.2
         </a>
         
-        <a href="../../v1.5.1/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.5.1/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.5.1
         </a>
         
-        <a href="../../v1.5.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
-           class="dropdown-item active"
+        <a href="../../v1.5.0/api/data_juicer.utils.hdfs_utils.html"
+           class="dropdown-item "
            role="menuitem"
-           aria-current="true">
+           >
           v1.5.0
         </a>
         
-        <a href="../../v1.4.6/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.6/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.6
         </a>
         
-        <a href="../../v1.4.5/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.5/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.5
         </a>
         
-        <a href="../../v1.4.4/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.4/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.4
         </a>
         
-        <a href="../../v1.4.3/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.3/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.3
         </a>
         
-        <a href="../../v1.4.2/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.2/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.2
         </a>
         
-        <a href="../../v1.4.1/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.1/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
           v1.4.1
         </a>
         
-        <a href="../../v1.4.0/api/data_juicer.ops.deduplicator.ray_image_deduplicator.html"
+        <a href="../../v1.4.0/api/data_juicer.utils.hdfs_utils.html"
            class="dropdown-item "
            role="menuitem"
            >
@@ -664,11 +663,11 @@
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
-      <a href="../index_ZH.html" class="nav-link" aria-label="初始页面">
+      <a href="../index.html" class="nav-link" aria-label="Home">
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.deduplicator.ray_image_deduplicator module</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.utils.hdfs_utils module</span></li>
   </ul>
 </nav>
 </div>
@@ -685,41 +684,100 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-data_juicer.ops.deduplicator.ray_image_deduplicator">
-<span id="data-juicer-ops-deduplicator-ray-image-deduplicator-module"></span><h1>data_juicer.ops.deduplicator.ray_image_deduplicator module<a class="headerlink" href="#module-data_juicer.ops.deduplicator.ray_image_deduplicator" title="链接到此标题。">#</a></h1>
+  <section id="module-data_juicer.utils.hdfs_utils">
+<span id="data-juicer-utils-hdfs-utils-module"></span><h1>data_juicer.utils.hdfs_utils module<a class="headerlink" href="#module-data_juicer.utils.hdfs_utils" title="Link to this heading">#</a></h1>
+<p>HDFS utilities for Data-Juicer.</p>
+<p>Provides unified HDFS filesystem creation for the default executor
+and Ray executor (PyArrow backend). PyArrow’s HadoopFileSystem relies
+on libhdfs and a working Hadoop/JVM environment on every node, so make
+sure the following environment variables are configured on all nodes
+before use:</p>
+<blockquote>
+<div><p>export HADOOP_HOME=/path/to/hadoop
+export JAVA_HOME=/path/to/java
+export CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath –glob)
+export ARROW_LIBHDFS_DIR=$HADOOP_HOME/lib/native   # depends on env</p>
+</div></blockquote>
 <dl class="py function">
-<dt class="sig sig-object py" id="data_juicer.ops.deduplicator.ray_image_deduplicator.get_hash_method">
-<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.deduplicator.ray_image_deduplicator.</span></span><span class="sig-name descname"><span class="pre">get_hash_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/deduplicator/ray_image_deduplicator.html#get_hash_method"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.get_hash_method" title="链接到此定义。">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.deduplicator.ray_image_deduplicator.</span></span><span class="sig-name descname"><span class="pre">RayImageDeduplicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/deduplicator/ray_image_deduplicator.html#RayImageDeduplicator"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator" title="链接到此定义。">#</a></dt>
-<dd><p>基类：<a class="reference internal" href="data_juicer.ops.deduplicator.ray_basic_deduplicator.html#data_juicer.ops.deduplicator.ray_basic_deduplicator.RayBasicDeduplicator" title="data_juicer.ops.deduplicator.ray_basic_deduplicator.RayBasicDeduplicator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayBasicDeduplicator</span></code></a></p>
-<p>Deduplicates samples at the document level using exact matching of images in Ray distributed mode.</p>
-<p>This operator uses a specified hash method to compute image hashes and identifies
-duplicates by comparing these hashes. It operates in Ray distributed mode, supporting
-'ray_actor' or 'redis' backends for deduplication. The hash method can be set during
-initialization, with supported methods listed in <cite>HASH_METHOD</cite>. If a sample does not
-contain an image, it is assigned an empty hash value. The operator loads images from the
-specified keys and computes their combined hash for comparison.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ray_actor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'redis://localhost:6379'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'phash'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/deduplicator/ray_image_deduplicator.html#RayImageDeduplicator.__init__"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.__init__" title="链接到此定义。">#</a></dt>
-<dd><p>Initialization.
-:param backend: the backend for dedup, either 'ray_actor' or 'redis'
-:param redis_address: the address of redis server
-:param method: the hash method to use
-:param args: extra args
-:param kwargs: extra args</p>
+<dt class="sig sig-object py" id="data_juicer.utils.hdfs_utils.parse_hdfs_path">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.hdfs_utils.</span></span><span class="sig-name descname"><span class="pre">parse_hdfs_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/data_juicer/utils/hdfs_utils.html#parse_hdfs_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.hdfs_utils.parse_hdfs_path" title="Link to this definition">#</a></dt>
+<dd><p>Parse the host and port from an HDFS URI.</p>
+<dl class="simple">
+<dt>e.g. ‘hdfs://namenode:8020/user/data’ -&gt; (‘namenode’, 8020)</dt><dd><p>‘hdfs://namenode/user/data’      -&gt; (‘namenode’, None)
+‘hdfs:///user/data’              -&gt; (None, None)  # rely on default fs</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – HDFS path to parse.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple of (host, port). host/port may be None, in which case
+PyArrow will fall back to the default filesystem configured via
+Hadoop conf (fs.defaultFS).</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.calculate_hash">
-<span class="sig-name descname"><span class="pre">calculate_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/deduplicator/ray_image_deduplicator.html#RayImageDeduplicator.calculate_hash"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.calculate_hash" title="链接到此定义。">#</a></dt>
-<dd><p>Calculate hash value for the sample.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.hdfs_utils.strip_hdfs_scheme">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.hdfs_utils.</span></span><span class="sig-name descname"><span class="pre">strip_hdfs_scheme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/data_juicer/utils/hdfs_utils.html#strip_hdfs_scheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.hdfs_utils.strip_hdfs_scheme" title="Link to this definition">#</a></dt>
+<dd><p>Strip the hdfs:// scheme/authority from a path, returning the bare
+filesystem path that PyArrow HadoopFileSystem expects.</p>
+<p>e.g. ‘hdfs://namenode:8020/user/data/file.jsonl’ -&gt; ‘/user/data/file.jsonl’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – HDFS path to strip.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>// scheme.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bare filesystem path without the hdfs</p>
+</dd>
+</dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.hdfs_utils.create_pyarrow_hdfs_filesystem">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.hdfs_utils.</span></span><span class="sig-name descname"><span class="pre">create_pyarrow_hdfs_filesystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyarrow.fs.HadoopFileSystem</span></span></span><a class="reference internal" href="../_modules/data_juicer/utils/hdfs_utils.html#create_pyarrow_hdfs_filesystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.hdfs_utils.create_pyarrow_hdfs_filesystem" title="Link to this definition">#</a></dt>
+<dd><p>Create a PyArrow HadoopFileSystem for reading/writing HDFS.</p>
+<p>Configuration priority for host/port:
+1. Explicit fields in <code class="docutils literal notranslate"><span class="pre">ds_config</span></code> (‘hdfs_host’, ‘hdfs_port’).
+2. Parsed from the ‘path’ field in <code class="docutils literal notranslate"><span class="pre">ds_config</span></code>.
+3. Default (‘default’), letting PyArrow use Hadoop conf (fs.defaultFS).</p>
+<dl class="simple">
+<dt>Optional <code class="docutils literal notranslate"><span class="pre">ds_config</span></code> fields:</dt><dd><ul class="simple">
+<li><p>hdfs_host: namenode host, or ‘default’.</p></li>
+<li><p>hdfs_port: namenode port (int).</p></li>
+<li><p>hdfs_user: user name for HDFS access.</p></li>
+<li><p>hdfs_kerb_ticket: path to the Kerberos ticket cache.</p></li>
+<li><p>hdfs_extra_conf: dict of extra Hadoop configurations.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds_config</strong> – Dataset/export configuration dictionary.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A configured pyarrow.fs.HadoopFileSystem instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.hdfs_utils.validate_hdfs_path">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.hdfs_utils.</span></span><span class="sig-name descname"><span class="pre">validate_hdfs_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/data_juicer/utils/hdfs_utils.html#validate_hdfs_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.hdfs_utils.validate_hdfs_path" title="Link to this definition">#</a></dt>
+<dd><p>Validate that a path is a valid HDFS path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – Path to validate.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If path doesn’t start with ‘hdfs://’.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -749,25 +807,23 @@ specified keys and computes their combined hash for comparison.</p>
 <div
     id="pst-page-navigation-heading-2"
     class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> 当前页面
+    <i class="fa-solid fa-list"></i> On this page
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.get_hash_method"><code class="docutils literal notranslate"><span class="pre">get_hash_method()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator"><code class="docutils literal notranslate"><span class="pre">RayImageDeduplicator</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.__init__"><code class="docutils literal notranslate"><span class="pre">RayImageDeduplicator.__init__()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.deduplicator.ray_image_deduplicator.RayImageDeduplicator.calculate_hash"><code class="docutils literal notranslate"><span class="pre">RayImageDeduplicator.calculate_hash()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.hdfs_utils.parse_hdfs_path"><code class="docutils literal notranslate"><span class="pre">parse_hdfs_path()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.hdfs_utils.strip_hdfs_scheme"><code class="docutils literal notranslate"><span class="pre">strip_hdfs_scheme()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.hdfs_utils.create_pyarrow_hdfs_filesystem"><code class="docutils literal notranslate"><span class="pre">create_pyarrow_hdfs_filesystem()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.hdfs_utils.validate_hdfs_path"><code class="docutils literal notranslate"><span class="pre">validate_hdfs_path()</span></code></a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
-    <h3>本页</h3>
+    <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/data_juicer.ops.deduplicator.ray_image_deduplicator.rst.txt"
-            rel="nofollow">显示源代码</a></li>
+      <li><a href="../_sources/api/data_juicer.utils.hdfs_utils.rst.txt"
+            rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
 
@@ -811,7 +867,7 @@ specified keys and computes their combined hash for comparison.</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4创建。
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
     <br/>
   </p>
 </div>
@@ -819,7 +875,7 @@ specified keys and computes their combined hash for comparison.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  使用 <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1构建.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

@@ -2693,12 +2693,12 @@
 </li>
       <li><a href="api/data_juicer.ops.filter.html#data_juicer.ops.filter.CharacterRepetitionFilter.compute_stats_batched">compute_stats_batched() （data_juicer.ops.filter.CharacterRepetitionFilter 方法）</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/data_juicer.ops.filter.flagged_words_filter.html#data_juicer.ops.filter.flagged_words_filter.FlaggedWordFilter.compute_stats_batched">compute_stats_batched() （data_juicer.ops.filter.flagged_words_filter.FlaggedWordFilter 方法）</a>
 </li>
       <li><a href="api/data_juicer.ops.filter.html#data_juicer.ops.filter.FlaggedWordFilter.compute_stats_batched">compute_stats_batched() （data_juicer.ops.filter.FlaggedWordFilter 方法）</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/data_juicer.ops.filter.image_aspect_ratio_filter.html#data_juicer.ops.filter.image_aspect_ratio_filter.ImageAspectRatioFilter.compute_stats_batched">compute_stats_batched() （data_juicer.ops.filter.image_aspect_ratio_filter.ImageAspectRatioFilter 方法）</a>
 </li>
       <li><a href="api/data_juicer.ops.filter.html#data_juicer.ops.filter.ImageAspectRatioFilter.compute_stats_batched">compute_stats_batched() （data_juicer.ops.filter.ImageAspectRatioFilter 方法）</a>
@@ -2931,6 +2931,8 @@
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultCommonCrawlDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultCommonCrawlDataLoadStrategy 属性）</a>
 </li>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy 属性）</a>
+</li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHuggingfaceDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultHuggingfaceDataLoadStrategy 属性）</a>
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultLocalDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultLocalDataLoadStrategy 属性）</a>
@@ -2938,6 +2940,8 @@
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultS3DataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultS3DataLoadStrategy 属性）</a>
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultWikiDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.DefaultWikiDataLoadStrategy 属性）</a>
+</li>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy 属性）</a>
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy.CONFIG_VALIDATION_RULES">CONFIG_VALIDATION_RULES（data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy 属性）</a>
 </li>
@@ -3022,6 +3026,8 @@
       <li><a href="api/data_juicer.tools.DJ_mcp_granular_ops.html#data_juicer.tools.DJ_mcp_granular_ops.create_operator_function">create_operator_function()（在 data_juicer.tools.DJ_mcp_granular_ops 模块中）</a>
 </li>
       <li><a href="api/data_juicer.utils.nltk_utils.html#data_juicer.utils.nltk_utils.create_physical_resource_alias">create_physical_resource_alias()（在 data_juicer.utils.nltk_utils 模块中）</a>
+</li>
+      <li><a href="api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.create_pyarrow_hdfs_filesystem">create_pyarrow_hdfs_filesystem()（在 data_juicer.utils.hdfs_utils 模块中）</a>
 </li>
       <li><a href="api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.create_pyarrow_s3_filesystem">create_pyarrow_s3_filesystem()（在 data_juicer.utils.s3_utils 模块中）</a>
 </li>
@@ -5016,8 +5022,6 @@
         <li><a href="api/data_juicer.ops.mapper.video_hand_motion_smooth_mapper.html#module-data_juicer.ops.mapper.video_hand_motion_smooth_mapper">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     data_juicer.ops.mapper.video_hand_reconstruction_hawor_mapper
 
@@ -5025,6 +5029,8 @@
         <li><a href="api/data_juicer.ops.mapper.video_hand_reconstruction_hawor_mapper.html#module-data_juicer.ops.mapper.video_hand_reconstruction_hawor_mapper">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     data_juicer.ops.mapper.video_hand_reconstruction_mapper
 
@@ -5436,6 +5442,13 @@
 
       <ul>
         <li><a href="api/data_juicer.utils.fingerprint_utils.html#module-data_juicer.utils.fingerprint_utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    data_juicer.utils.hdfs_utils
+
+      <ul>
+        <li><a href="api/data_juicer.utils.hdfs_utils.html#module-data_juicer.utils.hdfs_utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -6106,6 +6119,8 @@
       <li><a href="api/data_juicer.core.executor.html#data_juicer.core.executor.DefaultExecutor">DefaultExecutor（data_juicer.core.executor 中的类）</a>
 </li>
       <li><a href="api/data_juicer.core.executor.default_executor.html#data_juicer.core.executor.default_executor.DefaultExecutor">DefaultExecutor（data_juicer.core.executor.default_executor 中的类）</a>
+</li>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy">DefaultHdfsDataLoadStrategy（data_juicer.core.data.load_strategy 中的类）</a>
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHuggingfaceDataLoadStrategy">DefaultHuggingfaceDataLoadStrategy（data_juicer.core.data.load_strategy 中的类）</a>
 </li>
@@ -7789,6 +7804,8 @@
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.DefaultDataLoadStrategy 方法）</a>
 </li>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy 方法）</a>
+</li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultHuggingfaceDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.DefaultHuggingfaceDataLoadStrategy 方法）</a>
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.DefaultLocalDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.DefaultLocalDataLoadStrategy 方法）</a>
@@ -7801,12 +7818,14 @@
 </li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayDataLoadStrategy 方法）</a>
 </li>
-      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy 方法）</a>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy 方法）</a>
 </li>
-      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayLocalJsonDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayLocalJsonDataLoadStrategy 方法）</a>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy 方法）</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayLocalJsonDataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayLocalJsonDataLoadStrategy 方法）</a>
+</li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy.load_data">load_data() （data_juicer.core.data.load_strategy.RayS3DataLoadStrategy 方法）</a>
 </li>
       <li><a href="api/data_juicer.utils.mm_utils.html#data_juicer.utils.mm_utils.load_data_with_context">load_data_with_context()（在 data_juicer.utils.mm_utils 模块中）</a>
@@ -8849,6 +8868,8 @@
 </li>
         <li><a href="api/data_juicer.utils.fingerprint_utils.html#module-data_juicer.utils.fingerprint_utils">data_juicer.utils.fingerprint_utils</a>
 </li>
+        <li><a href="api/data_juicer.utils.hdfs_utils.html#module-data_juicer.utils.hdfs_utils">data_juicer.utils.hdfs_utils</a>
+</li>
         <li><a href="api/data_juicer.utils.job.html#module-data_juicer.utils.job">data_juicer.utils.job</a>
 </li>
         <li><a href="api/data_juicer.utils.job.common.html#module-data_juicer.utils.job.common">data_juicer.utils.job.common</a>
@@ -9219,6 +9240,8 @@
       <li><a href="api/data_juicer.ops.common.hawor_func.html#data_juicer.ops.common.hawor_func.parse_chunks">parse_chunks()（在 data_juicer.ops.common.hawor_func 模块中）</a>
 </li>
       <li><a href="api/data_juicer.core.data.dataset_builder.html#data_juicer.core.data.dataset_builder.parse_cli_datapath">parse_cli_datapath()（在 data_juicer.core.data.dataset_builder 模块中）</a>
+</li>
+      <li><a href="api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.parse_hdfs_path">parse_hdfs_path()（在 data_juicer.utils.hdfs_utils 模块中）</a>
 </li>
       <li><a href="api/data_juicer.ops.aggregator.entity_attribute_aggregator.html#data_juicer.ops.aggregator.entity_attribute_aggregator.EntityAttributeAggregator.parse_output">parse_output() （data_juicer.ops.aggregator.entity_attribute_aggregator.EntityAttributeAggregator 方法）</a>
 </li>
@@ -9842,10 +9865,10 @@
 </li>
       <li><a href="api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveRepeatSentencesMapper.process_batched">process_batched() （data_juicer.ops.mapper.RemoveRepeatSentencesMapper 方法）</a>
 </li>
-      <li><a href="api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveSpecificCharsMapper.process_batched">process_batched() （data_juicer.ops.mapper.RemoveSpecificCharsMapper 方法）</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveSpecificCharsMapper.process_batched">process_batched() （data_juicer.ops.mapper.RemoveSpecificCharsMapper 方法）</a>
+</li>
       <li><a href="api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveTableTextMapper.process_batched">process_batched() （data_juicer.ops.mapper.RemoveTableTextMapper 方法）</a>
 </li>
       <li><a href="api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveWordsWithIncorrectSubstringsMapper.process_batched">process_batched() （data_juicer.ops.mapper.RemoveWordsWithIncorrectSubstringsMapper 方法）</a>
@@ -10616,6 +10639,8 @@
 </li>
       <li><a href="api/data_juicer.core.ray_exporter.html#data_juicer.core.ray_exporter.RayExporter">RayExporter（data_juicer.core.ray_exporter 中的类）</a>
 </li>
+      <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy">RayHdfsDataLoadStrategy（data_juicer.core.data.load_strategy 中的类）</a>
+</li>
       <li><a href="api/data_juicer.core.data.load_strategy.html#data_juicer.core.data.load_strategy.RayHuggingfaceDataLoadStrategy">RayHuggingfaceDataLoadStrategy（data_juicer.core.data.load_strategy 中的类）</a>
 </li>
       <li><a href="api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayImageDeduplicator">RayImageDeduplicator（data_juicer.ops.deduplicator 中的类）</a>
@@ -11242,6 +11267,8 @@
 </li>
       <li><a href="api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.helper_func.strip">strip()（在 data_juicer.ops.common.helper_func 模块中）</a>
 </li>
+      <li><a href="api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.strip_hdfs_scheme">strip_hdfs_scheme()（在 data_juicer.utils.hdfs_utils 模块中）</a>
+</li>
       <li><a href="api/data_juicer.ops.mapper.latex_figure_context_extractor_mapper.html#data_juicer.ops.mapper.latex_figure_context_extractor_mapper.Figure.sub_figures">sub_figures（data_juicer.ops.mapper.latex_figure_context_extractor_mapper.Figure 属性）</a>
 </li>
       <li><a href="api/data_juicer.ops.mapper.latex_figure_context_extractor_mapper.html#data_juicer.ops.mapper.latex_figure_context_extractor_mapper.SubFigure">SubFigure（data_juicer.ops.mapper.latex_figure_context_extractor_mapper 中的类）</a>
@@ -11653,6 +11680,8 @@
       <li><a href="api/data_juicer.core.data.data_validator.html#data_juicer.core.data.data_validator.SwiftMessagesValidator.validate_conversation">validate_conversation() （data_juicer.core.data.data_validator.SwiftMessagesValidator 方法）</a>
 </li>
       <li><a href="api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.validate_dag">validate_dag() （data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy 方法）</a>
+</li>
+      <li><a href="api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.validate_hdfs_path">validate_hdfs_path()（在 data_juicer.utils.hdfs_utils 模块中）</a>
 </li>
       <li><a href="api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.validate_s3_path">validate_s3_path()（在 data_juicer.utils.s3_utils 模块中）</a>
 </li>

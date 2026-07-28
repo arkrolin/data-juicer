@@ -737,8 +737,8 @@
 <span class="sd">        :param encrypt_before_export: whether to encrypt each exported file</span>
 <span class="sd">            in-place immediately after writing. Requires a valid Fernet key</span>
 <span class="sd">            accessible via ``encryption_key_path`` or the environment</span>
-<span class="sd">            variable ``DJ_ENCRYPTION_KEY``. S3 paths are skipped (use S3</span>
-<span class="sd">            SSE instead). Default: False.</span>
+<span class="sd">            variable ``DJ_ENCRYPTION_KEY``. Remote paths (s3://, hdfs://)</span>
+<span class="sd">            are skipped. Default: False.</span>
 <span class="sd">        :param encryption_key_path: path to a file containing the Fernet key.</span>
 <span class="sd">            Falls back to the ``DJ_ENCRYPTION_KEY`` environment variable when</span>
 <span class="sd">            ``None``. Only used when ``encrypt_before_export`` is True.</span>
@@ -764,11 +764,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="n">encrypt_before_export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">encrypt_before_export</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;encrypt_before_export is True but export_path is an S3 &quot;</span>
-                    <span class="s2">&quot;path. Local-file encryption is skipped for S3 exports. &quot;</span>
-                    <span class="s2">&quot;Use S3 server-side encryption (SSE) to protect data at rest.&quot;</span>
+                    <span class="s2">&quot;encrypt_before_export is True but export_path is a remote &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;path (</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">). Local-file encryption is skipped. &quot;</span>
+                    <span class="s2">&quot;Use server-side encryption to protect data at rest.&quot;</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
@@ -825,6 +825,24 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="n">storage_options</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected S3 export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. S3 storage_options configured.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check if export_path is HDFS. Wrap PyArrow HadoopFileSystem via</span>
+        <span class="c1"># fsspec ArrowFSWrapper so that dataset.to_json/parquet(path)</span>
+        <span class="c1"># routes through fsspec → Arrow, unifying HDFS with the same</span>
+        <span class="c1"># storage_options path that S3 already uses.</span>
+        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">fsspec.implementations.arrow</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrowFSWrapper</span>
+
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_pyarrow_hdfs_filesystem</span>
+
+            <span class="n">hdfs_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">export_path</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hdfs_host&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_port&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_user&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">hdfs_config</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="n">hdfs_pyarrow_fs</span> <span class="o">=</span> <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">(</span><span class="n">hdfs_config</span><span class="p">)</span>
+            <span class="n">wrapped</span> <span class="o">=</span> <span class="n">ArrowFSWrapper</span><span class="p">(</span><span class="n">hdfs_pyarrow_fs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filesystem&quot;</span><span class="p">:</span> <span class="n">wrapped</span><span class="p">}</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="sa">f</span><span class="s2">&quot;ArrowFSWrapper storage_options configured.&quot;</span><span class="p">)</span>
 
         <span class="c1"># get the string format of shard size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span> <span class="o">=</span> <span class="n">byte_size_to_size_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span><span class="p">)</span>
@@ -917,7 +935,7 @@
                 <span class="n">ds_stats</span> <span class="o">=</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_ensure_meta_stats_dicts_for_export</span><span class="p">(</span><span class="n">ds_stats</span><span class="p">)</span>
                 <span class="n">stats_file</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;_stats.jsonl&quot;</span><span class="p">)</span>
                 <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="c1"># Add storage_options if available (for S3 export)</span>
+                <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                 <span class="n">Exporter</span><span class="o">.</span><span class="n">to_jsonl</span><span class="p">(</span><span class="n">ds_stats</span><span class="p">,</span> <span class="n">stats_file</span><span class="p">,</span> <span class="o">**</span><span class="n">export_kwargs</span><span class="p">)</span>
@@ -946,7 +964,7 @@
                 <span class="c1"># export the whole dataset into one single file.</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export dataset into a single file...&quot;</span><span class="p">)</span>
                 <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="c1"># Add storage_options if available (for S3 export)</span>
+                <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                 <span class="n">export_method</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="o">**</span><span class="n">export_kwargs</span><span class="p">)</span>
@@ -988,6 +1006,21 @@
                         <span class="sa">f</span><span class="s2">&quot;s3://</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
                     <span class="p">]</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+                    <span class="c1"># For HDFS paths, construct HDFS URIs for each shard</span>
+                    <span class="c1"># (same pattern as S3)</span>
+                    <span class="n">hdfs_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">authority</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdfs_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="c1"># Remove extension from prefix</span>
+                    <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
+                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="n">prefix</span>
+                    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="sa">f</span><span class="s2">&quot;hdfs://</span><span class="si">{</span><span class="n">authority</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
+                    <span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># For local paths, use standard directory structure</span>
                     <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">))</span>
@@ -1005,7 +1038,7 @@
                 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">):</span>
                     <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># Each shard export uses single process</span>
-                    <span class="c1"># Add storage_options if available (for S3 export)</span>
+                    <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                     <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
