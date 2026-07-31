@@ -802,6 +802,7 @@
 
 <span class="nt">partition</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span><span class="w">  </span><span class="c1"># Resource-aware driver concurrency</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">    </span><span class="c1"># Target partition size (128, 256, 512, or 1024)</span>
 <span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">             </span><span class="c1"># Fallback if auto-analysis fails</span>
 <span class="w">  </span><span class="nt">max_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">       </span><span class="c1"># Fallback max size</span>
@@ -811,8 +812,15 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;manual&quot;</span>
 <span class="w">  </span><span class="nt">num_of_partitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">max_concurrent_partitions:</span> <span class="pre">&quot;auto&quot;</span></code> is the default. It is resolved after
+operator resource planning: GPU pipelines use the tightest CPU/GPU worker
+capacity reported by the Ray cluster, while CPU-only pipelines use a
+conservative outer-pipeline cap of 4. The actual concurrency is also bounded by
+the partition count and any explicit global actor <code class="docutils literal notranslate"><span class="pre">num_proc</span></code> budget. Set a
+positive integer to override the automatic limit.</p>
 </section>
 <section id="checkpointing">
 <h3>Checkpointing<a class="headerlink" href="#checkpointing" title="Link to this heading">#</a></h3>

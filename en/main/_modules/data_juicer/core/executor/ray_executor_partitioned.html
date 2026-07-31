@@ -693,11 +693,14 @@
 <span class="sd">5. Supports convergence points for global operations (like deduplicators)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
@@ -720,6 +723,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
 <span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+
+<span class="n">_AUTO_CPU_PARTITION_CAP</span> <span class="o">=</span> <span class="mi">4</span>
 
 
 <div class="viewcode-block" id="TempDirManager">
@@ -1006,6 +1011,7 @@
         <span class="c1"># Use ConfigAccessor to handle both dict and object configurations</span>
         <span class="n">mode</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span>
         <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">&quot;num_of_partitions&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">&quot;max_concurrent_partitions&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">)</span>
         <span class="n">partition_size</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
         <span class="n">max_size_mb</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">&quot;max_size_mb&quot;</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
 
@@ -1025,6 +1031,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">=</span> <span class="n">num_of_partitions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="n">max_concurrent_partitions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partition_size</span> <span class="o">=</span> <span class="n">partition_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_size_mb</span> <span class="o">=</span> <span class="n">max_size_mb</span>
 
@@ -1179,6 +1186,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_configure_auto_partitioning</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">)</span>
 
+        <span class="c1"># Record explicit actor-pool budgets and calculate automatic Ray</span>
+        <span class="c1"># operator parallelism once on the driver. Every partition shares the</span>
+        <span class="c1"># same operator objects, so resource planning must finish before the</span>
+        <span class="c1"># concurrent partition threads start.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_operator_parallelism</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_max_concurrent_partitions</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+
         <span class="c1"># Initialize DAG execution planning with final partition count</span>
         <span class="c1"># Pass ops to avoid redundant loading</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_dag_execution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="n">ops</span><span class="o">=</span><span class="n">ops</span><span class="p">)</span>
@@ -1260,35 +1274,49 @@
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">partitioning_info</span><span class="o">.</span><span class="n">total_rows</span><span class="si">}</span><span class="s2"> total rows&quot;</span>
         <span class="p">)</span>
 
-        <span class="c1"># Process each partition separately with checkpointing</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing partitions with checkpointing support...&quot;</span><span class="p">)</span>
-        <span class="n">processed_partitions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Process partitions concurrently. Each worker thread drives one Ray</span>
+        <span class="c1"># Dataset execution; the actual data processing still runs on Ray.</span>
+        <span class="n">requested_max_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span><span class="p">)</span>
+        <span class="n">max_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit_partition_workers_for_explicit_actors</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">requested_max_workers</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2"> partitions with up to </span><span class="si">{</span><span class="n">max_workers</span><span class="si">}</span><span class="s2"> concurrent &quot;</span>
+            <span class="s2">&quot;driver threads and checkpointing support...&quot;</span>
+        <span class="p">)</span>
+        <span class="n">processed_partitions</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span>
+        <span class="n">original_concurrency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_operator_parallelism</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitions</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing partition </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Capture the per-partition resource plan in an isolated template.</span>
+            <span class="c1"># Restore the original operators before any worker starts so later</span>
+            <span class="c1"># convergence stages never depend on thread-pool shutdown timing.</span>
+            <span class="n">isolate_operators</span> <span class="o">=</span> <span class="n">max_workers</span> <span class="o">&gt;</span> <span class="mi">1</span>
+            <span class="n">partition_ops_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone_partition_operators</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="k">if</span> <span class="n">isolate_operators</span> <span class="k">else</span> <span class="n">ops</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_restore_operator_parallelism</span><span class="p">(</span><span class="n">original_concurrency</span><span class="p">)</span>
 
-            <span class="c1"># Log partition start event</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_event</span><span class="p">(</span>
-                <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">PARTITION_START</span><span class="p">,</span>
-                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Starting processing of partition </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">partition_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="c1"># Create a RayDataset wrapper for this partition</span>
-            <span class="n">partition_dataset</span> <span class="o">=</span> <span class="n">RayDataset</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
-
-            <span class="c1"># Apply operations with checkpointing support and DAG monitoring</span>
-            <span class="n">processed_partition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_with_checkpointing</span><span class="p">(</span><span class="n">partition_dataset</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">ops</span><span class="p">)</span>
-
-            <span class="c1"># Store the processed partition&#39;s data</span>
-            <span class="n">processed_partitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">processed_partition</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-            <span class="c1"># Log partition completion event</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_event</span><span class="p">(</span>
-                <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">PARTITION_COMPLETE</span><span class="p">,</span>
-                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Completed processing of partition </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">partition_id</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">,</span> <span class="n">thread_name_prefix</span><span class="o">=</span><span class="s2">&quot;ray-partition&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="n">futures</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_process_partition</span><span class="p">,</span>
+                    <span class="n">partition</span><span class="p">,</span>
+                    <span class="n">i</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">),</span>
+                    <span class="n">partition_ops_template</span><span class="p">,</span>
+                    <span class="n">isolate_operators</span><span class="p">,</span>
+                <span class="p">):</span> <span class="n">i</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+                    <span class="n">partition_id</span><span class="p">,</span> <span class="n">processed_data</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                    <span class="n">processed_partitions</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">processed_data</span>
+            <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+                <span class="c1"># Running Ray Dataset executions cannot be forcefully</span>
+                <span class="c1"># interrupted here, but queued driver work should not start</span>
+                <span class="c1"># after the job has already failed.</span>
+                <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
+                    <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+                <span class="k">raise</span>
 
         <span class="c1"># Merge all processed partitions back into a single dataset</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Merging processed partitions...&quot;</span><span class="p">)</span>
@@ -1302,6 +1330,273 @@
 
         <span class="c1"># Return as RayDataset wrapper</span>
         <span class="k">return</span> <span class="n">RayDataset</span><span class="p">(</span><span class="n">merged_dataset</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_partition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">partition</span><span class="p">,</span>
+        <span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">total_partitions</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
+        <span class="n">isolate_operators</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process one partition while preserving its position in the final union.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing partition </span><span class="si">{</span><span class="n">partition_id</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_event</span><span class="p">(</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">PARTITION_START</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Starting processing of partition </span><span class="si">{</span><span class="n">partition_id</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">partition_id</span><span class="o">=</span><span class="n">partition_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># RayDataset may temporarily mutate operator attributes while</span>
+            <span class="c1"># building an execution plan (for example runtime_env fallback and</span>
+            <span class="c1"># tracing). Give every concurrent partition its own instances.</span>
+            <span class="n">partition_ops</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone_partition_operators</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="k">if</span> <span class="n">isolate_operators</span> <span class="k">else</span> <span class="n">ops</span>
+            <span class="n">partition_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_with_precomputed_parallelism</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+            <span class="n">processed_partition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_with_checkpointing</span><span class="p">(</span><span class="n">partition_dataset</span><span class="p">,</span> <span class="n">partition_id</span><span class="p">,</span> <span class="n">partition_ops</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_partition_failed</span><span class="p">(</span><span class="n">partition_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">retry_count</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_event</span><span class="p">(</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">PARTITION_COMPLETE</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Completed processing of partition </span><span class="si">{</span><span class="n">partition_id</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">partition_id</span><span class="o">=</span><span class="n">partition_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">partition_id</span><span class="p">,</span> <span class="n">processed_partition</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clone_partition_operators</span><span class="p">(</span><span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an isolated operator graph for one partition.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to isolate operators for concurrent partition execution. &quot;</span>
+                <span class="s2">&quot;All partition operators must support deep copying.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_operator_parallelism</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plan global actor resources once before partition threads.</span>
+
+<span class="sd">        A positive explicit actor ``num_proc`` is treated as a global job</span>
+<span class="sd">        budget, matching its meaning in the non-partitioned Ray executor. Auto</span>
+<span class="sd">        parallelism is also calculated globally here and divided later.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auto_parallel_op_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_explicit_actor_op_ids</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">id</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span> <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actor_pool_capacity</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;auto_op_parallelism&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">auto_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span> <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_auto_proc</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">auto_ops</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.process_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_ray_np</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auto_parallel_op_ids</span> <span class="o">=</span> <span class="p">{</span><span class="nb">id</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">auto_ops</span><span class="p">}</span>
+        <span class="n">calculate_ray_np</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configure_auto_operator_parallelism</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compatibility wrapper for the former auto-only planner.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_operator_parallelism</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_max_concurrent_partitions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve automatic driver concurrency after operator planning.</span>
+
+<span class="sd">        A GPU pipeline is bounded by the tightest per-worker CPU/GPU</span>
+<span class="sd">        requirement. CPU-only pipelines use a small outer-pipeline cap because</span>
+<span class="sd">        Ray Data can already parallelize work inside each partition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw_value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_value</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cluster_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span>
+            <span class="n">total_cpus</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">total_gpus</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Could not inspect Ray cluster resources for automatic partition &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;concurrency; falling back to 1. Error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+
+        <span class="k">if</span> <span class="n">total_cpus</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Ray cluster reports no CPU resources for automatic partition &quot;</span> <span class="s2">&quot;concurrency; falling back to 1.&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+
+        <span class="n">capacities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">gpu_operator_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+            <span class="n">num_cpus</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="s2">&quot;num_cpus&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">cpu_per_worker</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">)</span> <span class="k">if</span> <span class="n">num_cpus</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">1.0</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total_cpus</span> <span class="o">/</span> <span class="n">cpu_per_worker</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+            <span class="n">num_gpus</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="s2">&quot;num_gpus&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">gpu_per_worker</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gpus</span><span class="p">)</span> <span class="k">if</span> <span class="n">num_gpus</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">gpu_per_worker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
+                        <span class="n">gpu_per_worker</span> <span class="o">=</span> <span class="mf">1.0</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="n">gpu_per_worker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gpu_operator_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="s2">&quot;_name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+                <span class="n">gpu_capacity</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total_gpus</span> <span class="o">/</span> <span class="n">gpu_per_worker</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+                <span class="n">capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">capacity</span><span class="p">,</span> <span class="n">gpu_capacity</span><span class="p">)</span>
+
+            <span class="n">capacities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">capacity</span><span class="p">)</span>
+
+        <span class="n">resource_capacity</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">capacities</span><span class="p">)</span> <span class="k">if</span> <span class="n">capacities</span> <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total_cpus</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resource_capacity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Ray cluster resources cannot host one worker for every operator &quot;</span>
+                <span class="s2">&quot;with the current resource requests; using one partition pipeline &quot;</span>
+                <span class="s2">&quot;so Ray can surface the underlying scheduling error.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">resource_capacity</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">gpu_operator_names</span><span class="p">:</span>
+            <span class="n">resolved</span> <span class="o">=</span> <span class="n">resource_capacity</span>
+            <span class="n">workload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;GPU operators: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gpu_operator_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resolved</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">resource_capacity</span><span class="p">,</span> <span class="n">_AUTO_CPU_PARTITION_CAP</span><span class="p">)</span>
+            <span class="n">workload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;CPU-only pipeline cap: </span><span class="si">{</span><span class="n">_AUTO_CPU_PARTITION_CAP</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">resolved</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Auto-configured max_concurrent_partitions=&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span><span class="si">}</span><span class="s2"> from Ray resources &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(CPU=</span><span class="si">{</span><span class="n">total_cpus</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">, GPU=</span><span class="si">{</span><span class="n">total_gpus</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">workload</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_actor_pool_capacity</span><span class="p">(</span><span class="n">concurrency</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum size represented by an actor concurrency value.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">concurrency</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">concurrency</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">concurrency</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">max_size</span> <span class="o">=</span> <span class="n">concurrency</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">max_size</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_limit_partition_workers_for_explicit_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">requested_max_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Keep concurrent partitions within every explicit actor-pool budget.&quot;&quot;&quot;</span>
+        <span class="n">explicit_actor_op_ids</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_explicit_actor_op_ids&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="n">actor_budgets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actor_pool_capacity</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">))</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span> <span class="k">if</span> <span class="nb">id</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="ow">in</span> <span class="n">explicit_actor_op_ids</span>
+        <span class="p">]</span>
+        <span class="n">actor_budgets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">actor_budgets</span> <span class="k">if</span> <span class="n">budget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">actor_budgets</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">requested_max_workers</span>
+
+        <span class="n">explicit_limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">budget</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">actor_budgets</span><span class="p">)</span>
+        <span class="n">max_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">requested_max_workers</span><span class="p">,</span> <span class="n">explicit_limit</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&lt;</span> <span class="n">requested_max_workers</span><span class="p">:</span>
+            <span class="n">budget_summary</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">budget</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">actor_budgets</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Reducing concurrent partition workers from </span><span class="si">{</span><span class="n">requested_max_workers</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">max_workers</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;to honor explicit global actor num_proc budget(s): </span><span class="si">{</span><span class="n">budget_summary</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">max_workers</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scale_concurrency_for_partitions</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">round_up</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Share a global actor pool size across concurrent partitions.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">concurrency</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">concurrency</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_scale</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">value</span>
+            <span class="k">if</span> <span class="n">round_up</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">value</span> <span class="o">/</span> <span class="n">max_workers</span><span class="p">))</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span> <span class="o">//</span> <span class="n">max_workers</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">scaled</span> <span class="o">=</span> <span class="p">[</span><span class="n">_scale</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">concurrency</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scaled</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">scaled</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">scaled</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">scaled</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">scaled</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">scaled</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">scaled</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">scaled</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">scaled</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">concurrency</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_scale</span><span class="p">(</span><span class="n">concurrency</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">concurrency</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scale_operator_parallelism</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert global auto and explicit actor budgets to per-partition values.&quot;&quot;&quot;</span>
+        <span class="n">original_concurrency</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">auto_parallel_op_ids</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_auto_parallel_op_ids&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="n">explicit_actor_op_ids</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_explicit_actor_op_ids&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">id</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="ow">in</span> <span class="n">auto_parallel_op_ids</span><span class="p">:</span>
+                <span class="n">scaling_mode</span> <span class="o">=</span> <span class="s2">&quot;automatic&quot;</span>
+                <span class="n">round_up</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="nb">id</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="ow">in</span> <span class="n">explicit_actor_op_ids</span><span class="p">:</span>
+                <span class="n">scaling_mode</span> <span class="o">=</span> <span class="s2">&quot;explicit&quot;</span>
+                <span class="n">round_up</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">original_concurrency</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">))</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_concurrency_for_partitions</span><span class="p">(</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">,</span>
+                <span class="n">max_workers</span><span class="p">,</span>
+                <span class="n">round_up</span><span class="o">=</span><span class="n">round_up</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">!=</span> <span class="n">original_concurrency</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">scaling_mode</span><span class="si">}</span><span class="s2"> global concurrency: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">original_concurrency</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;across </span><span class="si">{</span><span class="n">max_workers</span><span class="si">}</span><span class="s2"> concurrent partitions&quot;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">original_concurrency</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scale_auto_operator_parallelism</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compatibility wrapper for the former auto-only scaler.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_operator_parallelism</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_restore_operator_parallelism</span><span class="p">(</span><span class="n">original_concurrency</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore the global plan for convergence or later execution stages.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">op</span><span class="p">,</span> <span class="n">concurrency</span> <span class="ow">in</span> <span class="n">original_concurrency</span><span class="p">:</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="n">concurrency</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_restore_auto_operator_parallelism</span><span class="p">(</span><span class="n">original_concurrency</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compatibility wrapper for the former auto-only restorer.&quot;&quot;&quot;</span>
+        <span class="n">PartitionedRayExecutor</span><span class="o">.</span><span class="n">_restore_operator_parallelism</span><span class="p">(</span><span class="n">original_concurrency</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap_with_precomputed_parallelism</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RayDataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap data without recalculating shared operator resources.&quot;&quot;&quot;</span>
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">RayDataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="n">wrapped</span><span class="o">.</span><span class="n">_auto_proc</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">wrapped</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_with_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">RayDataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">convergence_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1335,7 +1630,7 @@
         <span class="c1"># Process merged dataset with post-convergence operations</span>
         <span class="k">if</span> <span class="n">post_convergence_ops</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing merged dataset with global operations...&quot;</span><span class="p">)</span>
-            <span class="n">merged_ray_dataset</span> <span class="o">=</span> <span class="n">RayDataset</span><span class="p">(</span><span class="n">merged_dataset</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="n">merged_ray_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_with_precomputed_parallelism</span><span class="p">(</span><span class="n">merged_dataset</span><span class="p">)</span>
 
             <span class="c1"># Pre-execute DAG monitoring (log operation start events)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_dag</span><span class="p">:</span>
@@ -1425,6 +1720,7 @@
                         <span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: Will process </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">group_ops</span><span class="p">)</span><span class="si">}</span><span class="s2"> operations from beginning of group&quot;</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="n">current_dataset</span><span class="o">.</span><span class="n">_auto_proc</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: Successfully loaded checkpoint, resuming from operation </span><span class="si">{</span><span class="n">latest_checkpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
