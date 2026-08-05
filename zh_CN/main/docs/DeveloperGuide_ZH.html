@@ -1390,7 +1390,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PerplexityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
     <span class="c1"># 显式为 OP 设置额外的依赖</span>
-    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kenlm&#39;</span><span class="p">,</span> <span class="s1">&#39;sentencepiece&#39;</span><span class="p">,</span> <span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">]</span>
+    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kenlm&#39;</span><span class="p">,</span> <span class="s1">&#39;sentencepiece&#39;</span><span class="p">,</span> <span class="s1">&#39;fasttext-predict&#39;</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="c1"># ... (OP parameters)</span>
@@ -1398,7 +1398,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># 在初始化前自动安装所需依赖库</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">])</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">&#39;fasttext-predict&#39;</span><span class="p">])</span>
         <span class="c1"># ... (some codes)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
