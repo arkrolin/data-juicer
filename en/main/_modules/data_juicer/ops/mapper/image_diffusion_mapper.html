@@ -848,13 +848,24 @@
 
         <span class="c1"># load captions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption_key</span><span class="p">:</span>
-            <span class="n">captions</span> <span class="o">=</span> <span class="n">ori_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">caption_key</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">captions</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">captions</span> <span class="o">=</span> <span class="n">ori_sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caption_key</span><span class="p">)</span>
+            <span class="n">num_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loaded_image_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">captions</span><span class="p">:</span>
+                <span class="c1"># no caption at all (missing key, None or an empty list): an</span>
+                <span class="c1"># empty prompt is a valid unconditional prompt for</span>
+                <span class="c1"># image-to-image generation, so fall back to it</span>
+                <span class="n">captions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_images</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">captions</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="c1"># one caption for all images</span>
-                <span class="n">captions</span> <span class="o">=</span> <span class="p">[</span><span class="n">captions</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+                <span class="n">captions</span> <span class="o">=</span> <span class="p">[</span><span class="n">captions</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_images</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">captions</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">),</span> <span class="s2">&quot;The num of captions must match the num of images.&quot;</span>
-            <span class="n">captions</span> <span class="o">=</span> <span class="p">[</span><span class="n">remove_special_tokens</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">captions</span><span class="p">]</span>
+                <span class="c1"># a partially filled list carries no hint about which image the</span>
+                <span class="c1"># missing captions belong to, so keep failing loudly here; use</span>
+                <span class="c1"># None or &quot;&quot; as an explicit placeholder to skip a single image</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">captions</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_images</span><span class="p">,</span> <span class="s2">&quot;The num of captions must match the num of images.&quot;</span>
+            <span class="c1"># a blank entry inside the list is an explicit &quot;no guidance for this</span>
+            <span class="c1"># image&quot; placeholder, so normalize it instead of skipping</span>
+            <span class="n">captions</span> <span class="o">=</span> <span class="p">[</span><span class="n">remove_special_tokens</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">captions</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">caption_samples</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">:</span> <span class="p">[</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">),</span>
@@ -921,6 +932,10 @@
                 <span class="n">samples_after_generation</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generated_samples</span><span class="p">)</span>
 
         <span class="c1"># reconstruct samples from &quot;list of dicts&quot; to &quot;dict of lists&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">samples_after_generation</span><span class="p">:</span>
+            <span class="c1"># every sample in this batch was skipped (e.g. no images at all);</span>
+            <span class="c1"># keep the &quot;dict of lists&quot; schema so downstream stays consistent</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">}</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">samples_after_generation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">res_samples</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>

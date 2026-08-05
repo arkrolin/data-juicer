@@ -837,6 +837,55 @@ Besides, streaming-read support for CSV and Parquet files is already enabled.</p
 </div>
 </section>
 </section>
+<section id="distributed-data-analysis">
+<h2>Distributed Data Analysis<a class="headerlink" href="#distributed-data-analysis" title="Link to this heading">#</a></h2>
+<p>In addition to distributed data processing, Data-Juicer also supports distributed data analysis via <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/main/data_juicer/core/ray_analyzer.py">RayAnalyzer</a>, the distributed counterpart to the local <code class="docutils literal notranslate"><span class="pre">Analyzer</span></code>.</p>
+<section id="how-it-works">
+<h3>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading">#</a></h3>
+<p>RayAnalyzer uses the same <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> CLI entry point as the local Analyzer. When <code class="docutils literal notranslate"><span class="pre">executor_type</span></code> is set to <code class="docutils literal notranslate"><span class="pre">ray</span></code> in the config, <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> automatically dispatches to <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>. The workflow is:</p>
+<ol class="arabic simple">
+<li><p><strong>Load data</strong> via Ray’s distributed data loading (JSON, CSV, Parquet).</p></li>
+<li><p><strong>Compute stats</strong> by running each Filter’s <code class="docutils literal notranslate"><span class="pre">compute_stats</span></code> function through Ray <code class="docutils literal notranslate"><span class="pre">map_batches</span></code> — the same stats computation as local mode, but distributed.</p></li>
+<li><p><strong>Aggregate overall statistics</strong> using Ray native aggregation operators (<code class="docutils literal notranslate"><span class="pre">Mean</span></code>, <code class="docutils literal notranslate"><span class="pre">Std</span></code>, <code class="docutils literal notranslate"><span class="pre">Min</span></code>, <code class="docutils literal notranslate"><span class="pre">Max</span></code>) — no pandas materialization, making it suitable for datasets of any scale.</p></li>
+<li><p><strong>Export</strong> the dataset with stats columns to disk via <code class="docutils literal notranslate"><span class="pre">RayExporter</span></code>.</p></li>
+</ol>
+</section>
+<section id="differences-from-local-analyzer">
+<h3>Differences from Local Analyzer<a class="headerlink" href="#differences-from-local-analyzer" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Local Analyzer</p></th>
+<th class="head"><p>RayAnalyzer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Overall stats (count/mean/std/min/max)</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Per-column distribution charts</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Correlation analysis</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Percentiles</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Scalability</p></td>
+<td><p>Single machine</p></td>
+<td><p>Distributed (Ray cluster)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>RayAnalyzer focuses on computing overall statistics at scale. For detailed visualization and correlation analysis, use the local Analyzer on a sampled subset.</p>
+</section>
+</section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
 <p>Before starting, you should install Data-Juicer and its <code class="docutils literal notranslate"><span class="pre">dist</span></code> requirements:</p>
@@ -916,6 +965,40 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 </div>
 <p>Data-Juicer will dedup the demo dataset with the demo config file and export the result datasets to the directory specified by the <code class="docutils literal notranslate"><span class="pre">export_path</span></code> argument in the config file.</p>
 </section>
+<section id="running-example-of-ray-analysis">
+<h3>Running Example of Ray Analysis<a class="headerlink" href="#running-example-of-ray-analysis" title="Link to this heading">#</a></h3>
+<p>In <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/main/demos/analyze_simple/ray_analyzer.yaml"><code class="docutils literal notranslate"><span class="pre">demos/analyze_simple/ray_analyzer.yaml</span></code></a>, we set the executor type to “ray” to use the distributed <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-ray-analyzer&#39;</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./demos/data/demo-dataset.jsonl&#39;</span>
+
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ray&#39;</span><span class="w">  </span><span class="c1"># Set the executor type to &quot;ray&quot;</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="w">  </span><span class="c1"># Set an automatic Ray address</span>
+
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo-ray-analyzer&#39;</span>
+
+<span class="nt">process</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">text_length_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">min_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">max_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">words_num_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">lang</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="w">      </span><span class="nt">min_num</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">max_num</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alphanumeric_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">min_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">      </span><span class="nt">max_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
+</pre></div>
+</div>
+<p>Run the demo to analyze the dataset:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the tool from source</span>
+python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
+
+<span class="c1"># Use the command-line tool</span>
+dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code> will compute the overall statistics (count, mean, std, min, max) for all numeric stats columns and print the results. The dataset with computed stats will be exported to the path specified by <code class="docutils literal notranslate"><span class="pre">export_path</span></code>.</p>
+</section>
 </section>
 </section>
 
@@ -979,9 +1062,15 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distributed-deduplication-on-large-scale-datasets">Distributed Deduplication on Large-Scale Datasets</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distributed-data-analysis">Distributed Data Analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How It Works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differences-from-local-analyzer">Differences from Local Analyzer</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-example-of-ray-mode">Running Example of Ray Mode</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-example-of-distributed-deduplication">Running Example of Distributed Deduplication</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-example-of-ray-analysis">Running Example of Ray Analysis</a></li>
 </ul>
 </li>
 </ul>

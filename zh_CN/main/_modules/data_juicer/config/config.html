@@ -1507,7 +1507,7 @@
 
 <div class="viewcode-block" id="init_configs">
 <a class="viewcode-back" href="../../../api/data_juicer.config.config.html#data_juicer.config.init_configs">[文档]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">init_configs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">which_entry</span><span class="p">:</span> <span class="nb">object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">load_configs_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">init_configs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">allow_auto</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">load_configs_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    initialize the jsonargparse parser and parse configs from one of:</span>
 <span class="sd">        1. POSIX-style commands line args;</span>
@@ -1516,11 +1516,27 @@
 <span class="sd">        4. hard-coded defaults</span>
 
 <span class="sd">    :param args: list of params, e.g., [&#39;--config&#39;, &#39;cfg.yaml&#39;], default None.</span>
-<span class="sd">    :param which_entry: which entry to init configs (executor/analyzer)</span>
+<span class="sd">    :param allow_auto: whether --auto is allowed (only True for analyzer entries)</span>
 <span class="sd">    :param load_configs_only: whether to load the configs only, not including backing up config files, display them, and</span>
 <span class="sd">        setting up logger.</span>
 <span class="sd">    :return: a global cfg object used by the DefaultExecutor or Analyzer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Backwards compatibility: accept deprecated `which_entry` keyword</span>
+    <span class="k">if</span> <span class="s2">&quot;which_entry&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;which_entry&#39; parameter is deprecated. &quot;</span> <span class="s2">&quot;Use &#39;allow_auto=True&#39; instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">which_entry</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;which_entry&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_auto</span> <span class="ow">and</span> <span class="n">which_entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Analyzer</span>
+
+            <span class="n">allow_auto</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">which_entry</span><span class="p">,</span> <span class="n">Analyzer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;init_configs() got unexpected keyword arguments: &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># Optional: stdlib json for HF datasets JSONL (avoids ujson &quot;Value is too big!&quot;)</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.datasets_json_compat</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">apply_stdlib_json_patch_for_datasets</span><span class="p">,</span>
@@ -1585,9 +1601,7 @@
                     <span class="n">load_custom_operators</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">custom_operator_paths</span><span class="p">)</span>
 
                 <span class="c1"># check the entry</span>
-                <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Analyzer</span>
-
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">which_entry</span><span class="p">,</span> <span class="n">Analyzer</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cfg</span><span class="o">.</span><span class="n">auto</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">auto</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allow_auto</span><span class="p">:</span>
                     <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;--auto argument can only be used for analyzer!&quot;</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>

@@ -881,6 +881,12 @@ dj-analyze<span class="w"> </span>--auto<span class="w"> </span>--dataset_path<s
 python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/analyzer.yaml
 </pre></div>
 </div>
+<ul class="simple">
+<li><p><strong>Distributed Analysis with Ray:</strong> <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> also supports Ray mode for large-scale distributed analysis. Set <code class="docutils literal notranslate"><span class="pre">executor_type:</span> <span class="pre">ray</span></code> in your config file, and the analyzer will automatically use <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>, which computes overall statistics (count/mean/std/min/max) via Ray native aggregation without pandas materialization. Note that RayAnalyzer does not produce per-column distribution charts or correlation analysis. More details can be found in the doc for <a class="reference internal" href="../Distributed.html"><span class="std std-doc">distributed processing</span></a>.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
+</pre></div>
+</div>
 </section>
 <section id="data-visualization">
 <h2>Data Visualization<a class="headerlink" href="#data-visualization" title="Link to this heading">#</a></h2>
