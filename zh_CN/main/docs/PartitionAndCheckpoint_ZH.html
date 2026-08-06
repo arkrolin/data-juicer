@@ -791,6 +791,8 @@
 ├── events_{timestamp}.jsonl      # 机器可读事件日志
 ├── dag_execution_plan.json       # DAG 执行计划
 ├── checkpoints/                  # 检查点数据
+│   ├── partitioning_info.json    # 保存的行号边界和分区内容 hash
+│   └── checkpoint_op_*.parquet/  # 各操作、各分区的检查点
 ├── partitions/                   # 输入分区
 ├── logs/                         # 人类可读日志
 └── metadata/                     # 作业元数据
@@ -832,6 +834,15 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedding_mapper</span>
 </pre></div>
 </div>
+<p>启用检查点后，首次运行会保存
+<code class="docutils literal notranslate"><span class="pre">checkpoints/partitioning_info.json</span></code>。该文件为每个逻辑分区记录：</p>
+<ul class="simple">
+<li><p>输入数据中的 <code class="docutils literal notranslate"><span class="pre">start_row</span></code>（包含）和 <code class="docutils literal notranslate"><span class="pre">end_row</span></code>（不包含）；</p></li>
+<li><p>分区样本行数；</p></li>
+<li><p>覆盖完整分区内容的稳定 hash；</p></li>
+<li><p>写入 metadata 时使用的分区 hash 算法。</p></li>
+</ul>
+<p>即使新进程中的 Ray 物理 block 布局发生变化，显式续跑也可以用这些信息重建首次运行的逻辑分区。完整分区 hash 对样本顺序敏感、不依赖 Ray batch 边界，并且会在复用任何 checkpoint 前完成校验。</p>
 </section>
 <section id="id7">
 <h3>中间存储<a class="headerlink" href="#id7" title="链接到此标题。">#</a></h3>
@@ -854,14 +865,40 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="c1"># 手动分区模式</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--partition.mode<span class="w"> </span>manual<span class="w"> </span>--partition.num_of_partitions<span class="w"> </span><span class="m">4</span>
 
-<span class="c1"># 自定义作业 ID</span>
+<span class="c1"># 可选：使用自定义作业 ID 启动新任务</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p>启用检查点后，新建的 <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> 作业会打印 resume token：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resume token: 20260805_115141_81270d. Rerun the original command with
+--resume 20260805_115141_81270d to resume this job.
 </pre></div>
 </div>
 </section>
 <section id="id10">
 <h3>恢复作业<a class="headerlink" href="#id10" title="链接到此标题。">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用首次运行打印的 token，并保持输入数据和 recipe 不变</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>20260805_115141_81270d
+
+<span class="c1"># 首次运行使用的自定义 ID 也可以作为 resume token</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--resume</span></code> 仅支持 <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> 执行器。它会依次执行严格续跑流程：</p>
+<ol class="arabic simple">
+<li><p>定位原任务的工作目录和检查点目录；</p></li>
+<li><p>确认当前配置与首次运行配置一致；</p></li>
+<li><p>读取保存的分区数、行号边界和内容 hash；</p></li>
+<li><p>使用保存的行号边界重建首次运行的逻辑分区；</p></li>
+<li><p>校验所有分区的完整内容 hash；</p></li>
+<li><p>加载已完成的 checkpoint，仅处理尚未完成的部分。</p></li>
+</ol>
+<p>如果 metadata 缺失、行号边界非法、输入内容发生变化或内容 hash 不一致，显式续跑会报错停止，并保留已有 checkpoint，不会将其删除。</p>
+<p><code class="docutils literal notranslate"><span class="pre">--job_id</span></code> 仍可用于自定义任务名称和向后兼容。需要进行容错续跑时，应优先使用 <code class="docutils literal notranslate"><span class="pre">--resume</span></code>：旧的 <code class="docutils literal notranslate"><span class="pre">--job_id</span></code> 续跑路径保持原有行为，在分区不匹配时可能清除 checkpoint 并重新开始。旧版 Data-Juicer 创建的 metadata 仍可读取，但其中没有显式续跑所需的行号边界和完整内容 hash；因此，<code class="docutils literal notranslate"><span class="pre">--resume</span></code> 会拒绝使用这种旧 metadata，同时保留已有 checkpoint。</p>
+<p>如果同时提供两个参数，它们的值必须相同：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job_id<span class="w"> </span>my_experiment_001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resume<span class="w"> </span>my_experiment_001
 </pre></div>
 </div>
 </section>
@@ -1107,8 +1144,10 @@ disabled          | 0秒     | 重新执行全部
 <p><strong>作业恢复失败：</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/job_summary.json
 ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/
+cat<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/partitioning_info.json
 </pre></div>
 </div>
+<p>请使用首次运行打印的 resume token，并通过 <code class="docutils literal notranslate"><span class="pre">--resume</span></code> 重新执行相同的 recipe。可以在错误日志中检查配置不一致、分区 metadata 缺失、行号边界非法或分区内容 hash 不匹配。显式续跑校验失败时不会删除已有 checkpoint。</p>
 <p><strong>检查 Ray 状态：</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>status
 </pre></div>

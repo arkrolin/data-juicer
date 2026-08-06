@@ -726,6 +726,52 @@
 <span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
 
 <span class="n">_AUTO_CPU_PARTITION_CAP</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span> <span class="o">=</span> <span class="s2">&quot;sha256-sequence-v1&quot;</span>
+<span class="n">_PARTITION_CONTENT_HASH_MODULUS</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">256</span>
+<span class="n">_PARTITION_CONTENT_HASH_BASE</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;data-juicer-partition-sequence-v1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">(),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_canonical_row_bytes</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serialize one row consistently for partition content hashing.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">serialized</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">serialized</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">serialized</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_hash_partition_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an order-sensitive rolling hash for one Arrow batch.&quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span>
+
+    <span class="n">sequence_hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">to_pylist</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">_canonical_row_bytes</span><span class="p">(</span><span class="n">row</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">(),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+        <span class="n">sequence_hash</span> <span class="o">=</span> <span class="p">(</span><span class="n">sequence_hash</span> <span class="o">*</span> <span class="n">_PARTITION_CONTENT_HASH_BASE</span> <span class="o">+</span> <span class="n">digest</span><span class="p">)</span> <span class="o">%</span> <span class="n">_PARTITION_CONTENT_HASH_MODULUS</span>
+
+    <span class="k">return</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">table</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;row_count&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)],</span>
+            <span class="s2">&quot;sequence_hash&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sequence_hash</span><span class="si">:</span><span class="s2">064x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_combine_partition_hash_partials</span><span class="p">(</span><span class="n">partials</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine ordered batch hashes without depending on batch boundaries.&quot;&quot;&quot;</span>
+    <span class="n">row_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sequence_hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">partials</span><span class="p">:</span>
+        <span class="n">partial_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">partial</span><span class="p">[</span><span class="s2">&quot;row_count&quot;</span><span class="p">])</span>
+        <span class="n">sequence_hash</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">sequence_hash</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="n">_PARTITION_CONTENT_HASH_BASE</span><span class="p">,</span> <span class="n">partial_count</span><span class="p">,</span> <span class="n">_PARTITION_CONTENT_HASH_MODULUS</span><span class="p">)</span>
+            <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">partial</span><span class="p">[</span><span class="s2">&quot;sequence_hash&quot;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">%</span> <span class="n">_PARTITION_CONTENT_HASH_MODULUS</span>
+        <span class="n">row_count</span> <span class="o">+=</span> <span class="n">partial_count</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">sequence_hash</span><span class="si">:</span><span class="s2">064x</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">row_count</span>
 
 
 <div class="viewcode-block" id="TempDirManager">
@@ -788,6 +834,9 @@
     <span class="n">row_count</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">first_row_hash</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Hash of first row for validation</span>
     <span class="n">last_row_hash</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Hash of last row for validation</span>
+    <span class="n">content_hash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># Stable hash of the complete partition contents</span>
+    <span class="n">start_row</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Inclusive row offset in the ordered input</span>
+    <span class="n">end_row</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Exclusive row offset in the ordered input</span>
 
 <div class="viewcode-block" id="PartitionMetadata.to_dict">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor_partitioned.html#data_juicer.core.executor.PartitionMetadata.to_dict">[文档]</a>
@@ -818,6 +867,7 @@
     <span class="n">total_rows</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">partitions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PartitionMetadata</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">deterministic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Whether deterministic splitting was used</span>
+    <span class="n">hash_algorithm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span>
 
 <div class="viewcode-block" id="PartitioningInfo.to_dict">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor_partitioned.html#data_juicer.core.executor.PartitioningInfo.to_dict">[文档]</a>
@@ -826,6 +876,7 @@
             <span class="s2">&quot;num_partitions&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">,</span>
             <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_rows</span><span class="p">,</span>
             <span class="s2">&quot;deterministic&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deterministic</span><span class="p">,</span>
+            <span class="s2">&quot;hash_algorithm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_algorithm</span><span class="p">,</span>
             <span class="s2">&quot;partitions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span><span class="p">],</span>
         <span class="p">}</span></div>
 
@@ -839,6 +890,7 @@
             <span class="n">num_partitions</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;num_partitions&quot;</span><span class="p">],</span>
             <span class="n">total_rows</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;total_rows&quot;</span><span class="p">],</span>
             <span class="n">deterministic</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;deterministic&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="n">hash_algorithm</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hash_algorithm&quot;</span><span class="p">,</span> <span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span><span class="p">),</span>
             <span class="n">partitions</span><span class="o">=</span><span class="n">partitions</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -1127,6 +1179,7 @@
 
         <span class="c1"># Check if user provided a job_id (indicating resumption attempt)</span>
         <span class="n">user_provided_job_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;_user_provided_job_id&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">resume_requested</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;_resume_requested&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">user_provided_job_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔄 User provided job_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> - attempting to resume job&quot;</span><span class="p">)</span>
@@ -1138,6 +1191,10 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;✅ Job resumption successful - will use existing checkpoints&quot;</span><span class="p">)</span>
                 <span class="n">is_resuming</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># resume_result == &quot;failed&quot;</span>
+                <span class="k">if</span> <span class="n">resume_requested</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unable to resume job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="s2">&quot;The existing checkpoints were left unchanged.&quot;</span>
+                    <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;❌ Job resumption failed - starting fresh&quot;</span><span class="p">)</span>
                 <span class="n">is_resuming</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1146,6 +1203,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;🚀 Starting new job&quot;</span><span class="p">)</span>
             <span class="n">is_resuming</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_manager</span><span class="o">.</span><span class="n">checkpoint_enabled</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Resume token: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Rerun the original command with --resume </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> to resume this job.&quot;</span>
+                <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_resuming</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;🚀 Starting simplified partitioned processing...&quot;</span><span class="p">)</span>
@@ -1166,6 +1228,7 @@
                 <span class="s2">&quot;is_resuming&quot;</span><span class="p">:</span> <span class="n">is_resuming</span><span class="p">,</span>
                 <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
                 <span class="s2">&quot;user_provided_job_id&quot;</span><span class="p">:</span> <span class="n">user_provided_job_id</span><span class="p">,</span>
+                <span class="s2">&quot;resume_requested&quot;</span><span class="p">:</span> <span class="n">resume_requested</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
 
@@ -1174,6 +1237,10 @@
         <span class="c1"># Load the full dataset using a single DatasetBuilder</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading dataset with single DatasetBuilder...&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Ray Dataset captures a copy of DataContext when it is created. This</span>
+        <span class="c1"># must therefore happen before DatasetBuilder.load_dataset() so saved</span>
+        <span class="c1"># row boundaries have the same meaning when a job is resumed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enable_deterministic_execution</span><span class="p">()</span>
         <span class="n">override_num_blocks</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;override_num_blocks&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasetbuilder</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">num_proc</span><span class="o">=</span><span class="n">load_data_np</span><span class="p">,</span> <span class="n">override_num_blocks</span><span class="o">=</span><span class="n">override_num_blocks</span><span class="p">)</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">schema</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>
@@ -1182,9 +1249,21 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing operations...&quot;</span><span class="p">)</span>
         <span class="n">ops</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_operators</span><span class="p">()</span>
 
+        <span class="c1"># A resumed job must reuse the saved partition count before DAG</span>
+        <span class="c1"># initialization. Auto mode can otherwise choose a different count if</span>
+        <span class="c1"># the Ray cluster resources changed between runs.</span>
+        <span class="k">if</span> <span class="n">resume_requested</span><span class="p">:</span>
+            <span class="n">saved_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_partitioning_info</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">saved_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Explicit resume requires saved partitioning_info.json; &quot;</span>
+                    <span class="s2">&quot;existing checkpoints were left unchanged.&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">=</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using saved partition count for resume: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># Handle auto partition mode BEFORE initializing DAG</span>
         <span class="c1"># (DAG needs final partition count)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_configure_auto_partitioning</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">)</span>
 
         <span class="c1"># Record explicit actor-pool budgets and calculate automatic Ray</span>
@@ -1896,8 +1975,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_enable_deterministic_execution</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable deterministic execution order in Ray Data.</span>
 
-<span class="sd">        This ensures that split() produces the same partitions on re-runs,</span>
-<span class="sd">        which is critical for checkpoint resumption.</span>
+<span class="sd">        This keeps the global row order stable so saved row boundaries can be</span>
+<span class="sd">        reapplied with split_at_indices() during explicit resume.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ctx</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataContext</span><span class="o">.</span><span class="n">get_current</span><span class="p">()</span>
@@ -1919,14 +1998,25 @@
             <span class="c1"># Fallback for non-serializable rows</span>
             <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">16</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_partition_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partition</span><span class="p">,</span> <span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PartitionMetadata</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_collect_partition_metadata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">partition</span><span class="p">,</span>
+        <span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">start_row</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compute_content_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PartitionMetadata</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect metadata from a partition for validation on resume.</span>
 
-<span class="sd">        Only collects first_row_hash (not last_row_hash) for efficiency.</span>
-<span class="sd">        Getting the last row requires take(all_rows) which is expensive.</span>
-<span class="sd">        First row hash + row count is sufficient for detecting most mismatches.</span>
+<span class="sd">        The complete content hash is independent of Ray block boundaries but</span>
+<span class="sd">        sensitive to row order within the partition. It is used for strict</span>
+<span class="sd">        explicit resume validation; the first-row hash remains for backward</span>
+<span class="sd">        compatibility.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">row_count</span> <span class="o">=</span> <span class="n">partition</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">compute_content_hash</span><span class="p">:</span>
+            <span class="n">content_hash</span><span class="p">,</span> <span class="n">row_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_partition_content_hash</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">content_hash</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">row_count</span> <span class="o">=</span> <span class="n">partition</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
         <span class="c1"># Get first row for hashing (cheap operation)</span>
         <span class="n">first_row_hash</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1943,7 +2033,17 @@
             <span class="n">row_count</span><span class="o">=</span><span class="n">row_count</span><span class="p">,</span>
             <span class="n">first_row_hash</span><span class="o">=</span><span class="n">first_row_hash</span><span class="p">,</span>
             <span class="n">last_row_hash</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="c1"># Skip last_row_hash for efficiency</span>
+            <span class="n">content_hash</span><span class="o">=</span><span class="n">content_hash</span><span class="p">,</span>
+            <span class="n">start_row</span><span class="o">=</span><span class="n">start_row</span><span class="p">,</span>
+            <span class="n">end_row</span><span class="o">=</span><span class="n">start_row</span> <span class="o">+</span> <span class="n">row_count</span> <span class="k">if</span> <span class="n">start_row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_partition_content_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute an order-sensitive, block-boundary-independent hash.&quot;&quot;&quot;</span>
+        <span class="c1"># preserve_order is enabled before the source Dataset is created, so</span>
+        <span class="c1"># take_all() returns these one-row partials in partition row order.</span>
+        <span class="n">partials</span> <span class="o">=</span> <span class="n">partition</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="n">_hash_partition_batch</span><span class="p">,</span> <span class="n">batch_format</span><span class="o">=</span><span class="s2">&quot;pyarrow&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">take_all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_combine_partition_hash_partials</span><span class="p">(</span><span class="n">partials</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_partitioning_info_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the path to the partitioning info file.&quot;&quot;&quot;</span>
@@ -1967,23 +2067,35 @@
 <span class="sd">        Validation checks:</span>
 <span class="sd">        1. Partition count matches</span>
 <span class="sd">        2. Row count per partition matches</span>
-<span class="sd">        3. First row hash matches (efficient validation)</span>
+<span class="sd">        3. Complete partition content hash matches when available</span>
+<span class="sd">        4. First row hash matches for backward compatibility</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span> <span class="o">!=</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition count mismatch: current=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="sa">f</span><span class="s2">&quot;saved=</span><span class="si">{</span><span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitions</span><span class="p">):</span>
-            <span class="n">current_count</span> <span class="o">=</span> <span class="n">partition</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
             <span class="n">saved_meta</span> <span class="o">=</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
             <span class="k">if</span> <span class="n">saved_meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No saved metadata for partition </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">continue</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No saved metadata for partition </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">saved_meta</span><span class="o">.</span><span class="n">content_hash</span><span class="p">:</span>
+                <span class="n">current_hash</span><span class="p">,</span> <span class="n">current_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_partition_content_hash</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_hash</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">current_count</span> <span class="o">=</span> <span class="n">partition</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">current_count</span> <span class="o">!=</span> <span class="n">saved_meta</span><span class="o">.</span><span class="n">row_count</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> row count mismatch: current=</span><span class="si">{</span><span class="n">current_count</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="sa">f</span><span class="s2">&quot;saved=</span><span class="si">{</span><span class="n">saved_meta</span><span class="o">.</span><span class="n">row_count</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">saved_meta</span><span class="o">.</span><span class="n">content_hash</span> <span class="ow">and</span> <span class="n">current_hash</span> <span class="o">!=</span> <span class="n">saved_meta</span><span class="o">.</span><span class="n">content_hash</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> content hash mismatch: &quot;</span> <span class="sa">f</span><span class="s2">&quot;current=</span><span class="si">{</span><span class="n">current_hash</span><span class="si">}</span><span class="s2">, saved=</span><span class="si">{</span><span class="n">saved_meta</span><span class="o">.</span><span class="n">content_hash</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
@@ -2005,6 +2117,46 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Partition validation passed - safe to use checkpoints&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split_at_saved_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">RayDataset</span><span class="p">,</span> <span class="n">saved_info</span><span class="p">:</span> <span class="n">PartitioningInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate partitions using row boundaries saved by the first run.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot resume with a different partition count: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;current=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">, saved=</span><span class="si">{</span><span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span> <span class="o">!=</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Saved partition metadata is incomplete: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;expected=</span><span class="si">{</span><span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">, actual=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">split_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">expected_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">partition_id</span><span class="p">,</span> <span class="n">meta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span><span class="p">):</span>
+            <span class="n">start_row</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">start_row</span> <span class="k">if</span> <span class="n">meta</span><span class="o">.</span><span class="n">start_row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">expected_start</span>
+            <span class="n">end_row</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">end_row</span> <span class="k">if</span> <span class="n">meta</span><span class="o">.</span><span class="n">end_row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">start_row</span> <span class="o">+</span> <span class="n">meta</span><span class="o">.</span><span class="n">row_count</span>
+            <span class="k">if</span> <span class="n">start_row</span> <span class="o">!=</span> <span class="n">expected_start</span> <span class="ow">or</span> <span class="n">end_row</span> <span class="o">-</span> <span class="n">start_row</span> <span class="o">!=</span> <span class="n">meta</span><span class="o">.</span><span class="n">row_count</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Saved row boundaries are invalid for partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;start=</span><span class="si">{</span><span class="n">start_row</span><span class="si">}</span><span class="s2">, end=</span><span class="si">{</span><span class="n">end_row</span><span class="si">}</span><span class="s2">, rows=</span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">row_count</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;expected_start=</span><span class="si">{</span><span class="n">expected_start</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">expected_start</span> <span class="o">=</span> <span class="n">end_row</span>
+            <span class="k">if</span> <span class="n">partition_id</span> <span class="o">&lt;</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">split_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_row</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">expected_start</span> <span class="o">!=</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">total_rows</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Saved row boundaries do not cover the saved total row count: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;boundaries_end=</span><span class="si">{</span><span class="n">expected_start</span><span class="si">}</span><span class="s2">, total_rows=</span><span class="si">{</span><span class="n">saved_info</span><span class="o">.</span><span class="n">total_rows</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">materialize</span><span class="p">()]</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recreating partitions at saved row boundaries: </span><span class="si">{</span><span class="n">split_indices</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split_at_indices</span><span class="p">(</span><span class="n">split_indices</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_split_dataset_deterministic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">RayDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split dataset deterministically and collect metadata.</span>
 
@@ -2016,6 +2168,40 @@
 
         <span class="c1"># Check for existing partitioning info (resumption case)</span>
         <span class="n">saved_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_partitioning_info</span><span class="p">()</span>
+        <span class="n">resume_requested</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;_resume_requested&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resume_requested</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">saved_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Explicit resume requires saved partitioning_info.json; &quot;</span>
+                    <span class="s2">&quot;existing checkpoints were left unchanged.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">hash_algorithm</span> <span class="o">!=</span> <span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Explicit resume cannot validate the saved partition hash algorithm: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;saved=</span><span class="si">{</span><span class="n">saved_info</span><span class="o">.</span><span class="n">hash_algorithm</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;supported=</span><span class="si">{</span><span class="n">_PARTITION_CONTENT_HASH_ALGORITHM</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="s2">&quot;Existing checkpoints were left unchanged.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="ow">not</span> <span class="n">meta</span><span class="o">.</span><span class="n">content_hash</span> <span class="ow">or</span> <span class="n">meta</span><span class="o">.</span><span class="n">start_row</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">meta</span><span class="o">.</span><span class="n">end_row</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">meta</span> <span class="ow">in</span> <span class="n">saved_info</span><span class="o">.</span><span class="n">partitions</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Explicit resume requires content hashes and row boundaries &quot;</span>
+                    <span class="s2">&quot;created by this version. Existing checkpoints were left unchanged.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Explicit resume requested; recreating saved partition row boundaries...&quot;</span><span class="p">)</span>
+            <span class="n">partitions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_at_saved_boundaries</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">saved_info</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recreated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partitions</span><span class="p">)</span><span class="si">}</span><span class="s2"> partitions from saved boundaries&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_partitions</span><span class="p">(</span><span class="n">partitions</span><span class="p">,</span> <span class="n">saved_info</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Saved partition content hashes do not match the current input. &quot;</span>
+                    <span class="s2">&quot;Refusing to resume; existing checkpoints were left unchanged.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saved partition hashes validated successfully - resuming checkpoints&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">partitions</span><span class="p">,</span> <span class="n">saved_info</span>
 
         <span class="c1"># Split the dataset</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Splitting dataset into </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2"> partitions (deterministic mode)...&quot;</span><span class="p">)</span>
@@ -2039,13 +2225,22 @@
 
         <span class="c1"># Collect metadata for new partitions</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Collecting partition metadata for checkpoint validation...&quot;</span><span class="p">)</span>
-        <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">partitions</span><span class="p">)</span>
         <span class="n">partition_metadata</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">next_start_row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">compute_content_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckpt_manager</span><span class="o">.</span><span class="n">checkpoint_enabled</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitions</span><span class="p">):</span>
-            <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_partition_metadata</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_partition_metadata</span><span class="p">(</span>
+                <span class="n">partition</span><span class="p">,</span>
+                <span class="n">i</span><span class="p">,</span>
+                <span class="n">start_row</span><span class="o">=</span><span class="n">next_start_row</span><span class="p">,</span>
+                <span class="n">compute_content_hash</span><span class="o">=</span><span class="n">compute_content_hash</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">partition_metadata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+            <span class="n">next_start_row</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">end_row</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Partition </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">row_count</span><span class="si">}</span><span class="s2"> rows, hash=</span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">first_row_hash</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+        <span class="n">total_rows</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">row_count</span> <span class="k">for</span> <span class="n">meta</span> <span class="ow">in</span> <span class="n">partition_metadata</span><span class="p">)</span>
 
         <span class="n">partitioning_info</span> <span class="o">=</span> <span class="n">PartitioningInfo</span><span class="p">(</span>
             <span class="n">num_partitions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">,</span>

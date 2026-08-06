@@ -788,6 +788,8 @@
 ├── events_{timestamp}.jsonl      # Machine-readable event log
 ├── dag_execution_plan.json       # DAG execution plan
 ├── checkpoints/                  # Checkpoint data
+│   ├── partitioning_info.json    # Saved row boundaries and partition hashes
+│   └── checkpoint_op_*.parquet/  # Per-operation partition checkpoints
 ├── partitions/                   # Input partitions
 ├── logs/                         # Human-readable logs
 └── metadata/                     # Job metadata
@@ -834,6 +836,19 @@ positive integer to override the automatic limit.</p>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedding_mapper</span>
 </pre></div>
 </div>
+<p>When checkpointing is enabled, the initial run saves
+<code class="docutils literal notranslate"><span class="pre">checkpoints/partitioning_info.json</span></code>. For every logical partition, this file
+records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_row</span></code> (inclusive) and <code class="docutils literal notranslate"><span class="pre">end_row</span></code> (exclusive) in the ordered input;</p></li>
+<li><p>the partition row count;</p></li>
+<li><p>a stable hash of the complete partition contents;</p></li>
+<li><p>the partition hash algorithm used by the writer.</p></li>
+</ul>
+<p>These values allow an explicit resume to recreate the original logical
+partitions even when Ray produces a different physical block layout in the new
+process. Complete partition hashes are sensitive to row order, independent of
+Ray batch boundaries, and validated before any checkpoint is reused.</p>
 </section>
 <section id="intermediate-storage">
 <h3>Intermediate Storage<a class="headerlink" href="#intermediate-storage" title="Link to this heading">#</a></h3>
@@ -856,14 +871,50 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="c1"># Manual partition mode</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--partition.mode<span class="w"> </span>manual<span class="w"> </span>--partition.num_of_partitions<span class="w"> </span><span class="m">4</span>
 
-<span class="c1"># With custom job ID</span>
+<span class="c1"># Optional: start a new job with a custom job ID</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p>When checkpointing is enabled, a new <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> job prints a resume
+token:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resume token: 20260805_115141_81270d. Rerun the original command with
+--resume 20260805_115141_81270d to resume this job.
 </pre></div>
 </div>
 </section>
 <section id="resuming-jobs">
 <h3>Resuming Jobs<a class="headerlink" href="#resuming-jobs" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the token printed by the initial run. Keep the input and recipe unchanged.</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>20260805_115141_81270d
+
+<span class="c1"># A custom ID from the initial run can be used in the same way.</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--resume</span></code> is supported only by the <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> executor. It performs a
+strict resume in the following order:</p>
+<ol class="arabic simple">
+<li><p>locate the original work and checkpoint directories;</p></li>
+<li><p>verify that the current configuration matches the original run;</p></li>
+<li><p>load the saved partition count, row boundaries, and content hashes;</p></li>
+<li><p>recreate the original partitions with the saved row boundaries;</p></li>
+<li><p>validate every complete partition hash;</p></li>
+<li><p>load completed checkpoints and process only the unfinished work.</p></li>
+</ol>
+<p>If metadata is missing, row boundaries are invalid, the input has changed, or
+a content hash does not match, explicit resume stops with an error and leaves
+the existing checkpoints unchanged.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--job_id</span></code> remains available for custom job naming and backward compatibility.
+For fault-tolerant continuation, prefer <code class="docutils literal notranslate"><span class="pre">--resume</span></code>: the legacy <code class="docutils literal notranslate"><span class="pre">--job_id</span></code>
+resumption path keeps its previous behavior and may clear mismatched
+checkpoints before starting fresh. Metadata created by an older Data-Juicer
+version can still be read, but it does not contain the row boundaries and full
+content hashes required by explicit resume; <code class="docutils literal notranslate"><span class="pre">--resume</span></code> therefore rejects it
+without deleting its checkpoints.</p>
+<p>If both arguments are supplied, their values must be identical:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job_id<span class="w"> </span>my_experiment_001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resume<span class="w"> </span>my_experiment_001
 </pre></div>
 </div>
 </section>
@@ -1109,8 +1160,13 @@ disabled         | 0s        | Re-run everything
 <p><strong>Job resumption fails:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/job_summary.json
 ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/
+cat<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/partitioning_info.json
 </pre></div>
 </div>
+<p>Use the resume token printed by the original run and rerun the same recipe with
+<code class="docutils literal notranslate"><span class="pre">--resume</span></code>. Check the error log for configuration mismatch, missing partition
+metadata, invalid row boundaries, or partition content hash mismatch. Explicit
+resume does not delete checkpoints when validation fails.</p>
 <p><strong>Check Ray status:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>status
 </pre></div>
