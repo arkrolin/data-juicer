@@ -275,6 +275,13 @@
           main
         </a>
         
+        <a href="./../v1.5.5/README.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.5
+        </a>
+        
         <a href="./../v1.5.4/README.html"
            class="dropdown-item "
            role="menuitem"
@@ -538,6 +545,13 @@
           main
         </a>
         
+        <a href="./../v1.5.5/README.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.5
+        </a>
+        
         <a href="./../v1.5.4/README.html"
            class="dropdown-item "
            role="menuitem"
@@ -777,6 +791,18 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <section id="news">
 <h2>📰 News<a class="headerlink" href="#news" title="Link to this heading">#</a></h2>
 <details open>
+<summary>[2026-08-07] Release v1.5.5: <b>External OP Plugins; HDFS I/O & Ray Data Optimizations; Elastic Multi-node Sharding</b></summary>
+<ul class="simple">
+<li><p>🧩 <em>External OP Plugins</em> — Third-party operators can now be shipped as standalone pip packages and auto-registered via Python entry points.</p></li>
+<li><p>🗄️ <em>HDFS I/O</em> — Added <code class="docutils literal notranslate"><span class="pre">hdfs://</span></code> support for dataset loading and exporting, aligned with the existing S3 path.</p></li>
+<li><p>⚡ <em>Ray Data Optimizations</em> — Removed eager actions that forced premature execution, migrated to the public <code class="docutils literal notranslate"><span class="pre">TaskPoolStrategy</span></code>/<code class="docutils literal notranslate"><span class="pre">ActorPoolStrategy</span></code> APIs, parallelized partitioned execution, preserved elastic actor pool concurrency, and kept partition checkpoints valid across block-layout changes.</p></li>
+<li><p>🌐 <em>Elastic Multi-node Sharding</em> — New runnable reference workflow under <code class="docutils literal notranslate"><span class="pre">demos/elastic_sharding/</span></code> that shards large JSONL datasets across nodes via node-local Ray executors, with retries and ordered merge.</p></li>
+<li><p>📊 <em>Distributed RayAnalyzer</em> — New <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code> computes and aggregates dataset stats with Ray native operators, avoiding pandas materialization.</p></li>
+<li><p>🧮 <em>Memory Optimizations</em> — Streamed n-gram counting in repetition filters and block-wise MinHash permutations cut peak memory (768 → 272 MiB RSS) without changing results.</p></li>
+<li><p>🔧 <em>Robustness &amp; Dependency Fixes</em> — Fixed <code class="docutils literal notranslate"><span class="pre">text_chunk_mapper</span></code> delimiter leakage, <code class="docutils literal notranslate"><span class="pre">calibrate_response_mapper</span></code> <code class="docutils literal notranslate"><span class="pre">output_pattern</span></code> handling, and null captions in <code class="docutils literal notranslate"><span class="pre">image_diffusion_mapper</span></code>; added membership operators to <code class="docutils literal notranslate"><span class="pre">general_field_filter</span></code>; relaxed <code class="docutils literal notranslate"><span class="pre">numpy</span></code>/<code class="docutils literal notranslate"><span class="pre">fsspec</span></code>/<code class="docutils literal notranslate"><span class="pre">pandas</span></code> bounds for Python 3.13+ and pyarrow&gt;=17.</p></li>
+</ul>
+</details>
+<details open>
 <summary>[2026-07-17] Release v1.5.4: <b>HumanVBench Video OPs; Batch-local Stage Fusion; Robustness Fixes</b></summary>
 <ul class="simple">
 <li><p>🧑‍🤝‍🧑 <em>New OPs</em> — Added 9 human-centric video understanding operators (human track extraction, active-speaker detection, audio ASR, speech emotion &amp; age/gender detection, face demographic &amp; attribute/emotion captioning, face-ratio filtering) for building HumanVBench (CVPR’26)-style pipelines.</p></li>
@@ -785,7 +811,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🧪 <em>Test Coverage &amp; Cleanup</em> — Expanded tests for utility functions and model handling, plus assorted code cleanup.</p></li>
 </ul>
 </details>
-<details open>
+<details>
 <summary>[2026-06-26] Release v1.5.3: <b>VLA Ops Enhancements; Ray Repartition Pipeline; Scalability & Robustness</b></summary>
 <ul class="simple">
 <li><p>🤖 <em>VLA Ops Enhancements</em> — Expanded embodied-AI processing with 10+ new/renamed VLA operators (camera calibration via DeepCalib/DroidCalib/MoGe, atomic action segmentation, hand action computation &amp; motion smoothing, clip reassembly, trajectory overlay, LeRobot export) and a complete VLA pipeline demo.</p></li>
@@ -834,24 +860,6 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🎬 <em>Video Bytes I/O</em> — Direct bytes processing for video pipelines</p></li>
 <li><p>🫆 <em>Ray Mode Tracer</em> — Track changed samples in distributed processing</p></li>
 <li><p>🐳 <em>Enhancements &amp; fixes</em> — refreshed Docker image, small perf boosts, GitHub Insights traffic workflow, Ray compatibility updates, and bug/doc fixes.</p></li>
-</ul>
-</details>
-<details>
-<summary>[2026-01-15] Release v1.4.5: <b>20+ New OPs, Ray vLLM Pipelines & Sphinx Docs Upgrade</b> </summary>
-<ul class="simple">
-<li><p><em>Embodied-AI OPs</em>: added/enhanced mappers for video captioning (VLM), video object segmentation (YOLOE+SAM2), video depth estimation (viz + point cloud), human pose (MMPose), image tagging (VLM), single-image 3D body mesh recovery (SAM 3D Body), plus <em>S3 upload/download</em>.</p></li>
-<li><p><em>New Pipeline OP</em>: compose multiple OPs into one pipeline; introduced <em>Ray + vLLM</em> pipelines for LLM/VLM inference.</p></li>
-<li><p><em>Docs upgrade</em>: moved to a unified <em>Sphinx-based</em> documentation build/deploy workflow with isolated theme/architecture repo.</p></li>
-<li><p><em>Enhancements &amp; fixes</em>: dependency updates, improved Ray deduplication and S3 loading, OpenAI Responses API support, tracer consistency, Docker base updated to CUDA 12.6.3 + Ubuntu 24.04 + Py3.11, and multiple bug fixes.</p></li>
-</ul>
-</details>
-<details>
-<summary>[2025-12-01] Release v1.4.4: <b>NeurIPS’25 Spotlight, 6 New Video/MM OPs & S3 I/O</b> </summary>
-<ul class="simple">
-<li><p>NeurIPS’25 <strong>Spotlight</strong> for Data-Juicer 2.0</p></li>
-<li><p><em>Repo split</em>: sandbox/recipes/agents moved to standalone repos</p></li>
-<li><p><em>S3 I/O</em> added to loader/exporter</p></li>
-<li><p><em>6 new video &amp; multimodal OPs</em> (character detection, VGGT, whole-body pose, hand reconstruction) + docs/Ray/video I/O improvements and bug fixes</p></li>
 </ul>
 </details>
 <p>View <a class="reference external" href="https://github.com/datajuicer/data-juicer/releases">All Release</a> and <a class="reference internal" href="docs/news.html"><span class="std std-doc">News Archive</span></a></p>
