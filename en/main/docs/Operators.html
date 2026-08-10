@@ -827,7 +827,7 @@ Data-Juicer 中的算子分为以下 8 种类型。</p>
 <td class="text-center"><p>10</p></td>
 <td><p>Detects and removes duplicate samples. 识别、删除重复样本。</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../api/data_juicer.ops.filter.html#module-data_juicer.ops.filter" title="data_juicer.ops.filter"><span class="xref myst py py-mod">filter</span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/data_juicer.core.html#data_juicer.core.NestedDataset.filter" title="data_juicer.core.NestedDataset.filter"><span class="xref myst py py-meth">filter</span></a></p></td>
 <td class="text-center"><p>58</p></td>
 <td><p>Filters out low-quality samples. 过滤低质量样本。</p></td>
 </tr>
@@ -848,7 +848,7 @@ Data-Juicer 中的算子分为以下 8 种类型。</p>
 <td><p>Applies dataset-level processing; both input and output are datasets. 执行数据集级别的操作，输入和输出均为完整数据集。</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../api/data_juicer.ops.selector.html#module-data_juicer.ops.selector" title="data_juicer.ops.selector"><span class="xref myst py py-mod">selector</span></a></p></td>
-<td class="text-center"><p>5</p></td>
+<td class="text-center"><p>6</p></td>
 <td><p>Selects top samples based on ranking. 基于排序选取高质量样本。</p></td>
 </tr>
 </tbody>
@@ -2362,25 +2362,31 @@ Data-Juicer 中的算子分为以下 8 种类型。</p>
 <td><p><a class="reference internal" href="operators/selector/frequency_specified_field_selector.html"><span class="std std-doc">info</span></a></p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-odd"><td><p>random_selector</p></td>
+<tr class="row-odd"><td><p>image_ohem_selector</p></td>
+<td><p>🏞Image 🚀GPU 🟡Beta</p></td>
+<td><p>Keep the highest-loss image samples (Online Hard Example Mining). 保留损失最大的样本（在线难例挖掘）。</p></td>
+<td><p><a class="reference internal" href="operators/selector/image_ohem_selector.html"><span class="std std-doc">info</span></a></p></td>
+<td><p>-</p></td>
+</tr>
+<tr class="row-even"><td><p>random_selector</p></td>
 <td><p>💻CPU 🟢Stable</p></td>
 <td><p>Randomly selects a subset of samples from the dataset. 从数据集中随机选择样本子集。</p></td>
 <td><p><a class="reference internal" href="operators/selector/random_selector.html"><span class="std std-doc">info</span></a></p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-even"><td><p>range_specified_field_selector</p></td>
+<tr class="row-odd"><td><p>range_specified_field_selector</p></td>
 <td><p>💻CPU 🟢Stable</p></td>
 <td><p>Selects a range of samples based on the sorted values of a specified field. 根据指定字段的排序值选择采样范围。</p></td>
 <td><p><a class="reference internal" href="operators/selector/range_specified_field_selector.html"><span class="std std-doc">info</span></a></p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-odd"><td><p>tags_specified_field_selector</p></td>
+<tr class="row-even"><td><p>tags_specified_field_selector</p></td>
 <td><p>💻CPU 🟢Stable</p></td>
 <td><p>Selector to filter samples based on the tags of a specified field. 选择器根据指定字段的标签过滤样本。</p></td>
 <td><p><a class="reference internal" href="operators/selector/tags_specified_field_selector.html"><span class="std std-doc">info</span></a></p></td>
 <td><p>-</p></td>
 </tr>
-<tr class="row-even"><td><p>topk_specified_field_selector</p></td>
+<tr class="row-odd"><td><p>topk_specified_field_selector</p></td>
 <td><p>💻CPU 🟢Stable</p></td>
 <td><p>Selects top samples based on the sorted values of a specified field. 根据指定字段的排序值选择顶部样本。</p></td>
 <td><p><a class="reference internal" href="operators/selector/topk_specified_field_selector.html"><span class="std std-doc">info</span></a></p></td>
