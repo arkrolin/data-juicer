@@ -349,5 +349,344 @@ class CompressManagerRoundtripTest(DataJuicerTestCaseBase):
             self.assertEqual(result_content, original_content)
 
 
+class FileLockAutoRemoveTest(DataJuicerTestCaseBase):
+    """Test that FileLock auto-removes the lock file on release."""
+
+    def test_lock_file_removed_after_context_exit(self):
+        import tempfile
+        from data_juicer.utils.compress import FileLock
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            lock_path = os.path.join(tmpdir, 'test.lock')
+            with FileLock(lock_path):
+                # Lock file should exist while held
+                self.assertTrue(os.path.exists(lock_path))
+            # Lock file should be removed after release
+            self.assertFalse(os.path.exists(lock_path))
+
+    def test_lock_file_removed_after_explicit_release(self):
+        import tempfile
+        from data_juicer.utils.compress import FileLock
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            lock_path = os.path.join(tmpdir, 'explicit.lock')
+            lock = FileLock(lock_path)
+            lock.acquire()
+            self.assertTrue(os.path.exists(lock_path))
+            lock.release()
+            self.assertFalse(os.path.exists(lock_path))
+
+    def test_lock_file_already_deleted_no_error(self):
+        import tempfile
+        from data_juicer.utils.compress import FileLock
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            lock_path = os.path.join(tmpdir, 'vanish.lock')
+            lock = FileLock(lock_path)
+            lock.acquire()
+            # Manually remove the lock file before release
+            os.remove(lock_path)
+            # Release should not raise even though file is gone
+            lock.release()
+            self.assertFalse(os.path.exists(lock_path))
+
+
+class CompressorRegistryTest(DataJuicerTestCaseBase):
+    """Test that the Compressor registry contains expected formats."""
+
+    def test_registry_contains_gzip(self):
+        from data_juicer.utils.compress import Compressor
+        self.assertIn('gzip', Compressor.compressors)
+
+    def test_registry_contains_zstd(self):
+        from data_juicer.utils.compress import Compressor
+        self.assertIn('zstd', Compressor.compressors)
+
+    def test_registry_contains_lz4(self):
+        from data_juicer.utils.compress import Compressor
+        self.assertIn('lz4', Compressor.compressors)
+
+    def test_registry_maps_to_correct_classes(self):
+        from data_juicer.utils.compress import (Compressor, GzipCompressor,
+                                                 Lz4Compressor,
+                                                 ZstdCompressor)
+        self.assertIs(Compressor.compressors['gzip'], GzipCompressor)
+        self.assertIs(Compressor.compressors['zstd'], ZstdCompressor)
+        self.assertIs(Compressor.compressors['lz4'], Lz4Compressor)
+
+    def test_invalid_format_raises_assertion(self):
+        from data_juicer.utils.compress import Compressor
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'dummy.txt')
+            output_path = os.path.join(tmpdir, 'dummy.txt.fake')
+            with open(input_path, 'wb') as f:
+                f.write(b'data')
+            with self.assertRaises(AssertionError):
+                Compressor.compress(input_path, output_path, 'invalid_format')
+
+    def test_compress_manager_invalid_format_raises_assertion(self):
+        from data_juicer.utils.compress import CompressManager
+        with self.assertRaises(AssertionError):
+            CompressManager(compressor_format='nonexistent')
+
+
+class ZstdRoundtripTest(DataJuicerTestCaseBase):
+    """Test real compress/decompress round-trip with zstd."""
+
+    def test_zstd_roundtrip(self):
+        import tempfile
+        from data_juicer.utils.compress import CompressManager
+
+        manager = CompressManager(compressor_format='zstd')
+        original_content = b'The quick brown fox jumps over the lazy dog. ' * 100
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'input.txt')
+            compressed_path = os.path.join(tmpdir, 'compressed.txt.zst')
+            output_path = os.path.join(tmpdir, 'output.txt')
+
+            with open(input_path, 'wb') as f:
+                f.write(original_content)
+
+            manager.compress(input_path, compressed_path)
+            self.assertTrue(os.path.exists(compressed_path))
+
+            # Compressed file should be smaller than original for repetitive data
+            compressed_size = os.path.getsize(compressed_path)
+            original_size = os.path.getsize(input_path)
+            self.assertLess(compressed_size, original_size)
+
+            manager.decompress(compressed_path, output_path)
+            self.assertTrue(os.path.exists(output_path))
+
+            with open(output_path, 'rb') as f:
+                result = f.read()
+            self.assertEqual(result, original_content)
+
+    def test_zstd_empty_file(self):
+        import tempfile
+        from data_juicer.utils.compress import CompressManager
+
+        manager = CompressManager(compressor_format='zstd')
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'empty.txt')
+            compressed_path = os.path.join(tmpdir, 'empty.txt.zst')
+            output_path = os.path.join(tmpdir, 'output_empty.txt')
+
+            with open(input_path, 'wb') as f:
+                f.write(b'')
+
+            manager.compress(input_path, compressed_path)
+            self.assertTrue(os.path.exists(compressed_path))
+
+            manager.decompress(compressed_path, output_path)
+            with open(output_path, 'rb') as f:
+                result = f.read()
+            self.assertEqual(result, b'')
+
+    def test_zstd_binary_data(self):
+        import tempfile
+        from data_juicer.utils.compress import CompressManager
+
+        manager = CompressManager(compressor_format='zstd')
+        # Random-ish binary content
+        original_content = bytes(range(256)) * 50
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'binary.bin')
+            compressed_path = os.path.join(tmpdir, 'binary.bin.zst')
+            output_path = os.path.join(tmpdir, 'output_binary.bin')
+
+            with open(input_path, 'wb') as f:
+                f.write(original_content)
+
+            manager.compress(input_path, compressed_path)
+            manager.decompress(compressed_path, output_path)
+
+            with open(output_path, 'rb') as f:
+                result = f.read()
+            self.assertEqual(result, original_content)
+
+
+class GzipRoundtripTest(DataJuicerTestCaseBase):
+    """Test real compress/decompress round-trip with gzip."""
+
+    def test_gzip_roundtrip_large_content(self):
+        import tempfile
+        from data_juicer.utils.compress import CompressManager
+
+        manager = CompressManager(compressor_format='gzip')
+        original_content = b'A' * 10000 + b'B' * 10000 + b'C' * 10000
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'large.txt')
+            compressed_path = os.path.join(tmpdir, 'large.txt.gz')
+            output_path = os.path.join(tmpdir, 'large_out.txt')
+
+            with open(input_path, 'wb') as f:
+                f.write(original_content)
+
+            manager.compress(input_path, compressed_path)
+            self.assertTrue(os.path.exists(compressed_path))
+
+            compressed_size = os.path.getsize(compressed_path)
+            original_size = os.path.getsize(input_path)
+            self.assertLess(compressed_size, original_size)
+
+            manager.decompress(compressed_path, output_path)
+            with open(output_path, 'rb') as f:
+                result = f.read()
+            self.assertEqual(result, original_content)
+
+    def test_gzip_creates_output_directory(self):
+        import tempfile
+        from data_juicer.utils.compress import CompressManager
+
+        manager = CompressManager(compressor_format='gzip')
+        original_content = b'directory creation test'
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'input.txt')
+            # Nested output directory that does not exist yet
+            compressed_path = os.path.join(tmpdir, 'sub', 'dir', 'out.gz')
+            output_path = os.path.join(tmpdir, 'sub2', 'dir2', 'result.txt')
+
+            with open(input_path, 'wb') as f:
+                f.write(original_content)
+
+            manager.compress(input_path, compressed_path)
+            self.assertTrue(os.path.exists(compressed_path))
+
+            manager.decompress(compressed_path, output_path)
+            with open(output_path, 'rb') as f:
+                result = f.read()
+            self.assertEqual(result, original_content)
+
+
+class CleanupCompressedCacheFilesTest(DataJuicerTestCaseBase):
+    """Test cleanup_compressed_cache_files removes compressed files."""
+
+    def setUp(self):
+        super().setUp()
+        self.temp_output_path = 'tmp/test_cleanup_compress/'
+        self.test_data_path = self.temp_output_path + 'test.json'
+        os.makedirs(self.temp_output_path, exist_ok=True)
+        with open(self.test_data_path, 'w') as fout:
+            json.dump([{'key': 'value'}], fout)
+        from datasets import config
+        self.ori_cache_dir = config.HF_DATASETS_CACHE
+        config.HF_DATASETS_CACHE = self.temp_output_path
+
+    def tearDown(self):
+        from datasets import config
+        if os.path.exists(self.temp_output_path):
+            os.system(f'rm -rf {self.temp_output_path}')
+        config.HF_DATASETS_CACHE = self.ori_cache_dir
+        super().tearDown()
+
+    def test_cleanup_removes_compressed_files_with_format_set(self):
+        cache_utils.CACHE_COMPRESS = 'zstd'
+        ds = load_dataset('json', data_files=self.test_data_path,
+                          split='train')
+        prev_ds = ds.map(lambda s: {'key2': 'val2', **s})
+        curr_ds = prev_ds.map(lambda s: {'key3': 'val3', **s})
+
+        # Compress prev_ds cache files
+        compress(prev_ds, curr_ds)
+
+        # Verify compressed files exist
+        for fn in prev_ds.cache_files:
+            compressed_name = fn['filename'] + '.zstd'
+            self.assertTrue(os.path.exists(compressed_name))
+
+        # Cleanup should remove them
+        cleanup_compressed_cache_files(prev_ds)
+        for fn in prev_ds.cache_files:
+            compressed_name = fn['filename'] + '.zstd'
+            self.assertFalse(os.path.exists(compressed_name))
+
+    def test_cleanup_when_cache_compress_is_none(self):
+        # When CACHE_COMPRESS is None, cleanup should iterate all formats
+        cache_utils.CACHE_COMPRESS = 'gzip'
+        ds = load_dataset('json', data_files=self.test_data_path,
+                          split='train')
+        prev_ds = ds.map(lambda s: {'key2': 'val2', **s})
+        curr_ds = prev_ds.map(lambda s: {'key3': 'val3', **s})
+
+        compress(prev_ds, curr_ds)
+
+        # Now set to None so cleanup iterates all formats
+        cache_utils.CACHE_COMPRESS = None
+        cleanup_compressed_cache_files(prev_ds)
+
+        # Verify .gzip files are removed
+        for fn in prev_ds.cache_files:
+            compressed_name = fn['filename'] + '.gzip'
+            self.assertFalse(os.path.exists(compressed_name))
+
+
+class CompressorClassDirectTest(DataJuicerTestCaseBase):
+    """Test the Compressor class compress method directly."""
+
+    def test_compressor_zstd_creates_file(self):
+        import tempfile
+        from data_juicer.utils.compress import Compressor
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'src.txt')
+            output_path = os.path.join(tmpdir, 'src.txt.zst')
+            with open(input_path, 'wb') as f:
+                f.write(b'compressor class test data')
+
+            Compressor.compress(input_path, output_path, 'zstd')
+            self.assertTrue(os.path.exists(output_path))
+            self.assertGreater(os.path.getsize(output_path), 0)
+
+    def test_compressor_gzip_creates_file(self):
+        import tempfile
+        from data_juicer.utils.compress import Compressor
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'src.txt')
+            output_path = os.path.join(tmpdir, 'src.txt.gz')
+            with open(input_path, 'wb') as f:
+                f.write(b'gzip compressor class test')
+
+            Compressor.compress(input_path, output_path, 'gzip')
+            self.assertTrue(os.path.exists(output_path))
+            self.assertGreater(os.path.getsize(output_path), 0)
+
+    def test_compressor_creates_output_dir(self):
+        import tempfile
+        from data_juicer.utils.compress import Compressor
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'src.txt')
+            output_path = os.path.join(tmpdir, 'nested', 'dir', 'out.zst')
+            with open(input_path, 'wb') as f:
+                f.write(b'nested directory test')
+
+            Compressor.compress(input_path, output_path, 'zstd')
+            self.assertTrue(os.path.exists(output_path))
+
+    def test_compressor_lock_file_cleaned_up(self):
+        import tempfile
+        from data_juicer.utils.compress import Compressor
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            input_path = os.path.join(tmpdir, 'src.txt')
+            output_path = os.path.join(tmpdir, 'out.zst')
+            lock_path = os.path.join(tmpdir, 'out.lock')
+            with open(input_path, 'wb') as f:
+                f.write(b'lock cleanup test')
+
+            Compressor.compress(input_path, output_path, 'zstd')
+            # Lock file should be removed after compress completes
+            self.assertFalse(os.path.exists(lock_path))
+
+
 if __name__ == '__main__':
     unittest.main()

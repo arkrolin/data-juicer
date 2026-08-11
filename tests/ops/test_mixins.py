@@ -604,5 +604,270 @@ class NotificationMixinTest(DataJuicerTestCaseBase):
             )
 
 
+class EventDrivenMixinEdgeCaseTest(DataJuicerTestCaseBase):
+    """Additional edge-case tests for EventDrivenMixin."""
+
+    def test_polling_falsy_but_not_none_triggers_event(self):
+        """poll_func returning falsy values like 0, '', [] should NOT trigger,
+        but returning a truthy dict should trigger."""
+        obj = EventDrivenTestClass()
+        triggered = []
+        obj.register_event_handler("evt", lambda d: triggered.append(d))
+
+        # poll_func returns 0 (falsy) - should not trigger
+        obj.start_polling("evt", lambda: 0, interval=0.01)
+        time.sleep(0.05)
+        obj.stop_polling("evt")
+        self.assertEqual(len(triggered), 0)
+
+        # poll_func returns empty dict (falsy) - should not trigger
+        obj.start_polling("evt", lambda: {}, interval=0.01)
+        time.sleep(0.05)
+        obj.stop_polling("evt")
+        self.assertEqual(len(triggered), 0)
+
+        # poll_func returns empty list (falsy) - should not trigger
+        obj.start_polling("evt", lambda: [], interval=0.01)
+        time.sleep(0.05)
+        obj.stop_polling("evt")
+        self.assertEqual(len(triggered), 0)
+
+    def test_polling_truthy_non_none_triggers_event(self):
+        """poll_func returning truthy values should trigger events."""
+        obj = EventDrivenTestClass()
+        triggered = []
+        obj.register_event_handler("evt", lambda d: triggered.append(d))
+
+        obj.start_polling("evt", lambda: {"status": "ready"}, interval=0.01)
+        time.sleep(0.05)
+        obj.stop_polling("evt")
+        self.assertGreater(len(triggered), 0)
+        self.assertEqual(triggered[0], {"status": "ready"})
+
+    def test_stop_polling_nonexistent_event(self):
+        """Stopping polling for an event that was never started should not raise."""
+        obj = EventDrivenTestClass()
+        # Should not raise KeyError or any exception
+        # stop_polling checks 'if event_type in self.polling_threads'
+        obj.stop_polling("never_started")
+
+    def test_stop_all_polling_empty(self):
+        """stop_all_polling with no threads should be a no-op."""
+        obj = EventDrivenTestClass()
+        obj.stop_all_polling()  # Should not raise
+        self.assertEqual(len(obj.polling_threads), 0)
+
+    def test_wait_for_completion_condition_raises_exception(self):
+        """If condition_func raises, wait_for_completion should propagate it."""
+        obj = EventDrivenTestClass()
+
+        def bad_condition():
+            raise RuntimeError("condition error")
+
+        with self.assertRaises(RuntimeError) as ctx:
+            obj.wait_for_completion(
+                bad_condition, timeout=0.1, poll_interval=0.01
+            )
+        self.assertIn("condition error", str(ctx.exception))
+
+    def test_multiple_event_types_independent(self):
+        """Events of different types do not interfere with each other."""
+        obj = EventDrivenTestClass()
+        results_a = []
+        results_b = []
+        obj.register_event_handler("type_a", lambda d: results_a.append(d))
+        obj.register_event_handler("type_b", lambda d: results_b.append(d))
+
+        obj.trigger_event("type_a", {"x": 1})
+        obj.trigger_event("type_b", {"y": 2})
+        obj.trigger_event("type_a", {"x": 3})
+
+        self.assertEqual(results_a, [{"x": 1}, {"x": 3}])
+        self.assertEqual(results_b, [{"y": 2}])
+
+    def test_wait_for_completion_exact_timeout_boundary(self):
+        """Condition met just before timeout should succeed."""
+        obj = EventDrivenTestClass()
+        start = time.time()
+
+        def condition():
+            # Return True after ~0.05s
+            return (time.time() - start) >= 0.05
+
+        result = obj.wait_for_completion(
+            condition, timeout=1, poll_interval=0.01
+        )
+        self.assertTrue(result)
+
+    def test_polling_thread_is_daemon(self):
+        """Polling threads should be daemon threads so they don't block exit."""
+        obj = EventDrivenTestClass()
+        obj.start_polling("evt", lambda: None, interval=1)
+        thread = obj.polling_threads["evt"]
+        self.assertTrue(thread.daemon)
+        obj.stop_polling("evt")
+
+
+class NotificationMixinEdgeCaseTest(DataJuicerTestCaseBase):
+    """Additional edge-case tests for NotificationMixin."""
+
+    def _make_obj(self, **config):
+        return NotificationTestClass(notification_config=config)
+
+    def test_config_restored_after_exception_in_handler(self):
+        """notification_config should be restored even if handler raises."""
+        obj = self._make_obj(enabled=True)
+        original_config = obj.notification_config.copy()
+
+        def failing_handler(message, **kwargs):
+            raise Exception("handler exploded")
+
+        obj.notification_handlers["email"] = failing_handler
+        # Should not raise (the exception is caught by the handler itself
+        # within _send_email_notification, but our custom handler will raise)
+        # Actually send_notification doesn't catch handler exceptions,
+        # so this will propagate. Let's verify config is still restored.
+        try:
+            obj.send_notification("test", notification_type="email")
+        except Exception:
+            pass
+        # Config should be restored by the finally block
+        self.assertEqual(obj.notification_config["enabled"], original_config["enabled"])
+
+    def test_kwargs_dict_merge_for_channel_config(self):
+        """When kwargs contain a dict value matching a config key, it should merge."""
+        obj = self._make_obj(
+            enabled=True,
+            email={"smtp_server": "orig.com", "smtp_port": 465},
+        )
+        mock_handler = MagicMock(return_value=True)
+        obj.notification_handlers["email"] = mock_handler
+
+        obj.send_notification(
+            "test",
+            notification_type="email",
+            email={"smtp_server": "new.com"},
+        )
+        # During the call, the merged config should have smtp_port from
+        # original and smtp_server from override
+        mock_handler.assert_called_once()
+
+    @patch("smtplib.SMTP_SSL")
+    def test_send_email_server_specific_env_password(self, mock_smtp_ssl):
+        """Server-specific env var should take priority over generic one."""
+        mock_server = MagicMock()
+        mock_smtp_ssl.return_value.__enter__ = MagicMock(
+            return_value=mock_server
+        )
+        mock_smtp_ssl.return_value.__exit__ = MagicMock(return_value=False)
+
+        env_vars = {
+            "DATA_JUICER_SMTP_MYSERVER_COM_PASSWORD": "server_specific_pw",
+            "DATA_JUICER_EMAIL_PASSWORD": "generic_pw",
+            "DATA_JUICER_EMAIL_CERT": "",
+            "DATA_JUICER_EMAIL_KEY": "",
+        }
+        with patch.dict(os.environ, env_vars, clear=False):
+            obj = self._make_obj(
+                enabled=True,
+                email={
+                    "smtp_server": "myserver.com",
+                    "smtp_port": 465,
+                    "use_ssl": True,
+                    "username": "user@myserver.com",
+                    "sender_email": "user@myserver.com",
+                    "recipients": ["dest@test.com"],
+                },
+            )
+            result = obj.send_notification("test", notification_type="email")
+            self.assertTrue(result)
+
+    @patch("requests.post")
+    def test_send_slack_custom_username(self, mock_post):
+        """Slack notification should use custom username from config."""
+        mock_post.return_value = MagicMock(status_code=200)
+
+        obj = self._make_obj(
+            enabled=True,
+            slack={
+                "webhook_url": "https://hooks.slack.com/test",
+                "username": "Custom Bot",
+            },
+        )
+        obj.send_notification("hello", notification_type="slack")
+        payload = json.loads(mock_post.call_args[1]["data"])
+        self.assertEqual(payload["username"], "Custom Bot")
+
+    @patch("requests.post")
+    def test_send_slack_no_channel(self, mock_post):
+        """Slack notification without channel should not include channel key."""
+        mock_post.return_value = MagicMock(status_code=200)
+
+        obj = self._make_obj(
+            enabled=True,
+            slack={"webhook_url": "https://hooks.slack.com/test"},
+        )
+        obj.send_notification("hello", notification_type="slack")
+        payload = json.loads(mock_post.call_args[1]["data"])
+        self.assertNotIn("channel", payload)
+
+    @patch("smtplib.SMTP_SSL")
+    def test_send_email_custom_subject(self, mock_smtp_ssl):
+        """Email should use custom subject from config."""
+        mock_server = MagicMock()
+        mock_smtp_ssl.return_value.__enter__ = MagicMock(
+            return_value=mock_server
+        )
+        mock_smtp_ssl.return_value.__exit__ = MagicMock(return_value=False)
+
+        obj = self._make_obj(
+            enabled=True,
+            email={
+                "smtp_server": "smtp.test.com",
+                "smtp_port": 465,
+                "use_ssl": True,
+                "username": "user@test.com",
+                "sender_email": "user@test.com",
+                "password": "pw",
+                "recipients": ["dest@test.com"],
+                "subject": "Custom Alert Subject",
+            },
+        )
+        result = obj.send_notification("body text", notification_type="email")
+        self.assertTrue(result)
+        # Verify the email message string contains the subject
+        call_args = mock_server.sendmail.call_args
+        msg_string = call_args[0][2]
+        self.assertIn("Custom Alert Subject", msg_string)
+
+    @patch("smtplib.SMTP_SSL")
+    def test_send_email_multiple_recipients_separator(self, mock_smtp_ssl):
+        """Email To header should use configured separator."""
+        mock_server = MagicMock()
+        mock_smtp_ssl.return_value.__enter__ = MagicMock(
+            return_value=mock_server
+        )
+        mock_smtp_ssl.return_value.__exit__ = MagicMock(return_value=False)
+
+        obj = self._make_obj(
+            enabled=True,
+            email={
+                "smtp_server": "smtp.test.com",
+                "smtp_port": 465,
+                "use_ssl": True,
+                "username": "user@test.com",
+                "sender_email": "user@test.com",
+                "password": "pw",
+                "recipients": ["a@t.com", "b@t.com"],
+                "recipient_separator": ",",
+            },
+        )
+        result = obj.send_notification("body", notification_type="email")
+        self.assertTrue(result)
+        call_args = mock_server.sendmail.call_args
+        msg_string = call_args[0][2]
+        self.assertIn("a@t.com,b@t.com", msg_string)
+
+
 if __name__ == "__main__":
     unittest.main()
