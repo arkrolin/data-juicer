@@ -1,7 +1,6 @@
 import inspect
 import os
 import unittest
-from unittest.mock import patch
 
 from data_juicer.utils.model_utils import (
     filter_arguments,
@@ -88,104 +87,97 @@ class FilterArgumentsTest(DataJuicerTestCaseBase):
         self.assertEqual(result, {'a': 1, 'b': 2})
 
 
+_ENV_KEYS = [
+    'OPENAI_API_KEY', 'DASHSCOPE_API_KEY', 'SK',
+    'OPENAI_BASE_URL', 'OPENAI_API_URL', 'DASHSCOPE_BASE_URL',
+    'OPENAI_DEFAULT_MODEL', 'DASHSCOPE_DEFAULT_MODEL',
+]
+
+
 class MergeOpenAICompatibleEnvTest(DataJuicerTestCaseBase):
     """Tests for _merge_openai_compatible_env_into_model_params."""
 
-    @patch.dict(os.environ, {}, clear=True)
+    def setUp(self):
+        super().setUp()
+        self._saved_env = {k: os.environ.pop(k) for k in _ENV_KEYS if k in os.environ}
+
+    def tearDown(self):
+        for k in _ENV_KEYS:
+            os.environ.pop(k, None)
+        os.environ.update(self._saved_env)
+        super().tearDown()
+
     def test_no_env_no_params(self):
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result, {})
 
-    @patch.dict(os.environ, {}, clear=True)
     def test_none_input(self):
         result = _merge_openai_compatible_env_into_model_params(None)
         self.assertEqual(result, {})
 
-    @patch.dict(os.environ, {'OPENAI_API_KEY': 'sk-test123'}, clear=True)
     def test_api_key_from_openai_env(self):
+        os.environ['OPENAI_API_KEY'] = 'sk-test123'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['api_key'], 'sk-test123')
 
-    @patch.dict(os.environ, {'DASHSCOPE_API_KEY': 'ds-key'}, clear=True)
     def test_api_key_from_dashscope_env(self):
+        os.environ['DASHSCOPE_API_KEY'] = 'ds-key'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['api_key'], 'ds-key')
 
-    @patch.dict(os.environ, {'SK': 'sk-fallback'}, clear=True)
     def test_api_key_from_sk_env(self):
+        os.environ['SK'] = 'sk-fallback'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['api_key'], 'sk-fallback')
 
-    @patch.dict(
-        os.environ,
-        {'OPENAI_API_KEY': 'openai-key', 'DASHSCOPE_API_KEY': 'ds-key'},
-        clear=True,
-    )
     def test_openai_key_takes_priority_over_dashscope(self):
+        os.environ['OPENAI_API_KEY'] = 'openai-key'
+        os.environ['DASHSCOPE_API_KEY'] = 'ds-key'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['api_key'], 'openai-key')
 
-    @patch.dict(os.environ, {'OPENAI_API_KEY': 'env-key'}, clear=True)
     def test_explicit_api_key_takes_precedence(self):
+        os.environ['OPENAI_API_KEY'] = 'env-key'
         result = _merge_openai_compatible_env_into_model_params(
             {'api_key': 'explicit-key'}
         )
         self.assertEqual(result['api_key'], 'explicit-key')
 
-    @patch.dict(
-        os.environ, {'OPENAI_BASE_URL': 'http://example.com/v1/'}, clear=True
-    )
     def test_base_url_from_openai_env(self):
+        os.environ['OPENAI_BASE_URL'] = 'http://example.com/v1/'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['base_url'], 'http://example.com/v1')
 
-    @patch.dict(
-        os.environ, {'OPENAI_API_URL': 'http://api.example.com/v1/'}, clear=True
-    )
     def test_base_url_from_openai_api_url_env(self):
+        os.environ['OPENAI_API_URL'] = 'http://api.example.com/v1/'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['base_url'], 'http://api.example.com/v1')
 
-    @patch.dict(
-        os.environ,
-        {'DASHSCOPE_BASE_URL': 'https://dashscope.aliyuncs.com/'},
-        clear=True,
-    )
     def test_base_url_from_dashscope_env(self):
+        os.environ['DASHSCOPE_BASE_URL'] = 'https://dashscope.aliyuncs.com/'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(
             result['base_url'], 'https://dashscope.aliyuncs.com'
         )
 
-    @patch.dict(
-        os.environ,
-        {
-            'OPENAI_BASE_URL': 'http://first.com/v1/',
-            'DASHSCOPE_BASE_URL': 'http://second.com/',
-        },
-        clear=True,
-    )
     def test_openai_base_url_priority_over_dashscope(self):
+        os.environ['OPENAI_BASE_URL'] = 'http://first.com/v1/'
+        os.environ['DASHSCOPE_BASE_URL'] = 'http://second.com/'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['base_url'], 'http://first.com/v1')
 
-    @patch.dict(
-        os.environ, {'OPENAI_BASE_URL': 'http://env.com/v1'}, clear=True
-    )
     def test_explicit_base_url_takes_precedence(self):
+        os.environ['OPENAI_BASE_URL'] = 'http://env.com/v1'
         result = _merge_openai_compatible_env_into_model_params(
             {'base_url': 'http://explicit.com/v1'}
         )
         self.assertEqual(result['base_url'], 'http://explicit.com/v1')
 
-    @patch.dict(
-        os.environ, {'OPENAI_BASE_URL': 'http://example.com/v1'}, clear=True
-    )
     def test_no_trailing_slash_left_as_is(self):
+        os.environ['OPENAI_BASE_URL'] = 'http://example.com/v1'
         result = _merge_openai_compatible_env_into_model_params({})
         self.assertEqual(result['base_url'], 'http://example.com/v1')
 
-    @patch.dict(os.environ, {}, clear=True)
     def test_preserves_other_params(self):
         result = _merge_openai_compatible_env_into_model_params(
             {'model': 'gpt-4', 'temperature': 0.7}
@@ -256,6 +248,16 @@ class IsDashscopeOpenAICompatibleBaseTest(DataJuicerTestCaseBase):
 class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
     """Tests for _maybe_remap_model_for_dashscope."""
 
+    def setUp(self):
+        super().setUp()
+        self._saved_env = {k: os.environ.pop(k) for k in _ENV_KEYS if k in os.environ}
+
+    def tearDown(self):
+        for k in _ENV_KEYS:
+            os.environ.pop(k, None)
+        os.environ.update(self._saved_env)
+        super().tearDown()
+
     def test_embedding_endpoint_skips_remap(self):
         result = _maybe_remap_model_for_dashscope(
             'gpt-4o',
@@ -308,8 +310,8 @@ class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
         )
         self.assertEqual(result, 'deepseek-chat')
 
-    @patch.dict(os.environ, {'DASHSCOPE_DEFAULT_MODEL': 'qwen-max'}, clear=True)
     def test_remaps_using_dashscope_default_model_env(self):
+        os.environ['DASHSCOPE_DEFAULT_MODEL'] = 'qwen-max'
         result = _maybe_remap_model_for_dashscope(
             'gpt-4o',
             'https://dashscope.aliyuncs.com/compatible-mode/v1',
@@ -317,8 +319,8 @@ class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
         )
         self.assertEqual(result, 'qwen-max')
 
-    @patch.dict(os.environ, {'OPENAI_DEFAULT_MODEL': 'qwen-turbo'}, clear=True)
     def test_remaps_using_openai_default_model_env(self):
+        os.environ['OPENAI_DEFAULT_MODEL'] = 'qwen-turbo'
         result = _maybe_remap_model_for_dashscope(
             'gpt-4o',
             'https://dashscope.aliyuncs.com/compatible-mode/v1',
@@ -326,12 +328,9 @@ class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
         )
         self.assertEqual(result, 'qwen-turbo')
 
-    @patch.dict(
-        os.environ,
-        {'DASHSCOPE_DEFAULT_MODEL': 'qwen-max', 'OPENAI_DEFAULT_MODEL': 'qwen-turbo'},
-        clear=True,
-    )
     def test_dashscope_default_model_takes_priority(self):
+        os.environ['DASHSCOPE_DEFAULT_MODEL'] = 'qwen-max'
+        os.environ['OPENAI_DEFAULT_MODEL'] = 'qwen-turbo'
         result = _maybe_remap_model_for_dashscope(
             'gpt-4o',
             'https://dashscope.aliyuncs.com/compatible-mode/v1',
@@ -339,7 +338,6 @@ class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
         )
         self.assertEqual(result, 'qwen-max')
 
-    @patch.dict(os.environ, {}, clear=True)
     def test_falls_back_to_qwen_plus(self):
         result = _maybe_remap_model_for_dashscope(
             'gpt-4o',
@@ -349,13 +347,12 @@ class MaybeRemapModelForDashscopeTest(DataJuicerTestCaseBase):
         self.assertEqual(result, 'qwen-plus')
 
     def test_none_endpoint_treated_as_chat(self):
-        with patch.dict(os.environ, {}, clear=True):
-            result = _maybe_remap_model_for_dashscope(
-                'gpt-4o',
-                'https://dashscope.aliyuncs.com/compatible-mode/v1',
-                None,
-            )
-            self.assertEqual(result, 'qwen-plus')
+        result = _maybe_remap_model_for_dashscope(
+            'gpt-4o',
+            'https://dashscope.aliyuncs.com/compatible-mode/v1',
+            None,
+        )
+        self.assertEqual(result, 'qwen-plus')
 
 
 class GetBackupModelLinkTest(DataJuicerTestCaseBase):
