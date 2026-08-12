@@ -721,6 +721,14 @@
     <span class="c1"># python-dotenv not installed, .env files won&#39;t be automatically loaded</span>
     <span class="k">pass</span>
 
+<span class="n">ACCEPTED_CONFIG_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;aws_session_token&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;aws_region&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;endpoint_url&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
 
 <div class="viewcode-block" id="get_aws_credentials">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.get_aws_credentials">[文档]</a>
@@ -817,13 +825,16 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate that a path is a valid S3 path.</span>
 
+<span class="sd">    The scheme check is case-insensitive (&#39;s3://&#39;, &#39;S3://&#39;, ... are all</span>
+<span class="sd">    accepted), while single-slash forms like &#39;s3:/bucket&#39; are rejected.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        path: Path to validate</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If path doesn&#39;t start with &#39;s3://&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;S3 path must start with &#39;s3://&#39;, got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 </pre></div>

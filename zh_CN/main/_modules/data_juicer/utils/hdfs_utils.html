@@ -722,6 +722,15 @@
     <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.fs</span>
 
 
+<span class="n">ACCEPTED_CONFIG_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;hdfs_host&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hdfs_port&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hdfs_user&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
 <div class="viewcode-block" id="parse_hdfs_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.parse_hdfs_path">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_hdfs_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
@@ -835,13 +844,16 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate that a path is a valid HDFS path.</span>
 
+<span class="sd">    The scheme check is case-insensitive (&#39;hdfs://&#39;, &#39;HDFS://&#39;, ... are all</span>
+<span class="sd">    accepted), while single-slash forms like &#39;hdfs:/user&#39; are rejected.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        path: Path to validate.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If path doesn&#39;t start with &#39;hdfs://&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HDFS path must start with &#39;hdfs://&#39;, got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 </pre></div>

@@ -701,11 +701,13 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">HashKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizes</span><span class="p">,</span> <span class="n">byte_size_to_size_str</span><span class="p">,</span> <span class="n">is_remote_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.fs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_filesystem_for_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">filter_arguments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.webdataset_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">reconstruct_custom_webdataset_format</span>
 
@@ -777,7 +779,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="n">encrypt_before_export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">encrypt_before_export</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;encrypt_before_export is True but export_path is a remote &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;path (</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">). Local-file encryption is skipped. &quot;</span>
@@ -789,41 +791,20 @@
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="n">load_fernet_key</span><span class="p">(</span><span class="n">encryption_key_path</span><span class="p">)</span>
 
-        <span class="c1"># Check if export_path is HDFS and create filesystem if needed.</span>
+        <span class="c1"># Create a PyArrow filesystem when export_path points to remote</span>
+        <span class="c1"># storage (hdfs:// or s3://), consuming the backend-specific keys</span>
+        <span class="c1"># from export_extra_args so they won&#39;t be forwarded to write methods.</span>
         <span class="c1"># PyArrow&#39;s HadoopFileSystem expects paths WITHOUT the hdfs:// scheme,</span>
         <span class="c1"># so we also strip the scheme and use the bare path for writing.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_pyarrow_hdfs_filesystem</span>
-
-            <span class="n">hdfs_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">export_path</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hdfs_host&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_port&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_user&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                    <span class="n">hdfs_config</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="o">=</span> <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">(</span><span class="n">hdfs_config</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. HDFS filesystem configured.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Check if export_path is S3 and create filesystem if needed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
-            <span class="c1"># Extract AWS credentials from export_extra_args (if provided)</span>
-            <span class="n">s3_config</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_access_key_id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_secret_access_key&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_session_token&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_region&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_region&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;endpoint_url&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Create PyArrow S3FileSystem with credentials</span>
-            <span class="c1"># This matches the pattern used in RayS3DataLoadStrategy</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_pyarrow_s3_filesystem</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span> <span class="o">=</span> <span class="n">create_pyarrow_s3_filesystem</span><span class="p">(</span><span class="n">s3_config</span><span class="p">)</span>
+        <span class="n">fs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span> <span class="o">=</span> <span class="n">create_filesystem_for_path</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">)</span>
+        <span class="n">export_scheme</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdfs_filesystem</span> <span class="o">=</span> <span class="n">fs</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. HDFS filesystem configured.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">&quot;s3&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_filesystem</span> <span class="o">=</span> <span class="n">fs</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected S3 export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. S3 filesystem configured.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>

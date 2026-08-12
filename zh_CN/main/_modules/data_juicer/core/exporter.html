@@ -701,12 +701,14 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">HFDataset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">HashKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizes</span><span class="p">,</span> <span class="n">byte_size_to_size_str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.fs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_filesystem_for_path</span>
 
 
 <div class="viewcode-block" id="Exporter">
@@ -778,7 +780,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="n">encrypt_before_export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">encrypt_before_export</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;encrypt_before_export is True but export_path is a remote &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;path (</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">). Local-file encryption is skipped. &quot;</span>
@@ -792,7 +794,8 @@
 
         <span class="c1"># Check if export_path is S3 and create storage_options if needed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+        <span class="n">export_scheme</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">&quot;s3&quot;</span><span class="p">:</span>
             <span class="c1"># Extract AWS credentials from kwargs (if provided)</span>
             <span class="n">s3_config</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">if</span> <span class="s2">&quot;aws_access_key_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -844,16 +847,10 @@
         <span class="c1"># fsspec ArrowFSWrapper so that dataset.to_json/parquet(path)</span>
         <span class="c1"># routes through fsspec → Arrow, unifying HDFS with the same</span>
         <span class="c1"># storage_options path that S3 already uses.</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">fsspec.implementations.arrow</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrowFSWrapper</span>
 
-            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_pyarrow_hdfs_filesystem</span>
-
-            <span class="n">hdfs_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">export_path</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hdfs_host&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_port&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_user&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                    <span class="n">hdfs_config</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
-            <span class="n">hdfs_pyarrow_fs</span> <span class="o">=</span> <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">(</span><span class="n">hdfs_config</span><span class="p">)</span>
+            <span class="n">hdfs_pyarrow_fs</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">create_filesystem_for_path</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="n">wrapped</span> <span class="o">=</span> <span class="n">ArrowFSWrapper</span><span class="p">(</span><span class="n">hdfs_pyarrow_fs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filesystem&quot;</span><span class="p">:</span> <span class="n">wrapped</span><span class="p">}</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="sa">f</span><span class="s2">&quot;ArrowFSWrapper storage_options configured.&quot;</span><span class="p">)</span>
@@ -1004,10 +1001,11 @@
 
                 <span class="c1"># regard the export path as a directory and set file names for</span>
                 <span class="c1"># each shard</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;s3&quot;</span><span class="p">:</span>
                     <span class="c1"># For S3 paths, construct S3 paths for each shard</span>
-                    <span class="c1"># Extract bucket and prefix from S3 path</span>
-                    <span class="n">s3_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># Extract bucket and prefix from S3 path (strip the</span>
+                    <span class="c1"># scheme case-insensitively).</span>
+                    <span class="n">s3_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;://&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                     <span class="n">bucket</span> <span class="o">=</span> <span class="n">s3_path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">prefix</span> <span class="o">=</span> <span class="n">s3_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s3_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
                     <span class="c1"># Remove extension from prefix</span>
@@ -1020,10 +1018,10 @@
                         <span class="sa">f</span><span class="s2">&quot;s3://</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
                     <span class="p">]</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">:</span>
                     <span class="c1"># For HDFS paths, construct HDFS URIs for each shard</span>
-                    <span class="c1"># (same pattern as S3)</span>
-                    <span class="n">hdfs_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># (same pattern as S3; strip the scheme case-insensitively).</span>
+                    <span class="n">hdfs_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;://&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                     <span class="n">authority</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">prefix</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdfs_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
                     <span class="c1"># Remove extension from prefix</span>
