@@ -1422,9 +1422,25 @@
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">"--partition.num_of_partitions"</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"auto"</span><span class="p">]],</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">"Number of partitions for manual mode (ignored in auto mode)"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">"Number of partitions for manual mode (ignored in auto mode). "</span>
+            <span class="s2">"In auto mode, 'auto' derives a cluster-aware count; a positive "</span>
+            <span class="s2">"integer acts as the data-driven ceiling for the cluster-aware "</span>
+            <span class="s2">"adjustment."</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--partition.partitions_per_node"</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"auto"</span><span class="p">]],</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">"Per-node partition multiplier used by the cluster-aware auto "</span>
+            <span class="s2">"partition count. 'auto' uses per-node GPU slots for GPU "</span>
+            <span class="s2">"pipelines (2x for CPU-only pipelines); set a positive integer "</span>
+            <span class="s2">"to override."</span>
+        <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">"--partition.max_concurrent_partitions"</span><span class="p">,</span>

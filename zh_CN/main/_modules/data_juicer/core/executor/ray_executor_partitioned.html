@@ -1097,6 +1097,31 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Legacy num_partitions detected, overriding partition configuration"</span><span class="p">)</span>
 
+        <span class="c1"># Cluster-aware auto mode: the sentinel "auto" as a partition count</span>
+        <span class="c1"># requests a count derived from cluster topology (node count and</span>
+        <span class="c1"># resolved driver concurrency) instead of a fixed integer. A plain</span>
+        <span class="c1"># integer always wins, so larger/smaller counts stay one config key</span>
+        <span class="c1"># away. Numeric strings are normalized so YAML/CLI typing quirks do</span>
+        <span class="c1"># not flip modes silently.</span>
+        <span class="n">partitions_per_node</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">partition_cfg</span><span class="p">,</span> <span class="s2">"partitions_per_node"</span><span class="p">,</span> <span class="s2">"auto"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_of_partitions</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="nb">sentinel</span> <span class="o">=</span> <span class="n">num_of_partitions</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">sentinel</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="s2">"auto"</span>
+                <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># placeholder until dataset/cluster analysis runs</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">sentinel</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"Invalid partition.num_of_partitions=</span><span class="si">{</span><span class="n">num_of_partitions</span><span class="si">!r}</span><span class="s2">; "</span> <span class="s2">"falling back to auto mode"</span>
+                    <span class="p">)</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s2">"auto"</span>
+                    <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_of_partitions</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">num_of_partitions</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_of_partitions</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_partitions_per_node_cfg</span> <span class="o">=</span> <span class="n">partitions_per_node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">=</span> <span class="n">num_of_partitions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="n">max_concurrent_partitions</span>
@@ -1111,6 +1136,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_configure_auto_partitioning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Configure partitioning using the partition size optimizer for auto mode."""</span>
+        <span class="n">recommendations</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.executor.partition_size_optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
                 <span class="n">auto_configure_resources</span><span class="p">,</span>
@@ -1120,7 +1146,14 @@
 
             <span class="c1"># Use the partition size optimizer to determine optimal settings</span>
             <span class="n">recommendations</span> <span class="o">=</span> <span class="n">auto_configure_resources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not import partition size optimizer: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Falling back to manual partition configuration"</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Auto partition configuration failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Falling back to manual partition configuration"</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">recommendations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Update partition configuration based on recommendations</span>
             <span class="n">recommended_size</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">recommendations</span><span class="p">,</span> <span class="s2">"recommended_partition_size"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_size</span><span class="p">)</span>
             <span class="n">recommended_max_size_mb</span> <span class="o">=</span> <span class="n">ConfigAccessor</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">recommendations</span><span class="p">,</span> <span class="s2">"recommended_max_size_mb"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_size_mb</span><span class="p">)</span>
@@ -1160,12 +1193,110 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not determine dataset size for partition calculation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Using fallback partition count: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not import partition size optimizer: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Falling back to manual partition configuration"</span><span class="p">)</span>
+        <span class="c1"># Align the partition count with the real cluster topology. This</span>
+        <span class="c1"># also runs when the optimizer failed above, so the fallback</span>
+        <span class="c1"># count still benefits from cluster awareness.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_cluster_partition_bounds</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Auto partition configuration failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Falling back to manual partition configuration"</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cluster-aware partition bounds failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_cluster_partition_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Align the auto partition count with the cluster topology.</span>
+
+<span class="sd">        The data-driven count acts as a ceiling (memory safety); the cluster</span>
+<span class="sd">        topology provides the floor and target:</span>
+
+<span class="sd">        - floor: ``max(nodes x partitions_per_node, nodes, concurrency)`` so</span>
+<span class="sd">          every node stays busy and no resolved concurrent-partition slot</span>
+<span class="sd">          idles (a partition count below driver concurrency wastes threads);</span>
+<span class="sd">        - target: roughly 2x resolved concurrency so tail partitions overlap</span>
+<span class="sd">          instead of serializing the final stage.</span>
+
+<span class="sd">        Requires ``_resolve_max_concurrent_partitions`` to have run first so</span>
+<span class="sd">        ``max_concurrent_partitions`` is an integer; otherwise concurrency is</span>
+<span class="sd">        treated as unknown (0) and only the node-based floor applies.</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_cluster_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_cluster_topology</span>
+
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">detect_cluster_topology</span><span class="p">()</span>
+
+        <span class="n">concurrency</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"max_concurrent_partitions"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concurrency</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">concurrency</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">concurrency</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">concurrency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">concurrency</span><span class="p">))</span>
+
+        <span class="n">per_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_partitions_per_node</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">topology</span><span class="p">)</span>
+        <span class="n">floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">*</span> <span class="n">per_node</span><span class="p">,</span> <span class="n">topology</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">concurrency</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">concurrency</span><span class="p">,</span> <span class="n">floor</span><span class="p">)</span> <span class="k">if</span> <span class="n">concurrency</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">floor</span>
+
+        <span class="n">data_driven</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">))</span>
+        <span class="c1"># Raise small counts up to the cluster floor/target, but never beyond</span>
+        <span class="c1"># the data-driven ceiling; lower data-driven counts below the floor</span>
+        <span class="c1"># are raised to the floor because undersupplying the driver threads</span>
+        <span class="c1"># is the failure mode this guard prevents.</span>
+        <span class="n">resolved</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">floor</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">floor</span><span class="p">,</span> <span class="n">data_driven</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">resolved</span> <span class="o">!=</span> <span class="n">data_driven</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Cluster-aware partitioning: adjusting num_partitions from </span><span class="si">{</span><span class="n">data_driven</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">resolved</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"(nodes=</span><span class="si">{</span><span class="n">topology</span><span class="o">.</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2">, partitions_per_node=</span><span class="si">{</span><span class="n">per_node</span><span class="si">}</span><span class="s2">, concurrency=</span><span class="si">{</span><span class="n">concurrency</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span> <span class="o">=</span> <span class="n">resolved</span>
+
+        <span class="c1"># Expose the decision for auditing and downstream consumers (e.g.</span>
+        <span class="c1"># elastic control planes reading driver-side planning state).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">_resolved_partition_plan</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"num_partitions"</span><span class="p">:</span> <span class="n">resolved</span><span class="p">,</span>
+                <span class="s2">"data_driven_count"</span><span class="p">:</span> <span class="n">data_driven</span><span class="p">,</span>
+                <span class="s2">"num_nodes"</span><span class="p">:</span> <span class="n">topology</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                <span class="s2">"partitions_per_node"</span><span class="p">:</span> <span class="n">per_node</span><span class="p">,</span>
+                <span class="s2">"max_concurrent_partitions"</span><span class="p">:</span> <span class="n">concurrency</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_partitions_per_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">topology</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Resolve the per-node partition multiplier.</span>
+
+<span class="sd">        An explicit positive integer in ``partition.partitions_per_node``</span>
+<span class="sd">        always wins. Otherwise the multiplier is derived from the tightest</span>
+<span class="sd">        per-node parallelism implied by operator GPU requests (one partition</span>
+<span class="sd">        per node-level GPU slot). Pipelines whose operators do not use GPUs</span>
+<span class="sd">        fall back to a 2x overlap factor even on GPU clusters, so stage</span>
+<span class="sd">        boundaries can still overlap without spawning GPU-count-sized</span>
+<span class="sd">        partitions for CPU-only work.</span>
+<span class="sd">        """</span>
+        <span class="n">configured</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_partitions_per_node_cfg"</span><span class="p">,</span> <span class="s2">"auto"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">configured</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">configured</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">configured</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">value</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid partition.partitions_per_node=</span><span class="si">{</span><span class="n">configured</span><span class="si">!r}</span><span class="s2">; using auto"</span><span class="p">)</span>
+
+        <span class="n">gpus_per_node</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">gpus_per_node</span>
+        <span class="k">if</span> <span class="n">gpus_per_node</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">per_stage_gpus</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+                <span class="n">num_gpus</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="s2">"num_gpus"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">gpu_per_worker</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gpus</span><span class="p">)</span> <span class="k">if</span> <span class="n">num_gpus</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">gpu_per_worker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
+                            <span class="n">gpu_per_worker</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+                        <span class="k">pass</span>
+                <span class="k">if</span> <span class="n">gpu_per_worker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">per_stage_gpus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gpu_per_worker</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">per_stage_gpus</span><span class="p">:</span>
+                <span class="n">tightest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">per_stage_gpus</span><span class="p">)</span>
+                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">gpus_per_node</span> <span class="o">/</span> <span class="n">tightest</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">))</span>
+        <span class="c1"># No operator uses GPUs (or the cluster has none): CPU-only overlap</span>
+        <span class="c1"># factor, even when the cluster itself carries GPUs.</span>
+        <span class="k">return</span> <span class="mi">2</span>
 
 <div class="viewcode-block" id="PartitionedRayExecutor.run">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor_partitioned.html#data_juicer.core.executor.PartitionedRayExecutor.run">[文档]</a>
@@ -1279,6 +1410,10 @@
         <span class="c1"># Handle auto partition mode BEFORE initializing DAG</span>
         <span class="c1"># (DAG needs final partition count)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_mode</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">:</span>
+            <span class="c1"># Cluster-aware auto sizing needs the resolved driver</span>
+            <span class="c1"># concurrency; resolving here is safe because the call below is</span>
+            <span class="c1"># a no-op once the value is no longer "auto".</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_max_concurrent_partitions</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_configure_auto_partitioning</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">ops</span><span class="p">)</span>
 
         <span class="c1"># Record explicit actor-pool budgets and calculate automatic Ray</span>
@@ -1513,17 +1648,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_value</span><span class="p">))</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">cluster_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span>
-            <span class="n">total_cpus</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"CPU"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-            <span class="n">total_gpus</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GPU"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">"Could not inspect Ray cluster resources for automatic partition "</span>
-                <span class="sa">f</span><span class="s2">"concurrency; falling back to 1. Error: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent_partitions</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_cluster_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_cluster_topology</span>
+
+        <span class="n">topology</span> <span class="o">=</span> <span class="n">detect_cluster_topology</span><span class="p">()</span>
+        <span class="n">total_cpus</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">total_cpus</span>
+        <span class="n">total_gpus</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">total_gpus</span>
 
         <span class="k">if</span> <span class="n">total_cpus</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
