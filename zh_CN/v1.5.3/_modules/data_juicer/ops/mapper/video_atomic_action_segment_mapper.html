@@ -705,21 +705,21 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_atomic_action_segment_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_atomic_action_segment_mapper"</span>
 
 
 <div class="viewcode-block" id="VideoAtomicActionSegmentMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoAtomicActionSegmentMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoAtomicActionSegmentMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Segment a unified hand trajectory into atomic action clips.</span>
+<span class="w">    </span><span class="sd">"""Segment a unified hand trajectory into atomic action clips.</span>
 
 <span class="sd">    Implements the algorithm from paper https://arxiv.org/pdf/2510.21571:</span>
 
-<span class="sd">        &quot;we detect speed minima of the 3D hand wrists in the world space</span>
+<span class="sd">        "we detect speed minima of the 3D hand wrists in the world space</span>
 <span class="sd">        and use them as cutting points.  We smooth the hand trajectory and</span>
 <span class="sd">        select points that are local speed minima within a fixed window</span>
-<span class="sd">        centered on each point.&quot;</span>
+<span class="sd">        centered on each point."</span>
 
 <span class="sd">    The operator reads the merged hand_action_tags (output of</span>
 <span class="sd">    ``VideoClipReassemblyMapper``) and produces a list of segments.</span>
@@ -734,34 +734,34 @@
 
 <span class="sd">        [</span>
 <span class="sd">            {</span>
-<span class="sd">                &quot;hand_type&quot;: &quot;right&quot;,</span>
-<span class="sd">                &quot;segment_id&quot;: 0,</span>
-<span class="sd">                &quot;start_frame&quot;: 10,</span>
-<span class="sd">                &quot;end_frame&quot;: 45,</span>
-<span class="sd">                &quot;states&quot;: [...],</span>
-<span class="sd">                &quot;actions&quot;: [...],</span>
-<span class="sd">                &quot;valid_frame_ids&quot;: [...],</span>
-<span class="sd">                &quot;joints_world&quot;: [...],</span>
+<span class="sd">                "hand_type": "right",</span>
+<span class="sd">                "segment_id": 0,</span>
+<span class="sd">                "start_frame": 10,</span>
+<span class="sd">                "end_frame": 45,</span>
+<span class="sd">                "states": [...],</span>
+<span class="sd">                "actions": [...],</span>
+<span class="sd">                "valid_frame_ids": [...],</span>
+<span class="sd">                "joints_world": [...],</span>
 <span class="sd">            },</span>
 <span class="sd">            ...</span>
 <span class="sd">        ]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoAtomicActionSegmentMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoAtomicActionSegmentMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">hand_action_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">hand_action_tags</span><span class="p">,</span>
-        <span class="n">segment_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;atomic_action_segments&quot;</span><span class="p">,</span>
+        <span class="n">segment_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"atomic_action_segments"</span><span class="p">,</span>
         <span class="n">speed_smooth_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">min_window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
         <span class="n">min_segment_frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
         <span class="n">max_segment_frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-        <span class="n">hand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">hand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"both"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hand_action_field: Meta field storing merged hand action</span>
@@ -779,9 +779,9 @@
 <span class="sd">        :param max_segment_frames: Maximum frames per segment.</span>
 <span class="sd">            Segments longer than this are forcibly split at</span>
 <span class="sd">            the deepest speed minimum.</span>
-<span class="sd">        :param hand_type: Which hand(s) to segment: &#39;left&#39;, &#39;right&#39;,</span>
-<span class="sd">            or &#39;both&#39;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        :param hand_type: Which hand(s) to segment: 'left', 'right',</span>
+<span class="sd">            or 'both'.</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hand_action_field</span> <span class="o">=</span> <span class="n">hand_action_field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment_field</span> <span class="o">=</span> <span class="n">segment_field</span>
@@ -797,10 +797,10 @@
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_speed</span><span class="p">(</span><span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute per-frame wrist speed from world-space positions.</span>
+<span class="w">        </span><span class="sd">"""Compute per-frame wrist speed from world-space positions.</span>
 
 <span class="sd">        Returns an array of length N where speed[0] = 0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">))</span>
         <span class="n">vel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -811,7 +811,7 @@
         <span class="n">speed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Smooth speed signal with Savitzky-Golay filter.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Smooth speed signal with Savitzky-Golay filter."""</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">speed</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -836,11 +836,11 @@
         <span class="n">speed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">half_window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find indices that are local speed minima within a window.</span>
+<span class="w">        </span><span class="sd">"""Find indices that are local speed minima within a window.</span>
 
 <span class="sd">        A frame t is a local minimum if speed[t] &lt;= speed[k] for all k</span>
 <span class="sd">        in [t - half_window, t + half_window].</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
         <span class="n">minima</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
@@ -858,8 +858,8 @@
         <span class="n">cut_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">n_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove cut points that would produce segments shorter than</span>
-<span class="sd">        ``min_segment_frames``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Remove cut points that would produce segments shorter than</span>
+<span class="sd">        ``min_segment_frames``."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cut_points</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cut_points</span>
 
@@ -878,8 +878,8 @@
         <span class="n">speed</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">n_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Split segments exceeding ``max_segment_frames`` at the</span>
-<span class="sd">        deepest speed minimum within the segment.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Split segments exceeding ``max_segment_frames`` at the</span>
+<span class="sd">        deepest speed minimum within the segment."""</span>
         <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cut_points</span> <span class="o">+</span> <span class="p">[</span><span class="n">n_frames</span><span class="p">]</span>
         <span class="n">new_cuts</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -908,8 +908,8 @@
         <span class="n">hand_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">hand_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Segment a single hand&#39;s trajectory into atomic actions.&quot;&quot;&quot;</span>
-        <span class="n">states</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;states&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Segment a single hand's trajectory into atomic actions."""</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"states"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">states</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_segment_frames</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
 
@@ -935,10 +935,10 @@
         <span class="c1"># 4. Build segment boundaries</span>
         <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">cut_points</span> <span class="o">+</span> <span class="p">[</span><span class="n">n_frames</span><span class="p">]</span>
 
-        <span class="n">valid_fids</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)))</span>
-        <span class="n">actions</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;actions&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">joints_world</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;joints_world&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">joints_cam</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;joints_cam&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">valid_fids</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"valid_frame_ids"</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)))</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"actions"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">joints_world</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"joints_world"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">joints_cam</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"joints_cam"</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="n">segments</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">seg_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">boundaries</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
@@ -948,24 +948,24 @@
                 <span class="k">continue</span>
 
             <span class="n">seg</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;hand_type&quot;</span><span class="p">:</span> <span class="n">hand_type</span><span class="p">,</span>
-                <span class="s2">&quot;segment_id&quot;</span><span class="p">:</span> <span class="n">seg_idx</span><span class="p">,</span>
-                <span class="s2">&quot;start_frame&quot;</span><span class="p">:</span> <span class="n">valid_fids</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_fids</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span><span class="p">,</span>
-                <span class="s2">&quot;end_frame&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">valid_fids</span><span class="p">[</span><span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">e</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_fids</span><span class="p">)</span> <span class="k">else</span> <span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">states</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">],</span>
-                <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="n">actions</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span> <span class="k">if</span> <span class="n">actions</span> <span class="k">else</span> <span class="p">[],</span>
-                <span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">:</span> <span class="n">valid_fids</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">],</span>
+                <span class="s2">"hand_type"</span><span class="p">:</span> <span class="n">hand_type</span><span class="p">,</span>
+                <span class="s2">"segment_id"</span><span class="p">:</span> <span class="n">seg_idx</span><span class="p">,</span>
+                <span class="s2">"start_frame"</span><span class="p">:</span> <span class="n">valid_fids</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_fids</span><span class="p">)</span> <span class="k">else</span> <span class="n">s</span><span class="p">,</span>
+                <span class="s2">"end_frame"</span><span class="p">:</span> <span class="p">(</span><span class="n">valid_fids</span><span class="p">[</span><span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">e</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_fids</span><span class="p">)</span> <span class="k">else</span> <span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="s2">"states"</span><span class="p">:</span> <span class="n">states</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">],</span>
+                <span class="s2">"actions"</span><span class="p">:</span> <span class="n">actions</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span> <span class="k">if</span> <span class="n">actions</span> <span class="k">else</span> <span class="p">[],</span>
+                <span class="s2">"valid_frame_ids"</span><span class="p">:</span> <span class="n">valid_fids</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">],</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">joints_world</span><span class="p">:</span>
-                <span class="n">seg</span><span class="p">[</span><span class="s2">&quot;joints_world&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span>
+                <span class="n">seg</span><span class="p">[</span><span class="s2">"joints_world"</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">joints_cam</span><span class="p">:</span>
-                <span class="n">seg</span><span class="p">[</span><span class="s2">&quot;joints_cam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_cam</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span>
+                <span class="n">seg</span><span class="p">[</span><span class="s2">"joints_cam"</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_cam</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">e</span><span class="p">]</span>
 
             <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Segmented </span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2"> hand: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> atomic actions &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">n_frames</span><span class="si">}</span><span class="s2"> frames, cut_points=</span><span class="si">{</span><span class="n">cut_points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Segmented </span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2"> hand: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> atomic actions "</span>
+            <span class="sa">f</span><span class="s2">"from </span><span class="si">{</span><span class="n">n_frames</span><span class="si">}</span><span class="s2"> frames, cut_points=</span><span class="si">{</span><span class="n">cut_points</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">segments</span>
 
@@ -984,8 +984,8 @@
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="c1"># After reassembly, hand_action_list is [merged_result]</span>
-        <span class="c1"># merged_result is a dict: {&quot;right&quot;: {...}, &quot;left&quot;: {...}}</span>
-        <span class="n">hand_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span><span class="p">]</span>
+        <span class="c1"># merged_result is a dict: {"right": {...}, "left": {...}}</span>
+        <span class="n">hand_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"right"</span><span class="p">,</span> <span class="s2">"left"</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span> <span class="o">==</span> <span class="s2">"both"</span> <span class="k">else</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span><span class="p">]</span>
 
         <span class="n">all_segments</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">clip_result</span> <span class="ow">in</span> <span class="n">hand_action_list</span><span class="p">:</span>
@@ -993,17 +993,17 @@
                 <span class="k">continue</span>
             <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">hand_types</span><span class="p">:</span>
                 <span class="n">hand_data</span> <span class="o">=</span> <span class="n">clip_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">hand_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;states&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">hand_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"states"</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">segs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_segment_hand</span><span class="p">(</span><span class="n">hand_data</span><span class="p">,</span> <span class="n">ht</span><span class="p">)</span>
                 <span class="n">all_segments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">segs</span><span class="p">)</span>
 
         <span class="c1"># Sort segments by start_frame for consistent ordering</span>
-        <span class="n">all_segments</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;start_frame&quot;</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;hand_type&quot;</span><span class="p">]))</span>
+        <span class="n">all_segments</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">"start_frame"</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">"hand_type"</span><span class="p">]))</span>
 
         <span class="n">meta</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">segment_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_segments</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Atomic action segmentation: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> segments&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Atomic action segmentation: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> segments"</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 </div>

@@ -715,7 +715,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">fuse_operators</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TempDirManager">
@@ -733,7 +733,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing tmp dir </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removing tmp dir </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">)</span></div>
 
 
@@ -741,7 +741,7 @@
 <div class="viewcode-block" id="RayExecutor">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor.html#data_juicer.core.executor.ray_executor.RayExecutor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayExecutor</span><span class="p">(</span><span class="n">ExecutorBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Executor based on Ray.</span>
 
 <span class="sd">    Run Data-Juicer data processing in a distributed cluster.</span>
@@ -750,59 +750,59 @@
 <span class="sd">        2. Only support loading `.json` files.</span>
 <span class="sd">        3. Advanced functions such as checkpoint, tracer are not supported.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="RayExecutor.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor.html#data_juicer.core.executor.ray_executor.RayExecutor.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param cfg: optional config dict.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">=</span> <span class="s2">&quot;ray&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">=</span> <span class="s2">"ray"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">work_dir</span>
         <span class="c1"># TODO: support ray</span>
         <span class="c1"># self.adapter = Adapter(self.cfg)</span>
 
         <span class="c1"># init ray</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initializing Ray ...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Initializing Ray ..."</span><span class="p">)</span>
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">initialize_ray</span>
 
         <span class="n">initialize_ray</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">&quot;.tmp&quot;</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">get_runtime_context</span><span class="p">()</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">".tmp"</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">get_runtime_context</span><span class="p">()</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">())</span>
 
         <span class="c1"># absolute path resolution logic</span>
 
         <span class="c1"># init dataset builder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">datasetbuilder</span> <span class="o">=</span> <span class="n">DatasetBuilder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="n">executor_type</span><span class="o">=</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datasetbuilder</span> <span class="o">=</span> <span class="n">DatasetBuilder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="n">executor_type</span><span class="o">=</span><span class="s2">"ray"</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing exporter...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Preparing exporter..."</span><span class="p">)</span>
         <span class="c1"># Prepare export extra args, including S3 credentials if export_path is S3</span>
-        <span class="n">export_extra_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;export_extra_args&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">export_extra_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_extra_args</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"export_extra_args"</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="c1"># If export_path is S3, extract AWS credentials with priority:</span>
         <span class="c1"># 1. export_aws_credentials (export-specific)</span>
         <span class="c1"># 2. dataset config (for backward compatibility)</span>
         <span class="c1"># 3. environment variables (handled by exporter)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s3://"</span><span class="p">):</span>
             <span class="c1"># Pass export-specific credentials if provided.</span>
             <span class="c1"># The RayExporter will handle falling back to environment variables or other credential mechanisms.</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;export_aws_credentials&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_aws_credentials</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"export_aws_credentials"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_aws_credentials</span><span class="p">:</span>
                 <span class="n">export_aws_creds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_aws_credentials</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">):</span>
-                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_access_key_id</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">):</span>
-                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_secret_access_key</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">&quot;aws_session_token&quot;</span><span class="p">):</span>
-                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_session_token</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">&quot;aws_region&quot;</span><span class="p">):</span>
-                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_region</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">&quot;endpoint_url&quot;</span><span class="p">):</span>
-                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">endpoint_url</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">"aws_access_key_id"</span><span class="p">):</span>
+                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">"aws_access_key_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_access_key_id</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">"aws_secret_access_key"</span><span class="p">):</span>
+                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">"aws_secret_access_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_secret_access_key</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">"aws_session_token"</span><span class="p">):</span>
+                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_session_token</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">"aws_region"</span><span class="p">):</span>
+                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">"aws_region"</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">aws_region</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">export_aws_creds</span><span class="p">,</span> <span class="s2">"endpoint_url"</span><span class="p">):</span>
+                    <span class="n">export_extra_args</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">export_aws_creds</span><span class="o">.</span><span class="n">endpoint_url</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">exporter</span> <span class="o">=</span> <span class="n">RayExporter</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">export_path</span><span class="p">,</span>
@@ -817,39 +817,39 @@
 <div class="viewcode-block" id="RayExecutor.run">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.ray_executor.html#data_juicer.core.executor.ray_executor.RayExecutor.run">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_data_np</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skip_export</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">skip_return</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Running the dataset process pipeline</span>
 
 <span class="sd">        :param load_data_np: number of workers when loading the dataset.</span>
 <span class="sd">        :param skip_export: whether export the results into disk</span>
 <span class="sd">        :param skip_return: skip return for API called.</span>
 <span class="sd">        :return: processed dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># 1. load data</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading dataset with Ray...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Loading dataset with Ray..."</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasetbuilder</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">num_proc</span><span class="o">=</span><span class="n">load_data_np</span><span class="p">)</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
 
         <span class="c1"># 2. extract processes</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing process operators...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Preparing process operators..."</span><span class="p">)</span>
         <span class="n">ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">op_fusion</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start OP fusion and reordering with strategy &quot;</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">fusion_strategy</span><span class="si">}</span><span class="s2">]...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Start OP fusion and reordering with strategy "</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">fusion_strategy</span><span class="si">}</span><span class="s2">]..."</span><span class="p">)</span>
             <span class="n">ops</span> <span class="o">=</span> <span class="n">fuse_operators</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">TempDirManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">):</span>
             <span class="c1"># 3. data process</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processing data...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Processing data..."</span><span class="p">)</span>
             <span class="n">tstart</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
 
             <span class="c1"># 4. data export</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_export</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting dataset to disk...&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Exporting dataset to disk..."</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
             <span class="n">tend</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All Ops are done in </span><span class="si">{</span><span class="n">tend</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tstart</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"All Ops are done in </span><span class="si">{</span><span class="n">tend</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tstart</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_return</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span></div>

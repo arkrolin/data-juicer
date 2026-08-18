@@ -836,7 +836,7 @@ Besides, streaming-read support for CSV and Parquet files is already enabled.</p
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
 <p>Before starting, you should install Data-Juicer and its <code class="docutils literal notranslate"><span class="pre">dist</span></code> requirements:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span>.<span class="w">  </span><span class="c1"># Install the minimal requirements of Data-Juicer</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dist]&quot;</span><span class="w">  </span><span class="c1"># Include dependencies on Ray and other distributed libraries</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dist]"</span><span class="w">  </span><span class="c1"># Include dependencies on Ray and other distributed libraries</span>
 </pre></div>
 </div>
 <p>Then start a Ray cluster (ref to the <a class="reference external" href="https://docs.ray.io/en/latest/ray-core/starting-ray.html">Ray doc</a> for more details):</p>
@@ -844,7 +844,7 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 ray<span class="w"> </span>start<span class="w"> </span>--head
 
 <span class="c1"># (Optional) Connect to the cluster on other nodes/machines.</span>
-ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">&#39;{head_ip}:6379&#39;</span>
+ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">'{head_ip}:6379'</span>
 </pre></div>
 </div>
 <p>We provide simple demos in the directory <code class="docutils literal notranslate"><span class="pre">demos/process_on_ray/</span></code>, which includes two config files and two test datasets.</p>
@@ -865,11 +865,11 @@ If you run these demos on multiple nodes, you need to put the demo dataset to a 
 <h3>Running Example of Ray Mode<a class="headerlink" href="#running-example-of-ray-mode" title="Link to this heading">#</a></h3>
 <p>In the <code class="docutils literal notranslate"><span class="pre">demo.yaml</span></code> config file, we set the executor type to “ray” and specify an automatic Ray address.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
-<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./demos/process_on_ray/data/demo-dataset.jsonl&#39;</span>
-<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo/demo-processed&#39;</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./demos/process_on_ray/data/demo-dataset.jsonl'</span>
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo/demo-processed'</span>
 
-<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ray&#39;</span><span class="w">  </span><span class="c1"># Set the executor type to &quot;ray&quot;</span>
-<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="w">  </span><span class="c1"># Set an automatic Ray address</span>
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">'ray'</span><span class="w">  </span><span class="c1"># Set the executor type to "ray"</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">'auto'</span><span class="w">  </span><span class="c1"># Set an automatic Ray address</span>
 <span class="nn">...</span>
 </pre></div>
 </div>
@@ -887,18 +887,18 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <h3>Running Example of Distributed Deduplication<a class="headerlink" href="#running-example-of-distributed-deduplication" title="Link to this heading">#</a></h3>
 <p>In the <code class="docutils literal notranslate"><span class="pre">dedup.yaml</span></code> config file, we set the executor type to “ray” and specify an automatic Ray address.
 And we use a dedicated distributed version of MinHash Deduplicator to deduplicate the dataset.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-dedup&#39;</span>
-<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./demos/process_on_ray/data/&#39;</span>
-<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo-dedup/demo-ray-bts-dedup-processed&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-dedup'</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./demos/process_on_ray/data/'</span>
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo-dedup/demo-ray-bts-dedup-processed'</span>
 
-<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ray&#39;</span><span class="w">  </span><span class="c1"># Set the executor type to &quot;ray&quot;</span>
-<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="w">  </span><span class="c1"># Set an automatic Ray address</span>
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">'ray'</span><span class="w">  </span><span class="c1"># Set the executor type to "ray"</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">'auto'</span><span class="w">  </span><span class="c1"># Set an automatic Ray address</span>
 
 <span class="c1"># process schedule</span>
 <span class="c1"># a list of several process operators with their arguments</span>
 <span class="nt">process</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ray_bts_minhash_deduplicator</span><span class="p">:</span><span class="w">  </span><span class="c1"># a distributed version of minhash deduplicator</span>
-<span class="w">      </span><span class="nt">tokenization</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;character&#39;</span>
+<span class="w">      </span><span class="nt">tokenization</span><span class="p">:</span><span class="w"> </span><span class="s">'character'</span>
 </pre></div>
 </div>
 <p>Run the demo to deduplicate the dataset:</p>

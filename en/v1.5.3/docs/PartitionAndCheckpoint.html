@@ -812,7 +812,7 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ray_partitioned</span>
 
 <span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">    </span><span class="c1"># Target partition size (128, 256, 512, or 1024)</span>
 <span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">             </span><span class="c1"># Fallback if auto-analysis fails</span>
 <span class="w">  </span><span class="nt">max_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">       </span><span class="c1"># Fallback max size</span>
@@ -820,7 +820,7 @@
 </div>
 <p><strong>Manual mode</strong> - specify exact partition count:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;manual&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"manual"</span>
 <span class="w">  </span><span class="nt">num_of_partitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
 </pre></div>
 </div>
@@ -840,10 +840,10 @@
 <section id="intermediate-storage">
 <h3>Intermediate Storage<a class="headerlink" href="#intermediate-storage" title="Link to this heading">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">intermediate_storage</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;parquet&quot;</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
-<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;snappy&quot;</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">"parquet"</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
+<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">"snappy"</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
 <span class="w">  </span><span class="nt">preserve_intermediate_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;keep_all&quot;</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
+<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">"keep_all"</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
 </pre></div>
 </div>
 </section>
@@ -947,7 +947,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.mo
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.monitor</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_job_progress</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -965,7 +965,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.stopper</span><span class="w"> </span><span class="kn">import</span> <span class="n">stop_job</span>
 
-<span class="n">stop_job</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">stop_job</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -975,7 +975,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 
 <span class="n">running_jobs</span> <span class="o">=</span> <span class="n">list_running_jobs</span><span class="p">()</span>
 
-<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">)</span>
 <span class="n">summary</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_job_summary</span><span class="p">()</span>
 <span class="n">events</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_event_logs</span><span class="p">()</span>
 </pre></div>

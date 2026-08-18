@@ -714,7 +714,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.document_deduplicator</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocumentDeduplicator</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;video_deduplicator&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'video_deduplicator'</span>
 
 
 <div class="viewcode-block" id="VideoDeduplicator">
@@ -722,22 +722,22 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoDeduplicator</span><span class="p">(</span><span class="n">Deduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Deduplicator to deduplicate samples at document-level using exact matching</span>
 <span class="sd">    of videos between documents.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoDeduplicator.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.video_deduplicator.html#data_juicer.ops.deduplicator.VideoDeduplicator.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">consider_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization.</span>
 
 <span class="sd">        :param consider_text: whether to consider text hash together with video</span>
 <span class="sd">            hash when applying deduplication.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">consider_text</span> <span class="o">=</span> <span class="n">consider_text</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_dedup_op</span> <span class="o">=</span> <span class="kc">None</span>
@@ -751,12 +751,12 @@
         <span class="c1"># get hash of text first</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">consider_text</span><span class="p">:</span>
             <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_dedup_op</span><span class="o">.</span><span class="n">compute_hash</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">HashKeys</span><span class="o">.</span><span class="n">videohash</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="c1"># there is no video in this sample</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">videohash</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">videohash</span><span class="p">]</span> <span class="o">=</span> <span class="s1">''</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -770,7 +770,7 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
             <span class="c1"># consider the multi stream of video in one container</span>
             <span class="k">for</span> <span class="n">packet</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">demux</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;video&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">'video'</span><span class="p">:</span>
                     <span class="n">md5_hash</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">packet</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
@@ -783,14 +783,14 @@
 <div class="viewcode-block" id="VideoDeduplicator.process">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.video_deduplicator.html#data_juicer.ops.deduplicator.VideoDeduplicator.process">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">show_num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        For doc-level, dataset --&gt; dataset.</span>
 
 <span class="sd">        :param dataset: input dataset</span>
 <span class="sd">        :param show_num: number of traced samples used when tracer is</span>
 <span class="sd">            open.</span>
 <span class="sd">        :return: deduplicated dataset and the sampled duplicate pairs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># no need to deduplicate because too few samples</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="p">{}</span>

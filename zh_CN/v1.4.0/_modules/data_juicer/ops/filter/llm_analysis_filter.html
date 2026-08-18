@@ -717,23 +717,23 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span><span class="p">,</span>
                                            <span class="n">update_sampling_params</span><span class="p">)</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;vllm&#39;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'torch'</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'vllm'</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;llm_analysis_filter&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'llm_analysis_filter'</span>
 
 
 <div class="viewcode-block" id="LLMAnalysisFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_analysis_filter.html#data_juicer.ops.filter.llm_analysis_filter.LLMAnalysisFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMAnalysisFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base filter class for leveraging LLMs to filter various samples. Provides</span>
 <span class="sd">    foundational functionality for dimensional scoring (0~5) and tagging.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># avoid leading whitespace</span>
-    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;You are a meticulous data quality assessor for LLM training. Analyze each data sample across multiple quality dimensions and provide numerical scores, tags, and reasoning. Follow these guidelines:</span>
+    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">"""You are a meticulous data quality assessor for LLM training. Analyze each data sample across multiple quality dimensions and provide numerical scores, tags, and reasoning. Follow these guidelines:</span>
 
 <span class="s2">1. Evaluation Dimensions</span>
 <span class="s2">Score each dimension (1-5 scale: 1=lowest, 5=highest):</span>
@@ -744,8 +744,8 @@
 
 <span class="s2">2. Tagging:</span>
 <span class="s2">Assign descriptive tags to categorize the data sample (string or list of string).  Examples include:</span>
-<span class="s2">- &quot;Topic&quot;: The main subject of the sample (e.g., &quot;Machine Learning&quot;, &quot;Historical Event&quot;).</span>
-<span class="s2">- &quot;Style&quot;:  The writing style or genre (e.g., &quot;Informational&quot;, &quot;Narrative&quot;, &quot;Technical&quot;).</span>
+<span class="s2">- "Topic": The main subject of the sample (e.g., "Machine Learning", "Historical Event").</span>
+<span class="s2">- "Style":  The writing style or genre (e.g., "Informational", "Narrative", "Technical").</span>
 <span class="s2">3. Scoring Protocol</span>
 <span class="s2">- Base scores and tags on concrete evidence from the text.</span>
 <span class="s2">- Flag samples needing human review (confidence &lt;90%).</span>
@@ -755,19 +755,19 @@
 <span class="s2">4. Output Format</span>
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;clarity&quot;: ,</span>
-<span class="s2">    &quot;relevance&quot;: ,</span>
-<span class="s2">    &quot;usefulness&quot;: ,</span>
-<span class="s2">    &quot;fluency&quot;:</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "clarity": ,</span>
+<span class="s2">    "relevance": ,</span>
+<span class="s2">    "usefulness": ,</span>
+<span class="s2">    "fluency":</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;tags&quot;: {</span>
-<span class="s2">    &quot;topic&quot;: ,</span>
-<span class="s2">    &quot;style&quot;:</span>
+<span class="s2">  "tags": {</span>
+<span class="s2">    "topic": ,</span>
+<span class="s2">    "style":</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;syntax_error&quot;, &quot;insufficient_information&quot;, ...],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;Concise analysis of quality dimensions and tagging decisions.&quot;,</span>
-<span class="s2">  &quot;recommendation&quot;: [&quot;keep&quot;, &quot;review&quot;, &quot;discard&quot;]</span>
+<span class="s2">  "flags": ["syntax_error", "insufficient_information", ...],</span>
+<span class="s2">  "rationale": "Concise analysis of quality dimensions and tagging decisions.",</span>
+<span class="s2">  "recommendation": ["keep", "review", "discard"]</span>
 <span class="s2">}</span>
 
 <span class="s2">5. Special Instructions</span>
@@ -780,40 +780,40 @@
 
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;clarity&quot;: 4,</span>
-<span class="s2">    &quot;relevance&quot;: 5,</span>
-<span class="s2">    &quot;usefulness&quot;: 3,</span>
-<span class="s2">    &quot;fluency&quot;: 4</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "clarity": 4,</span>
+<span class="s2">    "relevance": 5,</span>
+<span class="s2">    "usefulness": 3,</span>
+<span class="s2">    "fluency": 4</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;tags&quot;: {</span>
-<span class="s2">    &quot;topic&quot;: &quot;Artificial Intelligence&quot;,</span>
-<span class="s2">    &quot;style&quot;: &quot;Informational&quot;</span>
+<span class="s2">  "tags": {</span>
+<span class="s2">    "topic": "Artificial Intelligence",</span>
+<span class="s2">    "style": "Informational"</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;minor_grammar_issues&quot;],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;The text is highly relevant and generally well-written, but suffers from some minor grammar issues and could be more useful with additional examples.  The topic is clearly Artificial Intelligence, and the difficulty is appropriate for an intermediate audience.&quot;,</span>
-<span class="s2">  &quot;recommendation&quot;: &quot;review&quot;</span>
+<span class="s2">  "flags": ["minor_grammar_issues"],</span>
+<span class="s2">  "rationale": "The text is highly relevant and generally well-written, but suffers from some minor grammar issues and could be more useful with additional examples.  The topic is clearly Artificial Intelligence, and the difficulty is appropriate for an intermediate audience.",</span>
+<span class="s2">  "recommendation": "review"</span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;# Data</span><span class="se">\n</span><span class="s2">&#39;&#39;&#39;</span><span class="se">\n</span><span class="si">{data}</span><span class="se">\n</span><span class="s2">&#39;&#39;&#39;</span><span class="se">\n\n</span><span class="s2"># Response</span><span class="se">\n</span><span class="s2">json</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_FIELD_TEMPLATE</span> <span class="o">=</span> <span class="s1">&#39;**</span><span class="si">{field_name}</span><span class="s1">**</span><span class="se">\n</span><span class="si">{field_data}</span><span class="s1">&#39;</span>
+<span class="s2">"""</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"# Data</span><span class="se">\n</span><span class="s2">'''</span><span class="se">\n</span><span class="si">{data}</span><span class="se">\n</span><span class="s2">'''</span><span class="se">\n\n</span><span class="s2"># Response</span><span class="se">\n</span><span class="s2">json</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">DEFAULT_FIELD_TEMPLATE</span> <span class="o">=</span> <span class="s1">'**</span><span class="si">{field_name}</span><span class="s1">**</span><span class="se">\n</span><span class="si">{field_data}</span><span class="s1">'</span>
     <span class="n">DEFAULT_DIM_REQUIRED_KEYS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;clarity&#39;</span><span class="p">,</span> <span class="s1">&#39;relevance&#39;</span><span class="p">,</span> <span class="s1">&#39;usefulness&#39;</span><span class="p">,</span> <span class="s1">&#39;fluency&#39;</span>
+        <span class="s1">'clarity'</span><span class="p">,</span> <span class="s1">'relevance'</span><span class="p">,</span> <span class="s1">'usefulness'</span><span class="p">,</span> <span class="s1">'fluency'</span>
     <span class="p">]</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">'cuda'</span>
 
 <div class="viewcode-block" id="LLMAnalysisFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_analysis_filter.html#data_juicer.ops.filter.llm_analysis_filter.LLMAnalysisFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;gpt-4o&#39;</span><span class="p">,</span>
+                 <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'gpt-4o'</span><span class="p">,</span>
                  <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                  <span class="n">is_hf_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="o">*</span><span class="p">,</span>
                  <span class="n">api_endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">response_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">input_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span>
-                 <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Text&#39;</span><span class="p">],</span>
+                 <span class="n">input_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'text'</span><span class="p">],</span>
+                 <span class="n">field_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Text'</span><span class="p">],</span>
                  <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">input_template</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">field_template</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -823,7 +823,7 @@
                  <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
                  <span class="n">dim_required_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface model name.</span>
@@ -831,9 +831,9 @@
 <span class="sd">            the sample.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param input_keys: Sub set of keys in the sample. Support data with</span>
-<span class="sd">            multi fields such as &#39;query&#39;, &#39;analysis&#39; and &#39;answer&#39; in RFT data.</span>
+<span class="sd">            multi fields such as 'query', 'analysis' and 'answer' in RFT data.</span>
 <span class="sd">        :param field_names: Corresponding field names for input keys.</span>
 <span class="sd">        :param system_prompt: System prompt for the task.</span>
 <span class="sd">        :param input_template: Template for building the model input.</span>
@@ -844,18 +844,18 @@
 <span class="sd">            local llm. Otherwise, use API for reference.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param dim_required_keys: A list of keys used to calculate the average</span>
 <span class="sd">            dimension score, only the dimension scores associated with these</span>
 <span class="sd">            keys are used in the average calculation.</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span> <span class="o">=</span> <span class="n">system_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_SYSTEM_PROMPT</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
             <span class="n">field_names</span>
-        <span class="p">),</span> <span class="s1">&#39;The input_keys and field_names must correspond one-to-one!&#39;</span>
+        <span class="p">),</span> <span class="s1">'The input_keys and field_names must correspond one-to-one!'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span> <span class="o">=</span> <span class="n">input_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_names</span> <span class="o">=</span> <span class="n">field_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_INPUT_TEMPLATE</span>
@@ -873,22 +873,22 @@
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">enable_vllm</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">enable_vllm</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;must be executed in CUDA&#39;</span>
+            <span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'must be executed in CUDA'</span>
             <span class="c1"># cannot initialize vllm replicas on different GPUs</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">model_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tensor_parallel_size&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">model_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'tensor_parallel_size'</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">tensor_parallel_size</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Set tensor_parallel_size to </span><span class="se">\</span>
-<span class="s1">                    </span><span class="si">{</span><span class="n">tensor_parallel_size</span><span class="si">}</span><span class="s1"> for vllm.&#39;</span><span class="p">)</span>
-                <span class="n">model_params</span><span class="p">[</span><span class="s1">&#39;tensor_parallel_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensor_parallel_size</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Set tensor_parallel_size to </span><span class="se">\</span>
+<span class="s1">                    </span><span class="si">{</span><span class="n">tensor_parallel_size</span><span class="si">}</span><span class="s1"> for vllm.'</span><span class="p">)</span>
+                <span class="n">model_params</span><span class="p">[</span><span class="s1">'tensor_parallel_size'</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensor_parallel_size</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;vllm&#39;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s1">'vllm'</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">vllm</span><span class="o">.</span><span class="n">SamplingParams</span><span class="p">(</span><span class="o">**</span><span class="n">sampling_params</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">is_hf_model</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;huggingface&#39;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s1">'huggingface'</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">return_pipe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -897,7 +897,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;api&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s1">'api'</span><span class="p">,</span>
                                            <span class="n">model</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                                            <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
                                            <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -909,12 +909,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">build_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s1"> are in the sample!&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s1"> are in the sample!'</span><span class="p">)</span>
         <span class="n">field_strs</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">field_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">field_data</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_names</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sample</span>
         <span class="p">]</span>
-        <span class="n">data_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
+        <span class="n">data_str</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\n\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_str</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">input_prompt</span></div>
@@ -925,7 +925,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">):</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">extract_outer_braces</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;(\{[^</span><span class="si">{}</span><span class="s1">]*(?:\{[^</span><span class="si">{}</span><span class="s1">]*\}[^</span><span class="si">{}</span><span class="s1">]*)*\})&#39;</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'(\{[^</span><span class="si">{}</span><span class="s1">]*(?:\{[^</span><span class="si">{}</span><span class="s1">]*\}[^</span><span class="si">{}</span><span class="s1">]*)*\})'</span>
             <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
@@ -935,11 +935,11 @@
 
         <span class="n">json_str</span> <span class="o">=</span> <span class="n">extract_outer_braces</span><span class="p">(</span><span class="n">raw_output</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;flags&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;flags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;flags&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">)</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'flags'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">'flags'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'flags'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">)</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'tags'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="n">dimension_scores</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dimension_scores&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">dimension_scores</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'dimension_scores'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">total_score</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">dimension_scores</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_required_keys</span><span class="p">:</span>
@@ -950,10 +950,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">avg_score</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;Either dimension_scores is empty or dim_required_keys &#39;</span>
-                <span class="s1">&#39;is empty. Dimension score has been set to None, &#39;</span>
-                <span class="s1">&#39;Ensure this setting is intentional to disable the &#39;</span>
-                <span class="s1">&#39;dimension score. &#39;</span><span class="p">)</span>
+                <span class="s1">'Either dimension_scores is empty or dim_required_keys '</span>
+                <span class="s1">'is empty. Dimension score has been set to None, '</span>
+                <span class="s1">'Ensure this setting is intentional to disable the '</span>
+                <span class="s1">'dimension score. '</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">avg_score</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">tags</span></div>
 
@@ -967,11 +967,11 @@
             <span class="n">model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">())</span>
 
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span>
-            <span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;system&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span>
+            <span class="s1">'role'</span><span class="p">:</span> <span class="s1">'system'</span><span class="p">,</span>
+            <span class="s1">'content'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span>
         <span class="p">},</span> <span class="p">{</span>
-            <span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_input</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+            <span class="s1">'role'</span><span class="p">:</span> <span class="s1">'user'</span><span class="p">,</span>
+            <span class="s1">'content'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_input</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
         <span class="p">}]</span>
         <span class="n">score</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
@@ -983,14 +983,14 @@
                     <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span>
                                      <span class="n">return_full_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                      <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
-                    <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;generated_text&#39;</span><span class="p">]</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'generated_text'</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
                 <span class="n">score</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">record</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">score</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">tags</span></div>
 
@@ -998,7 +998,7 @@
 <div class="viewcode-block" id="LLMAnalysisFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_analysis_filter.html#data_juicer.ops.filter.llm_analysis_filter.LLMAnalysisFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_analysis_score</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

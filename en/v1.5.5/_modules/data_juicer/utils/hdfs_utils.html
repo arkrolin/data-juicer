@@ -697,11 +697,11 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.hdfs_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">HDFS utilities for Data-Juicer.</span>
 
 <span class="sd">Provides unified HDFS filesystem creation for the default executor</span>
-<span class="sd">and Ray executor (PyArrow backend). PyArrow&#39;s HadoopFileSystem relies</span>
+<span class="sd">and Ray executor (PyArrow backend). PyArrow's HadoopFileSystem relies</span>
 <span class="sd">on libhdfs and a working Hadoop/JVM environment on every node, so make</span>
 <span class="sd">sure the following environment variables are configured on all nodes</span>
 <span class="sd">before use:</span>
@@ -710,7 +710,7 @@
 <span class="sd">    export JAVA_HOME=/path/to/java</span>
 <span class="sd">    export CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath --glob)</span>
 <span class="sd">    export ARROW_LIBHDFS_DIR=$HADOOP_HOME/lib/native   # depends on env</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
@@ -724,12 +724,12 @@
 <div class="viewcode-block" id="parse_hdfs_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.parse_hdfs_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_hdfs_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Parse the host and port from an HDFS URI.</span>
 
-<span class="sd">    e.g. &#39;hdfs://namenode:8020/user/data&#39; -&gt; (&#39;namenode&#39;, 8020)</span>
-<span class="sd">         &#39;hdfs://namenode/user/data&#39;      -&gt; (&#39;namenode&#39;, None)</span>
-<span class="sd">         &#39;hdfs:///user/data&#39;              -&gt; (None, None)  # rely on default fs</span>
+<span class="sd">    e.g. 'hdfs://namenode:8020/user/data' -&gt; ('namenode', 8020)</span>
+<span class="sd">         'hdfs://namenode/user/data'      -&gt; ('namenode', None)</span>
+<span class="sd">         'hdfs:///user/data'              -&gt; (None, None)  # rely on default fs</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path: HDFS path to parse.</span>
@@ -738,7 +738,7 @@
 <span class="sd">        A tuple of (host, port). host/port may be None, in which case</span>
 <span class="sd">        PyArrow will fall back to the default filesystem configured via</span>
 <span class="sd">        Hadoop conf (fs.defaultFS).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">host</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span>
     <span class="n">port</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">port</span>
@@ -749,18 +749,18 @@
 <div class="viewcode-block" id="strip_hdfs_scheme">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.strip_hdfs_scheme">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">strip_hdfs_scheme</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Strip the hdfs:// scheme/authority from a path, returning the bare</span>
 <span class="sd">    filesystem path that PyArrow HadoopFileSystem expects.</span>
 
-<span class="sd">    e.g. &#39;hdfs://namenode:8020/user/data/file.jsonl&#39; -&gt; &#39;/user/data/file.jsonl&#39;</span>
+<span class="sd">    e.g. 'hdfs://namenode:8020/user/data/file.jsonl' -&gt; '/user/data/file.jsonl'</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path: HDFS path to strip.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Bare filesystem path without the hdfs:// scheme.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parsed</span><span class="o">.</span><span class="n">path</span> <span class="ow">or</span> <span class="n">path</span></div>
 
@@ -770,17 +770,17 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.create_pyarrow_hdfs_filesystem">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_pyarrow_hdfs_filesystem</span><span class="p">(</span>
     <span class="n">ds_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pyarrow.fs.HadoopFileSystem&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"pyarrow.fs.HadoopFileSystem"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a PyArrow HadoopFileSystem for reading/writing HDFS.</span>
 
 <span class="sd">    Configuration priority for host/port:</span>
-<span class="sd">    1. Explicit fields in ``ds_config`` (&#39;hdfs_host&#39;, &#39;hdfs_port&#39;).</span>
-<span class="sd">    2. Parsed from the &#39;path&#39; field in ``ds_config``.</span>
-<span class="sd">    3. Default (&#39;default&#39;), letting PyArrow use Hadoop conf (fs.defaultFS).</span>
+<span class="sd">    1. Explicit fields in ``ds_config`` ('hdfs_host', 'hdfs_port').</span>
+<span class="sd">    2. Parsed from the 'path' field in ``ds_config``.</span>
+<span class="sd">    3. Default ('default'), letting PyArrow use Hadoop conf (fs.defaultFS).</span>
 
 <span class="sd">    Optional ``ds_config`` fields:</span>
-<span class="sd">      - hdfs_host: namenode host, or &#39;default&#39;.</span>
+<span class="sd">      - hdfs_host: namenode host, or 'default'.</span>
 <span class="sd">      - hdfs_port: namenode port (int).</span>
 <span class="sd">      - hdfs_user: user name for HDFS access.</span>
 <span class="sd">      - hdfs_kerb_ticket: path to the Kerberos ticket cache.</span>
@@ -791,7 +791,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A configured pyarrow.fs.HadoopFileSystem instance.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Avoid the mutable-default-argument pitfall: default to None and create</span>
     <span class="c1"># a fresh dict per call so callers never share state.</span>
     <span class="k">if</span> <span class="n">ds_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -799,31 +799,31 @@
 
     <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.fs</span>
 
-    <span class="n">host</span> <span class="o">=</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hdfs_host&quot;</span><span class="p">)</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hdfs_port&quot;</span><span class="p">)</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hdfs_host"</span><span class="p">)</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hdfs_port"</span><span class="p">)</span>
 
     <span class="c1"># fall back to parsing from path if host is not explicitly provided</span>
-    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">):</span>
-        <span class="n">parsed_host</span><span class="p">,</span> <span class="n">parsed_port</span> <span class="o">=</span> <span class="n">parse_hdfs_path</span><span class="p">(</span><span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ds_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"path"</span><span class="p">):</span>
+        <span class="n">parsed_host</span><span class="p">,</span> <span class="n">parsed_port</span> <span class="o">=</span> <span class="n">parse_hdfs_path</span><span class="p">(</span><span class="n">ds_config</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span>
         <span class="n">host</span> <span class="o">=</span> <span class="n">parsed_host</span>
         <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">port</span> <span class="o">=</span> <span class="n">parsed_port</span>
 
-    <span class="c1"># PyArrow uses &#39;default&#39; to indicate reliance on Hadoop conf (fs.defaultFS)</span>
+    <span class="c1"># PyArrow uses 'default' to indicate reliance on Hadoop conf (fs.defaultFS)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">host</span><span class="p">:</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="s2">"default"</span>
 
-    <span class="n">fs_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">host</span><span class="p">}</span>
+    <span class="n">fs_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"host"</span><span class="p">:</span> <span class="n">host</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;hdfs_user&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;hdfs_user&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s2">&quot;hdfs_kerb_ticket&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">&quot;kerb_ticket&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;hdfs_kerb_ticket&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s2">&quot;hdfs_extra_conf&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">&quot;extra_conf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;hdfs_extra_conf&quot;</span><span class="p">]</span>
+        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"hdfs_user"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">"user"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"hdfs_user"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">"hdfs_kerb_ticket"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">"kerb_ticket"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"hdfs_kerb_ticket"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">"hdfs_extra_conf"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">fs_kwargs</span><span class="p">[</span><span class="s2">"extra_conf"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"hdfs_extra_conf"</span><span class="p">]</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating PyArrow HadoopFileSystem with host=</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">, port=</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Creating PyArrow HadoopFileSystem with host=</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">, port=</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">HadoopFileSystem</span><span class="p">(</span><span class="o">**</span><span class="n">fs_kwargs</span><span class="p">)</span></div>
 
 
@@ -831,17 +831,17 @@
 <div class="viewcode-block" id="validate_hdfs_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.hdfs_utils.html#data_juicer.utils.hdfs_utils.validate_hdfs_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_hdfs_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate that a path is a valid HDFS path.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path: Path to validate.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If path doesn&#39;t start with &#39;hdfs://&#39;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;hdfs://&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HDFS path must start with &#39;hdfs://&#39;, got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+<span class="sd">        ValueError: If path doesn't start with 'hdfs://'.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"hdfs://"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HDFS path must start with 'hdfs://', got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 </pre></div>
 

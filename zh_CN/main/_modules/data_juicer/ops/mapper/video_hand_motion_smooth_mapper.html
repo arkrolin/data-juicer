@@ -709,20 +709,20 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_hand_motion_smooth_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_hand_motion_smooth_mapper"</span>
 
-<span class="n">scipy_interpolate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;scipy.interpolate&quot;</span><span class="p">,</span> <span class="s2">&quot;scipy&quot;</span><span class="p">)</span>
+<span class="n">scipy_interpolate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"scipy.interpolate"</span><span class="p">,</span> <span class="s2">"scipy"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_recompute_actions</span><span class="p">(</span><span class="n">states</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute 7-dim delta actions from consecutive 8-dim states.</span>
+<span class="w">    </span><span class="sd">"""Compute 7-dim delta actions from consecutive 8-dim states.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        states: (T, 8) array — [x, y, z, roll, pitch, yaw, pad, gripper].</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (T, 7) actions — [dx, dy, dz, droll, dpitch, dyaw, gripper].</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
     <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
@@ -730,10 +730,10 @@
 
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">R_prev</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">R_next</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">R_prev</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">R_next</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">R_delta</span> <span class="o">=</span> <span class="n">R_next</span> <span class="o">*</span> <span class="n">R_prev</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-        <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">R_delta</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">R_delta</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">T</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -746,7 +746,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoHandMotionSmoothMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoHandMotionSmoothMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply smoothing to world-space hand motions and remove outliers.</span>
+<span class="w">    </span><span class="sd">"""Apply smoothing to world-space hand motions and remove outliers.</span>
 
 <span class="sd">    Reads hand action results (states, actions, joints_world) produced by</span>
 <span class="sd">    ``VideoHandActionComputeMapper`` and applies:</span>
@@ -763,9 +763,9 @@
 <span class="sd">       smoothed states so they stay consistent.</span>
 
 <span class="sd">    Reference (paper §3.1):</span>
-<span class="sd">        &quot;we apply spline smoothing to the world-space hand motions and remove</span>
-<span class="sd">        outliers&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        "we apply spline smoothing to the world-space hand motions and remove</span>
+<span class="sd">        outliers"</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoHandMotionSmoothMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoHandMotionSmoothMapper.__init__">[文档]</a>
@@ -780,7 +780,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hand_action_field: Meta field storing hand action results</span>
@@ -796,7 +796,7 @@
 <span class="sd">            required to apply smoothing.</span>
 <span class="sd">        :param smooth_joints: Whether to also smooth ``joints_world``</span>
 <span class="sd">            (21-joint MANO skeleton in world space).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hand_action_field</span> <span class="o">=</span> <span class="n">hand_action_field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">savgol_window</span> <span class="o">=</span> <span class="n">savgol_window</span>
@@ -807,20 +807,20 @@
 
 
     <span class="c1"># ------------------------------------------------------------------</span>
-    <span class="c1"># Outlier replacement (interpolate, don&#39;t delete)</span>
+    <span class="c1"># Outlier replacement (interpolate, don't delete)</span>
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_replace_outliers</span><span class="p">(</span>
         <span class="n">positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">threshold_mad</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace extreme outlier frames by linear interpolation.</span>
+<span class="w">        </span><span class="sd">"""Replace extreme outlier frames by linear interpolation.</span>
 
 <span class="sd">        Uses median + MAD (median absolute deviation) which is more robust</span>
 <span class="sd">        than mean + std for heavy-tailed distributions.</span>
 
 <span class="sd">        Returns a copy with outliers replaced — no frames are deleted.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -881,7 +881,7 @@
         <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">polyorder</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply Savitzky-Golay filter to each column of data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Apply Savitzky-Golay filter to each column of data."""</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">savgol_filter</span>
 
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -909,7 +909,7 @@
         <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">polyorder</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Smooth orientations in quaternion space with Savitzky-Golay.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Smooth orientations in quaternion space with Savitzky-Golay."""</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">savgol_filter</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
@@ -921,7 +921,7 @@
             <span class="k">return</span> <span class="n">eulers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">rots</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">eulers</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">rots</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">eulers</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">quats</span> <span class="o">=</span> <span class="n">rots</span><span class="o">.</span><span class="n">as_quat</span><span class="p">()</span>  <span class="c1"># (N, 4) — [x, y, z, w]</span>
 
             <span class="c1"># Ensure quaternion hemisphere continuity</span>
@@ -944,7 +944,7 @@
             <span class="n">smoothed_quats</span> <span class="o">=</span> <span class="n">smoothed_quats</span> <span class="o">/</span> <span class="n">norms</span>
 
             <span class="k">return</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_quat</span><span class="p">(</span><span class="n">smoothed_quats</span><span class="p">)</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span>
-                <span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
+                <span class="s2">"xyz"</span><span class="p">,</span>
                 <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -959,9 +959,9 @@
     <span class="c1"># Per-hand smoothing</span>
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_smooth_hand_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hand_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Smooth a single hand&#39;s trajectory and recompute actions.&quot;&quot;&quot;</span>
-        <span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hand_result</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">valid_frame_ids</span> <span class="o">=</span> <span class="n">hand_result</span><span class="p">[</span><span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">"""Smooth a single hand's trajectory and recompute actions."""</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hand_result</span><span class="p">[</span><span class="s2">"states"</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">valid_frame_ids</span> <span class="o">=</span> <span class="n">hand_result</span><span class="p">[</span><span class="s2">"valid_frame_ids"</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_frames_for_smoothing</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">hand_result</span>
@@ -970,7 +970,7 @@
         <span class="n">eulers</span> <span class="o">=</span> <span class="n">states</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
         <span class="n">grippers</span> <span class="o">=</span> <span class="n">states</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="c1"># --- Step 1: replace extreme outliers (don&#39;t delete!) ---</span>
+        <span class="c1"># --- Step 1: replace extreme outliers (don't delete!) ---</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_outliers</span><span class="p">(</span>
             <span class="n">positions</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">outlier_velocity_threshold</span><span class="p">,</span>
@@ -999,14 +999,14 @@
         <span class="n">actions</span> <span class="o">=</span> <span class="n">_recompute_actions</span><span class="p">(</span><span class="n">smoothed_states</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;hand_type&quot;</span><span class="p">:</span> <span class="n">hand_result</span><span class="p">[</span><span class="s2">&quot;hand_type&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">smoothed_states</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="n">actions</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">:</span> <span class="n">valid_frame_ids</span><span class="p">,</span>  <span class="c1"># unchanged! no frames removed</span>
+            <span class="s2">"hand_type"</span><span class="p">:</span> <span class="n">hand_result</span><span class="p">[</span><span class="s2">"hand_type"</span><span class="p">],</span>
+            <span class="s2">"states"</span><span class="p">:</span> <span class="n">smoothed_states</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s2">"actions"</span><span class="p">:</span> <span class="n">actions</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s2">"valid_frame_ids"</span><span class="p">:</span> <span class="n">valid_frame_ids</span><span class="p">,</span>  <span class="c1"># unchanged! no frames removed</span>
         <span class="p">}</span>
 
         <span class="c1"># --- Step 4: optionally smooth joints_world ---</span>
-        <span class="n">joints_world</span> <span class="o">=</span> <span class="n">hand_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;joints_world&quot;</span><span class="p">)</span>
+        <span class="n">joints_world</span> <span class="o">=</span> <span class="n">hand_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"joints_world"</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_joints</span> <span class="ow">and</span> <span class="n">joints_world</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints_world</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">joints_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">joints_world</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">joints_arr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
@@ -1017,14 +1017,14 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">savgol_window</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">savgol_polyorder</span><span class="p">,</span>
                     <span class="p">)</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;joints_world&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">smoothed_joints</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"joints_world"</span><span class="p">]</span> <span class="o">=</span> <span class="n">smoothed_joints</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;joints_world&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"joints_world"</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;joints_world&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span> <span class="k">if</span> <span class="n">joints_world</span> <span class="k">else</span> <span class="p">[]</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">"joints_world"</span><span class="p">]</span> <span class="o">=</span> <span class="n">joints_world</span> <span class="k">if</span> <span class="n">joints_world</span> <span class="k">else</span> <span class="p">[]</span>
 
         <span class="c1"># Pass through joints_cam unchanged</span>
-        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;joints_cam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hand_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;joints_cam&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">"joints_cam"</span><span class="p">]</span> <span class="o">=</span> <span class="n">hand_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"joints_cam"</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="k">return</span> <span class="n">result</span>
 
@@ -1048,7 +1048,7 @@
                 <span class="k">continue</span>
             <span class="n">smoothed_clip</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">hand_type</span><span class="p">,</span> <span class="n">hand_data</span> <span class="ow">in</span> <span class="n">clip_result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">hand_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;states&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">hand_data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"states"</span><span class="p">):</span>
                     <span class="n">smoothed_clip</span><span class="p">[</span><span class="n">hand_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">hand_data</span>
                     <span class="k">continue</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -1057,7 +1057,7 @@
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Smoothing failed for hand &#39;</span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Keeping original data.&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">"Smoothing failed for hand '</span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. "</span> <span class="sa">f</span><span class="s2">"Keeping original data."</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">smoothed_clip</span><span class="p">[</span><span class="n">hand_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">hand_data</span>
             <span class="n">smoothed_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">smoothed_clip</span><span class="p">)</span>

@@ -708,23 +708,23 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;librosa&quot;</span><span class="p">)</span>
+<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"librosa"</span><span class="p">)</span>
 
-<span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;video_audio_detect_age_gender_mapper&quot;</span>
-<span class="n">CHECK_PKGS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;transformers&quot;</span><span class="p">,</span> <span class="s2">&quot;transformers_stream_generator&quot;</span><span class="p">,</span> <span class="s2">&quot;einops&quot;</span><span class="p">,</span> <span class="s2">&quot;accelerate&quot;</span><span class="p">,</span> <span class="s2">&quot;tiktoken&quot;</span><span class="p">]</span>
+<span class="n">NAME</span> <span class="o">=</span> <span class="s2">"video_audio_detect_age_gender_mapper"</span>
+<span class="n">CHECK_PKGS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"transformers"</span><span class="p">,</span> <span class="s2">"transformers_stream_generator"</span><span class="p">,</span> <span class="s2">"einops"</span><span class="p">,</span> <span class="s2">"accelerate"</span><span class="p">,</span> <span class="s2">"tiktoken"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="VideoAudioDetectAgeGenderMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoAudioDetectAgeGenderMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoAudioDetectAgeGenderMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Detect age and gender (male, female, child) from video audio signals using a pretrained wav2vec2 model.</span>
 
 <span class="sd">    Source: This operator is a part of HumanVBench (CVPR 2026).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="VideoAudioDetectAgeGenderMapper.__init__">
@@ -732,25 +732,25 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">hf_audio_mapper</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">audio_speech_attribute</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param keep_original_sample: whether to keep the original sample. If</span>
-<span class="sd">            it&#39;s set to False, there will be only captioned sample in the</span>
-<span class="sd">            final datasets and the original sample will be removed. It&#39;s True</span>
+<span class="sd">            it's set to False, there will be only captioned sample in the</span>
+<span class="sd">            final datasets and the original sample will be removed. It's True</span>
 <span class="sd">            in default.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;mem_required&quot;</span><span class="p">,</span> <span class="s2">&quot;7GB&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"mem_required"</span><span class="p">,</span> <span class="s2">"7GB"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model_sampling_rate</span> <span class="o">=</span> <span class="mi">16000</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_hf_summarizer</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">hf_audio_mapper</span> <span class="k">if</span> <span class="n">hf_audio_mapper</span> <span class="k">else</span> <span class="s2">&quot;audeering/wav2vec2-large-robust-24-ft-age-gender&quot;</span>
+            <span class="n">hf_audio_mapper</span> <span class="k">if</span> <span class="n">hf_audio_mapper</span> <span class="k">else</span> <span class="s2">"audeering/wav2vec2-large-robust-24-ft-age-gender"</span>
         <span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;wav2vec2_age_gender&quot;</span><span class="p">,</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"wav2vec2_age_gender"</span><span class="p">,</span>
             <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hf_summarizer</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="o">=</span> <span class="n">tag_field_name</span>
@@ -779,7 +779,7 @@
 
         <span class="k">if</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_audio_tags</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;video_audio_detect_age_gender_mapper must be operated after video_tagging_from_audio_mapper.&quot;</span>
+                <span class="s2">"video_audio_detect_age_gender_mapper must be operated after video_tagging_from_audio_mapper."</span>
             <span class="p">)</span>
 
         <span class="c1"># get paths of all video(s)</span>
@@ -792,7 +792,7 @@
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">video</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loaded_video_keys</span><span class="p">):</span>
             <span class="n">audio_tag_this</span> <span class="o">=</span> <span class="n">audio_tag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">audio_tag_this</span> <span class="o">==</span> <span class="s2">&quot;Speech&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">audio_tag_this</span> <span class="o">==</span> <span class="s2">"Speech"</span><span class="p">:</span>
                 <span class="n">Total_result</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ys</span><span class="p">,</span> <span class="n">srs</span><span class="p">,</span> <span class="n">valid_indexes</span> <span class="o">=</span> <span class="n">extract_audio_from_video</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">stream_indexes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -811,10 +811,10 @@
 
                 <span class="n">Age_female_male_child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_process_func</span><span class="p">()(</span><span class="n">y</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">processor</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">Age_female_male_child_dict</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">&quot;Age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)]</span>
-                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">&quot;male&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
-                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">&quot;child&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)]</span>
+                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">"female"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">"male"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+                <span class="n">Age_female_male_child_dict</span><span class="p">[</span><span class="s2">"child"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Age_female_male_child</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
                 <span class="n">Total_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Age_female_male_child_dict</span><span class="p">)</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Total_result</span>

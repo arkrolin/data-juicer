@@ -700,19 +700,19 @@
   <h1>data_juicer.ops.pipeline.ray_repartition_pipeline 源代码</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Pipeline</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;ray_repartition_pipeline&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"ray_repartition_pipeline"</span>
 
 
 <div class="viewcode-block" id="RayRepartitionPipeline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.ray_repartition_pipeline.html#data_juicer.ops.pipeline.RayRepartitionPipeline">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayRepartitionPipeline</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Repartition a Ray Dataset into a target number of blocks.</span>
+<span class="w">    </span><span class="sd">"""Repartition a Ray Dataset into a target number of blocks.</span>
 
 <span class="sd">    This operator performs dataset-level block repartitioning through Ray</span>
-<span class="sd">    Dataset&#39;s `repartition` API. It is intended for Ray executor pipelines only</span>
+<span class="sd">    Dataset's `repartition` API. It is intended for Ray executor pipelines only</span>
 <span class="sd">    because local datasets do not expose Ray Dataset blocks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="RayRepartitionPipeline.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.ray_repartition_pipeline.html#data_juicer.ops.pipeline.RayRepartitionPipeline.__init__">[文档]</a>
@@ -723,15 +723,15 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param num_blocks: target number of Ray Dataset blocks.</span>
 <span class="sd">        :param shuffle: whether to shuffle records during repartition.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num_blocks</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;num_blocks must be a positive integer&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"num_blocks must be a positive integer"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_blocks</span> <span class="o">=</span> <span class="n">num_blocks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">shuffle</span><span class="p">)</span></div>
 
@@ -743,7 +743,7 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">NestedDataset</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;ray_repartition_pipeline requires Ray executor because local datasets do not have blocks&quot;</span>
+                <span class="s2">"ray_repartition_pipeline requires Ray executor because local datasets do not have blocks"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">repartition</span><span class="p">(</span><span class="n">num_blocks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_blocks</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">)</span></div>
 </div>

@@ -711,16 +711,16 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;ffmpeg-python&#39;</span><span class="p">)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;video_ffmpeg_wrapped_mapper&#39;</span>
+<span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'ffmpeg'</span><span class="p">,</span> <span class="s1">'ffmpeg-python'</span><span class="p">)</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'video_ffmpeg_wrapped_mapper'</span>
 
 
 <div class="viewcode-block" id="VideoFFmpegWrappedMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.video_ffmpeg_wrapped_mapper.html#data_juicer.ops.mapper.video_ffmpeg_wrapped_mapper.VideoFFmpegWrappedMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoFFmpegWrappedMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple wrapper for FFmpeg video filters.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Simple wrapper for FFmpeg video filters.</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoFFmpegWrappedMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.video_ffmpeg_wrapped_mapper.html#data_juicer.ops.mapper.video_ffmpeg_wrapped_mapper.VideoFFmpegWrappedMapper.__init__">[文档]</a>
@@ -734,7 +734,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param filter_name: ffmpeg video filter name.</span>
@@ -744,7 +744,7 @@
 <span class="sd">        :param overwrite_output: whether to overwrite output file.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 

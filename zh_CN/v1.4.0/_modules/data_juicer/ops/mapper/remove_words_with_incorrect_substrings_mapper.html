@@ -712,26 +712,26 @@
                       <span class="n">merge_on_whitespace_tab_newline</span><span class="p">,</span>
                       <span class="n">split_on_newline_tab_whitespace</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;remove_words_with_incorrect_substrings_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'remove_words_with_incorrect_substrings_mapper'</span>
 
 
 <div class="viewcode-block" id="RemoveWordsWithIncorrectSubstringsMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.remove_words_with_incorrect_substrings_mapper.html#data_juicer.ops.mapper.remove_words_with_incorrect_substrings_mapper.RemoveWordsWithIncorrectSubstringsMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveWordsWithIncorrectSubstringsMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to remove words with incorrect substrings.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Mapper to remove words with incorrect substrings."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RemoveWordsWithIncorrectSubstringsMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.remove_words_with_incorrect_substrings_mapper.html#data_juicer.ops.mapper.remove_words_with_incorrect_substrings_mapper.RemoveWordsWithIncorrectSubstringsMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span>
+                 <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'en'</span><span class="p">,</span>
                  <span class="n">tokenization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">substrings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param lang: sample in which language</span>
@@ -739,15 +739,15 @@
 <span class="sd">        :param substrings: The incorrect substrings in words.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">substrings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">substrings</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="s1">&#39;www&#39;</span><span class="p">,</span> <span class="s1">&#39;.com&#39;</span><span class="p">,</span> <span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;//&#39;</span><span class="p">]</span>
+            <span class="n">substrings</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'http'</span><span class="p">,</span> <span class="s1">'www'</span><span class="p">,</span> <span class="s1">'.com'</span><span class="p">,</span> <span class="s1">'href'</span><span class="p">,</span> <span class="s1">'//'</span><span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">=</span> <span class="n">tokenization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">substrings</span> <span class="o">=</span> <span class="n">substrings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span>
         <span class="k">if</span> <span class="n">tokenization</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;sentencepiece&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s1">'sentencepiece'</span><span class="p">,</span>
                                            <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span></div>
 
 
@@ -770,12 +770,12 @@
                     <span class="n">token_func</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode_as_pieces</span>
                     <span class="k">if</span> <span class="n">tokenizer</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="n">words</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;▁&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentences</span>
+                    <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'▁'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentences</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_keep_word_with_incorrect_substrings</span><span class="p">(</span>
-                        <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;▁&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">substrings</span><span class="p">)</span>
+                        <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'▁'</span><span class="p">,</span> <span class="s1">''</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">substrings</span><span class="p">)</span>
                 <span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentences</span><span class="p">):</span>
-                    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sentences</span> <span class="o">=</span> <span class="n">split_on_newline_tab_whitespace</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
                 <span class="n">sentences</span> <span class="o">=</span> <span class="p">[[[</span>

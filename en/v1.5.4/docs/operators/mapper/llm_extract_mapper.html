@@ -996,13 +996,13 @@
 <section id="test-extract-default">
 <h3>test_extract_default<a class="headerlink" href="#test-extract-default" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">LLMExtractMapper</span><span class="p">(</span>
-    <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+    <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span>
     <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;One short phrase: main topic.&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sentiment&quot;</span><span class="p">:</span> <span class="s2">&quot;One word: positive, negative, or neutral.&quot;</span><span class="p">,</span>
+        <span class="s2">"topic"</span><span class="p">:</span> <span class="s2">"One short phrase: main topic."</span><span class="p">,</span>
+        <span class="s2">"sentiment"</span><span class="p">:</span> <span class="s2">"One word: positive, negative, or neutral."</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="n">api_or_hf_model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
-    <span class="n">meta_output_key</span><span class="o">=</span><span class="s2">&quot;llm_extract&quot;</span><span class="p">,</span>
+    <span class="n">api_or_hf_model</span><span class="o">=</span><span class="s2">"gpt-4o"</span><span class="p">,</span>
+    <span class="n">meta_output_key</span><span class="o">=</span><span class="s2">"llm_extract"</span><span class="p">,</span>
     <span class="n">try_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -1024,10 +1024,10 @@
 <section id="test-extract-empty-input">
 <h3>test_extract_empty_input<a class="headerlink" href="#test-extract-empty-input" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">LLMExtractMapper</span><span class="p">(</span>
-    <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
-    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;topic&quot;</span><span class="p">:</span> <span class="s2">&quot;Main topic.&quot;</span><span class="p">,</span> <span class="s2">&quot;sentiment&quot;</span><span class="p">:</span> <span class="s2">&quot;Sentiment.&quot;</span><span class="p">},</span>
-    <span class="n">api_or_hf_model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
-    <span class="n">meta_output_key</span><span class="o">=</span><span class="s2">&quot;llm_extract&quot;</span><span class="p">,</span>
+    <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span>
+    <span class="n">output_schema</span><span class="o">=</span><span class="p">{</span><span class="s2">"topic"</span><span class="p">:</span> <span class="s2">"Main topic."</span><span class="p">,</span> <span class="s2">"sentiment"</span><span class="p">:</span> <span class="s2">"Sentiment."</span><span class="p">},</span>
+    <span class="n">api_or_hf_model</span><span class="o">=</span><span class="s2">"gpt-4o"</span><span class="p">,</span>
+    <span class="n">meta_output_key</span><span class="o">=</span><span class="s2">"llm_extract"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>

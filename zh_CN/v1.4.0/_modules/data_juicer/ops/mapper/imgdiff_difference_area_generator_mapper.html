@@ -720,8 +720,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.mm_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpecialTokens</span>
 
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;cv2&#39;</span><span class="p">,</span> <span class="s1">&#39;opencv-python&#39;</span><span class="p">)</span>
-<span class="n">nltk</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;nltk&#39;</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'cv2'</span><span class="p">,</span> <span class="s1">'opencv-python'</span><span class="p">)</span>
+<span class="n">nltk</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'nltk'</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="is_noun">
@@ -731,7 +731,7 @@
     <span class="n">pos_tagged</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">pos_tag</span><span class="p">([</span><span class="n">word</span><span class="p">])</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_tagged</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NN&#39;</span><span class="p">,</span> <span class="s1">&#39;NNS&#39;</span><span class="p">,</span> <span class="s1">&#39;NNP&#39;</span><span class="p">,</span> <span class="s1">&#39;NNPS&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'NN'</span><span class="p">,</span> <span class="s1">'NNS'</span><span class="p">,</span> <span class="s1">'NNP'</span><span class="p">,</span> <span class="s1">'NNPS'</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="kc">True</span></div>
@@ -749,16 +749,16 @@
 
     <span class="n">d</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">Differ</span><span class="p">()</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w\s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-               <span class="n">text1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(),</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\w\s]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-               <span class="n">text2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[^\w\s]'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span>
+               <span class="n">text1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">))</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(),</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[^\w\s]'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span>
+               <span class="n">text2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">' '</span><span class="p">,</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">))</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
 
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">):</span>
-            <span class="n">text2_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemmatizer</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;+ &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
-        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
-            <span class="n">text1_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemmatizer</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;- &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'+'</span><span class="p">):</span>
+            <span class="n">text2_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemmatizer</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'+ '</span><span class="p">,</span> <span class="s1">''</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'-'</span><span class="p">):</span>
+            <span class="n">text1_split</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lemmatizer</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'- '</span><span class="p">,</span> <span class="s1">''</span><span class="p">)))</span>
 
     <span class="n">text1</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">text2</span> <span class="o">=</span> <span class="p">[]</span>
@@ -812,7 +812,7 @@
 
 
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;imgdiff_difference_area_generator_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'imgdiff_difference_area_generator_mapper'</span>
 
 
 <div class="viewcode-block" id="Difference_Area_Generator_Mapper">
@@ -822,10 +822,10 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Difference_Area_Generator_Mapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A fused operator for OPs that is used to run sequential OPs on</span>
-<span class="sd">    the same batch to allow fine-grained control on data processing.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A fused operator for OPs that is used to run sequential OPs on</span>
+<span class="sd">    the same batch to allow fine-grained control on data processing."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">'cuda'</span>
 
 <div class="viewcode-block" id="Difference_Area_Generator_Mapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.imgdiff_difference_area_generator_mapper.html#data_juicer.ops.mapper.imgdiff_difference_area_generator_mapper.Difference_Area_Generator_Mapper.__init__">[文档]</a>
@@ -838,53 +838,53 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">&#39;image_pair_similarity_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;min_score_1&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
-            <span class="s1">&#39;max_score_1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-            <span class="s1">&#39;min_score_2&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
-            <span class="s1">&#39;max_score_2&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-            <span class="s1">&#39;hf_clip&#39;</span><span class="p">:</span> <span class="s1">&#39;openai/clip-vit-base-patch32&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_proc&#39;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">'image_pair_similarity_filter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'min_score_1'</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s1">'max_score_1'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s1">'min_score_2'</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s1">'max_score_2'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s1">'hf_clip'</span><span class="p">:</span> <span class="s1">'openai/clip-vit-base-patch32'</span><span class="p">,</span>
+            <span class="s1">'num_proc'</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">&#39;image_segment_mapper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;imgsz&#39;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-            <span class="s1">&#39;conf&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
-            <span class="s1">&#39;iou&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-            <span class="s1">&#39;model_path&#39;</span><span class="p">:</span> <span class="s1">&#39;FastSAM-x.pt&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">'image_segment_mapper'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'imgsz'</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+            <span class="s1">'conf'</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+            <span class="s1">'iou'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="s1">'model_path'</span><span class="p">:</span> <span class="s1">'FastSAM-x.pt'</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">&#39;image_text_matching_filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;min_score&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
-            <span class="s1">&#39;max_score&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-            <span class="s1">&#39;hf_blip&#39;</span><span class="p">:</span> <span class="s1">&#39;Salesforce/blip-itm-base-coco&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;num_proc&#39;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s1">'image_text_matching_filter'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'min_score'</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="s1">'max_score'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s1">'hf_blip'</span><span class="p">:</span> <span class="s1">'Salesforce/blip-itm-base-coco'</span><span class="p">,</span>
+            <span class="s1">'num_proc'</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span>
-            <span class="s1">&#39;image_pair_similarity_filter&#39;</span><span class="p">,</span> <span class="n">image_pair_similarity_filter_args</span><span class="p">)</span>
+            <span class="s1">'image_pair_similarity_filter'</span><span class="p">,</span> <span class="n">image_pair_similarity_filter_args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_segment_mapper_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span>
-            <span class="s1">&#39;image_segment_mapper&#39;</span><span class="p">,</span> <span class="n">image_segment_mapper_args</span><span class="p">)</span>
+            <span class="s1">'image_segment_mapper'</span><span class="p">,</span> <span class="n">image_segment_mapper_args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span>
-            <span class="s1">&#39;image_text_matching_filter&#39;</span><span class="p">,</span> <span class="n">image_text_matching_filter_args</span><span class="p">)</span>
+            <span class="s1">'image_text_matching_filter'</span><span class="p">,</span> <span class="n">image_text_matching_filter_args</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_op_list</span> <span class="o">=</span> <span class="p">[{</span>
-            <span class="s1">&#39;image_pair_similarity_filter&#39;</span><span class="p">:</span>
+            <span class="s1">'image_pair_similarity_filter'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span>
         <span class="p">},</span> <span class="p">{</span>
-            <span class="s1">&#39;image_segment_mapper&#39;</span><span class="p">:</span>
+            <span class="s1">'image_segment_mapper'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_segment_mapper_args</span>
         <span class="p">},</span> <span class="p">{</span>
-            <span class="s1">&#39;image_text_matching_filter&#39;</span><span class="p">:</span>
+            <span class="s1">'image_text_matching_filter'</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span>
         <span class="p">}]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_op_list</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;Difference_Area_Generator_Mapper:(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">'Difference_Area_Generator_Mapper:(</span><span class="si">%s</span><span class="s1">)'</span> <span class="o">%</span> <span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">])</span>
-        <span class="c1"># set accelerator to &#39;cuda&#39; if there exists any ops whose accelerator</span>
-        <span class="c1"># is &#39;cuda&#39;</span>
+        <span class="c1"># set accelerator to 'cuda' if there exists any ops whose accelerator</span>
+        <span class="c1"># is 'cuda'</span>
         <span class="n">accelerator_methods</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">op</span><span class="o">.</span><span class="n">accelerator</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;cuda&#39;</span> <span class="ow">in</span> <span class="n">accelerator_methods</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+        <span class="k">if</span> <span class="s1">'cuda'</span> <span class="ow">in</span> <span class="n">accelerator_methods</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span> <span class="o">=</span> <span class="s1">'cuda'</span>
 
         <span class="c1"># update num_proc with the min num_proc of all fusible filters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">op</span><span class="o">.</span><span class="n">runtime_np</span><span class="p">()</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">])</span> \
@@ -895,31 +895,31 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="n">op_name</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args_dict</span><span class="p">:</span>
                 <span class="n">args_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="n">op_name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">args_dict</span><span class="p">[</span><span class="s1">&#39;accelerator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span>
+        <span class="n">args_dict</span><span class="p">[</span><span class="s1">'accelerator'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span>
         <span class="k">return</span> <span class="n">args_dict</span>
 
 <div class="viewcode-block" id="Difference_Area_Generator_Mapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.imgdiff_difference_area_generator_mapper.html#data_juicer.ops.mapper.imgdiff_difference_area_generator_mapper.Difference_Area_Generator_Mapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">random_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">random_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span>
-            <span class="s1">&#39;min_score_1&#39;</span><span class="p">]</span>
+            <span class="s1">'min_score_1'</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span>
-            <span class="s1">&#39;max_score_1&#39;</span><span class="p">]</span>
+            <span class="s1">'max_score_1'</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># fused_ops 1.image_pair_similarity_filter 2.image_segment_mapper</span>
-        <span class="c1"># 3.image_text_matching_filter keys of sample: &quot;caption1&quot;, &quot;caption2&quot;,</span>
-        <span class="c1"># &quot;image_path1&quot;, &quot;image_path2&quot;</span>
+        <span class="c1"># 3.image_text_matching_filter keys of sample: "caption1", "caption2",</span>
+        <span class="c1"># "image_path1", "image_path2"</span>
 
         <span class="c1"># Step1: filter out image pairs with large differences between the two</span>
         <span class="c1"># images.</span>
         <span class="n">temp_sample</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;temp image pairs &#39;</span> <span class="o">+</span> <span class="n">random_num</span>
-        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">]</span>
+        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'temp image pairs '</span> <span class="o">+</span> <span class="n">random_num</span>
+        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">'images'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">]</span>
         <span class="p">]</span>
 
         <span class="n">temp_sample</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="n">temp_sample</span><span class="p">])</span>
@@ -940,15 +940,15 @@
             <span class="p">}</span>
 
         <span class="c1"># Step2: compare the differences between the two captions and identify</span>
-        <span class="c1"># the &quot;valid object&quot;.</span>
+        <span class="c1"># the "valid object".</span>
         <span class="n">valid_object1</span><span class="p">,</span> <span class="n">valid_object2</span> <span class="o">=</span> <span class="n">compare_text_index</span><span class="p">(</span>
-            <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;caption1&#39;</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;caption2&#39;</span><span class="p">])</span>
+            <span class="n">samples</span><span class="p">[</span><span class="s1">'caption1'</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'caption2'</span><span class="p">])</span>
 
         <span class="c1"># Step3: segment the regions in two images that may contain valid</span>
         <span class="c1"># objects.</span>
         <span class="n">temp_sample</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">]</span>
+        <span class="n">temp_sample</span><span class="p">[</span><span class="s1">'images'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">],</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">]</span>
         <span class="p">]</span>
         <span class="n">temp_sample</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="n">temp_sample</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_sample</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
@@ -969,8 +969,8 @@
         <span class="n">crop_image2_path_to_bbox_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="p">}</span>  <span class="c1"># Used to associate filenames with bounding boxes.</span>
 
-        <span class="n">image_array1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">])</span>
-        <span class="n">image_array2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">])</span>
+        <span class="n">image_array1</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">])</span>
+        <span class="n">image_array2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">])</span>
         <span class="n">image_array2</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
             <span class="n">image_array2</span><span class="p">,</span> <span class="p">(</span><span class="n">image_array1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">image_array1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
@@ -981,20 +981,20 @@
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
                 <span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:]</span>
-            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                <span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">temp_image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_1_&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_bbox_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_1_'</span>
+                <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_bbox_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg'</span><span class="p">)</span>
             <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_image_path</span><span class="p">,</span> <span class="n">crop_img</span><span class="p">)</span>
             <span class="n">crop_image1_path_to_bbox_dict</span><span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox</span>
             <span class="k">for</span> <span class="n">temp_valid_object1</span> <span class="ow">in</span> <span class="n">valid_object1</span><span class="p">:</span>
                 <span class="n">crop_image1_samples</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;text&#39;</span><span class="p">:</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_valid_object1</span> <span class="o">+</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
+                    <span class="s1">'text'</span><span class="p">:</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">'</span> <span class="o">+</span> <span class="n">temp_valid_object1</span> <span class="o">+</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> '</span><span class="p">,</span>
+                    <span class="s1">'images'</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
                 <span class="p">})</span>
 
             <span class="n">crop_img_another</span> <span class="o">=</span> <span class="n">image_array2</span><span class="p">[</span>
@@ -1002,20 +1002,20 @@
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
                 <span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:]</span>
-            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                <span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">temp_image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_2_&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_bbox_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_2_'</span>
+                <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_bbox_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg'</span><span class="p">)</span>
             <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_image_path</span><span class="p">,</span> <span class="n">crop_img_another</span><span class="p">)</span>
             <span class="n">crop_image2_path_to_bbox_dict</span><span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox</span>
             <span class="k">for</span> <span class="n">temp_valid_object2</span> <span class="ow">in</span> <span class="n">valid_object2</span><span class="p">:</span>
                 <span class="n">crop_image2_samples</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;text&#39;</span><span class="p">:</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_valid_object2</span> <span class="o">+</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
+                    <span class="s1">'text'</span><span class="p">:</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">'</span> <span class="o">+</span> <span class="n">temp_valid_object2</span> <span class="o">+</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> '</span><span class="p">,</span>
+                    <span class="s1">'images'</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
                 <span class="p">})</span>
 
         <span class="c1"># bbox from 2 -&gt; crop 2, 1</span>
@@ -1027,20 +1027,20 @@
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
                 <span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:]</span>
-            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                <span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">temp_image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_2_&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_crop_image_pair_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_2_'</span>
+                <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_crop_image_pair_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg'</span><span class="p">)</span>
             <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_image_path</span><span class="p">,</span> <span class="n">crop_img</span><span class="p">)</span>
             <span class="n">crop_image2_path_to_bbox_dict</span><span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox</span>
             <span class="k">for</span> <span class="n">temp_valid_object2</span> <span class="ow">in</span> <span class="n">valid_object2</span><span class="p">:</span>
                 <span class="n">crop_image2_samples</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;text&#39;</span><span class="p">:</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_valid_object2</span> <span class="o">+</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
+                    <span class="s1">'text'</span><span class="p">:</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">'</span> <span class="o">+</span> <span class="n">temp_valid_object2</span> <span class="o">+</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> '</span><span class="p">,</span>
+                    <span class="s1">'images'</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
                 <span class="p">})</span>
 
             <span class="n">crop_img_another</span> <span class="o">=</span> <span class="n">image_array1</span><span class="p">[</span>
@@ -1048,20 +1048,20 @@
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
                 <span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">temp_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
                                                          <span class="n">temp_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:]</span>
-            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                <span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
             <span class="n">temp_image_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_1_&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_crop_image_pair_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s1">_1_'</span>
+                <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_crop_image_pair_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&gt;.jpg'</span><span class="p">)</span>
             <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_image_path</span><span class="p">,</span> <span class="n">crop_img_another</span><span class="p">)</span>
             <span class="n">crop_image1_path_to_bbox_dict</span><span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox</span>
             <span class="k">for</span> <span class="n">temp_valid_object1</span> <span class="ow">in</span> <span class="n">valid_object1</span><span class="p">:</span>
                 <span class="n">crop_image1_samples</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-                    <span class="s1">&#39;text&#39;</span><span class="p">:</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_valid_object1</span> <span class="o">+</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
+                    <span class="s1">'text'</span><span class="p">:</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span><span class="si">}</span><span class="s1">'</span> <span class="o">+</span> <span class="n">temp_valid_object1</span> <span class="o">+</span>
+                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s1"> '</span><span class="p">,</span>
+                    <span class="s1">'images'</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path</span><span class="p">]</span>
                 <span class="p">})</span>
 
         <span class="c1"># Step5: determine whether the sub-images contain valid objects.</span>
@@ -1072,11 +1072,11 @@
                 <span class="n">name</span><span class="o">=</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="p">[{}]</span> <span class="o">*</span> <span class="n">crop_image1_samples</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
         <span class="n">crop_image1_filtered</span> <span class="o">=</span> <span class="n">crop_image1_samples</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">compute_stats</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">],</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">],</span>
             <span class="n">with_rank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">crop_image1_filtered</span> <span class="o">=</span> <span class="n">crop_image1_filtered</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">])</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">])</span>
         <span class="n">crop_image1_filtered</span> <span class="o">=</span> <span class="n">crop_image1_filtered</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
         <span class="n">crop_image2_samples</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
@@ -1086,39 +1086,39 @@
                 <span class="n">name</span><span class="o">=</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="p">[{}]</span> <span class="o">*</span> <span class="n">crop_image2_samples</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
         <span class="n">crop_image2_filtered</span> <span class="o">=</span> <span class="n">crop_image2_samples</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">compute_stats</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">],</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">],</span>
             <span class="n">with_rank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">crop_image2_filtered</span> <span class="o">=</span> <span class="n">crop_image2_filtered</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">])</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">])</span>
         <span class="n">crop_image2_filtered</span> <span class="o">=</span> <span class="n">crop_image2_filtered</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
         <span class="n">crop_image2_filtered_bbox_id</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">seen</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">temp_crop_image2_filtered</span> <span class="ow">in</span> <span class="n">crop_image2_filtered</span><span class="p">:</span>
             <span class="n">crop_image2_filtered_bbox_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">temp_crop_image2_filtered</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                    <span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">temp_crop_image2_filtered</span><span class="p">[</span><span class="s1">'images'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                    <span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
         <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">temp_crop_image1_filtered</span> <span class="ow">in</span> <span class="n">crop_image1_filtered</span><span class="p">:</span>
-            <span class="n">temp_bbox_id</span> <span class="o">=</span> <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                <span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">temp_bbox_id</span> <span class="o">=</span> <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">'images'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                <span class="s1">'_'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">temp_bbox_id</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">temp_bbox_id</span> <span class="ow">in</span> <span class="n">crop_image2_filtered_bbox_id</span><span class="p">:</span>
                 <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_bbox_id</span><span class="p">)</span>
                 <span class="n">temp_filtered_sub_image_pairs</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="n">temp_filtered_sub_image_pairs</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox_id</span>
-                <span class="n">valid_image_path1</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                    <span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">valid_image_path2</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">&#39;image_path2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                    <span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">temp_filtered_sub_image_pairs</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="n">temp_filtered_sub_image_pairs</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_bbox_id</span>
+                <span class="n">valid_image_path1</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path1'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                    <span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">valid_image_path2</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s1">'image_path2'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+                    <span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">temp_filtered_sub_image_pairs</span><span class="p">[</span><span class="s1">'images'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">'images'</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">temp_crop_image1_filtered</span><span class="p">[</span><span class="s1">'images'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
                         <span class="n">valid_image_path1</span><span class="p">,</span>
-                        <span class="n">valid_image_path2</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_1_&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;_2_&lt;&#39;</span><span class="p">)</span>
+                        <span class="n">valid_image_path2</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'_1_&lt;'</span><span class="p">,</span> <span class="s1">'_2_&lt;'</span><span class="p">)</span>
                 <span class="p">]</span>
                 <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_filtered_sub_image_pairs</span><span class="p">)</span>
 
@@ -1127,20 +1127,20 @@
         <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
             <span class="n">filtered_sub_image_pairs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span>
-            <span class="s1">&#39;min_score_2&#39;</span><span class="p">]</span>
+            <span class="s1">'min_score_2'</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span>
-            <span class="s1">&#39;max_score_2&#39;</span><span class="p">]</span>
+            <span class="s1">'max_score_2'</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">stats</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span>
                 <span class="n">column</span><span class="o">=</span><span class="p">[{}]</span> <span class="o">*</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
         <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">compute_stats</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">],</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">],</span>
             <span class="n">with_rank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
-            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span><span class="s1">&#39;num_proc&#39;</span><span class="p">])</span>
+            <span class="n">num_proc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_pair_similarity_filter_args</span><span class="p">[</span><span class="s1">'num_proc'</span><span class="p">])</span>
         <span class="n">filtered_sub_image_pairs</span> <span class="o">=</span> <span class="n">filtered_sub_image_pairs</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_sub_image_pairs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1157,7 +1157,7 @@
         <span class="n">filtered_bboxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">temp_sub_image_pairs</span> <span class="ow">in</span> <span class="n">filtered_sub_image_pairs</span><span class="p">:</span>
             <span class="n">filtered_bboxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crop_image1_path_to_bbox_dict</span><span class="p">[</span>
-                <span class="n">temp_sub_image_pairs</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="n">temp_sub_image_pairs</span><span class="p">[</span><span class="s1">'images'</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
 
         <span class="n">filtered_bboxes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">filtered_bboxes</span><span class="p">)</span>
 

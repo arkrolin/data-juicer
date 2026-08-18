@@ -718,9 +718,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
 <span class="k">with</span> <span class="n">HiddenPrints</span><span class="p">():</span>
-    <span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;ffmpeg-python&#39;</span><span class="p">)</span>
+    <span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'ffmpeg'</span><span class="p">,</span> <span class="s1">'ffmpeg-python'</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;video_resize_resolution_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'video_resize_resolution_mapper'</span>
 
 
 <div class="viewcode-block" id="VideoResizeResolutionMapper">
@@ -728,10 +728,10 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoResizeResolutionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">        Mapper to resize videos resolution. We leave the super resolution</span>
 <span class="sd">        with deep learning for future works.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoResizeResolutionMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.video_resize_resolution_mapper.html#data_juicer.ops.mapper.video_resize_resolution_mapper.VideoResizeResolutionMapper.__init__">[docs]</a>
@@ -740,55 +740,55 @@
                  <span class="n">max_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
                  <span class="n">min_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                  <span class="n">max_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
-                 <span class="n">force_original_aspect_ratio</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;disable&#39;</span><span class="p">,</span>
+                 <span class="n">force_original_aspect_ratio</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'disable'</span><span class="p">,</span>
                  <span class="n">force_divisible_by</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
-<span class="sd">        :param min_width: Videos with width less than &#39;min_width&#39; will be</span>
+<span class="sd">        :param min_width: Videos with width less than 'min_width' will be</span>
 <span class="sd">            mapped to videos with equal or bigger width.</span>
-<span class="sd">        :param max_width: Videos with width more than &#39;max_width&#39; will be</span>
+<span class="sd">        :param max_width: Videos with width more than 'max_width' will be</span>
 <span class="sd">            mapped to videos with equal of smaller width.</span>
-<span class="sd">        :param min_height: Videos with height less than &#39;min_height&#39; will be</span>
+<span class="sd">        :param min_height: Videos with height less than 'min_height' will be</span>
 <span class="sd">            mapped to videos with equal or bigger height.</span>
-<span class="sd">        :param max_height: Videos with height more than &#39;max_height&#39; will be</span>
+<span class="sd">        :param max_height: Videos with height more than 'max_height' will be</span>
 <span class="sd">            mapped to videos with equal or smaller height.</span>
 <span class="sd">        :param force_original_aspect_ratio: Enable decreasing or \</span>
 <span class="sd">            increasing output video width or height if necessary \</span>
-<span class="sd">            to keep the original aspect ratio, including [&#39;disable&#39;, \</span>
-<span class="sd">            &#39;decrease&#39;, &#39;increase&#39;].</span>
+<span class="sd">            to keep the original aspect ratio, including ['disable', \</span>
+<span class="sd">            'decrease', 'increase'].</span>
 <span class="sd">        :param force_divisible_by: Ensures that both the output dimensions, \</span>
 <span class="sd">            width and height, are divisible by the given integer when used \</span>
 <span class="sd">            together with force_original_aspect_ratio, must be a positive \</span>
 <span class="sd">            even number.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
         <span class="n">force_original_aspect_ratio</span> <span class="o">=</span> <span class="n">force_original_aspect_ratio</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">force_original_aspect_ratio</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s1">&#39;disable&#39;</span><span class="p">,</span> <span class="s1">&#39;decrease&#39;</span><span class="p">,</span> <span class="s1">&#39;increase&#39;</span>
+                <span class="s1">'disable'</span><span class="p">,</span> <span class="s1">'decrease'</span><span class="p">,</span> <span class="s1">'increase'</span>
         <span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;force_original_aspect_ratio [</span><span class="si">{</span><span class="n">force_original_aspect_ratio</span><span class="si">}</span><span class="s1">]&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39; is not supported. &#39;</span>
-                <span class="sa">f</span><span class="s2">&quot;Can only be one of [&#39;disable&#39;, &#39;decrease&#39;, &#39;increase&#39;]. &quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'force_original_aspect_ratio [</span><span class="si">{</span><span class="n">force_original_aspect_ratio</span><span class="si">}</span><span class="s1">]'</span>
+                <span class="sa">f</span><span class="s1">' is not supported. '</span>
+                <span class="sa">f</span><span class="s2">"Can only be one of ['disable', 'decrease', 'increase']. "</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">force_divisible_by</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">force_divisible_by</span> <span class="o">%</span> <span class="mi">2</span>
-                <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_original_aspect_ratio</span> <span class="o">!=</span> <span class="s1">&#39;disable&#39;</span><span class="p">:</span>
+                <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_original_aspect_ratio</span> <span class="o">!=</span> <span class="s1">'disable'</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;force_divisible_by [</span><span class="si">{</span><span class="n">force_divisible_by</span><span class="si">}</span><span class="s1">] must be a positive&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39; even number. &#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">'force_divisible_by [</span><span class="si">{</span><span class="n">force_divisible_by</span><span class="si">}</span><span class="s1">] must be a positive'</span>
+                <span class="sa">f</span><span class="s1">' even number. '</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">min_width</span> <span class="o">=</span> <span class="n">min_width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_width</span> <span class="o">=</span> <span class="n">max_width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_height</span> <span class="o">=</span> <span class="n">min_height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_height</span> <span class="o">=</span> <span class="n">max_height</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_method</span> <span class="o">=</span> <span class="s1">&#39;scale&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_method</span> <span class="o">=</span> <span class="s1">'scale'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">=</span> <span class="n">force_original_aspect_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force_divisible_by</span> <span class="o">=</span> <span class="n">force_divisible_by</span></div>
 
@@ -834,7 +834,7 @@
                 <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_height</span>
 
             <span class="c1"># the width and height of a video must be divisible by 2.</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">&#39;disable&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">'disable'</span><span class="p">:</span>
                 <span class="n">force_divisible_by</span> <span class="o">=</span> <span class="mi">2</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">force_divisible_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_divisible_by</span>
@@ -851,12 +851,12 @@
             <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span> <span class="o">/</span> <span class="n">force_divisible_by</span><span class="p">)</span> <span class="o">*</span> <span class="n">force_divisible_by</span>
 
             <span class="c1"># keep the origin aspect ratio</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">&#39;increase&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">'increase'</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">width</span> <span class="o">/</span> <span class="n">height</span> <span class="o">&lt;</span> <span class="n">origin_ratio</span><span class="p">:</span>
                     <span class="n">width</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">origin_ratio</span>
                 <span class="k">elif</span> <span class="n">width</span> <span class="o">/</span> <span class="n">height</span> <span class="o">&gt;</span> <span class="n">origin_ratio</span><span class="p">:</span>
                     <span class="n">height</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="n">origin_ratio</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">&#39;decrease&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_original_aspect_ratio</span> <span class="o">==</span> <span class="s1">'decrease'</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">width</span> <span class="o">/</span> <span class="n">height</span> <span class="o">&lt;</span> <span class="n">origin_ratio</span><span class="p">:</span>
                     <span class="n">height</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="n">origin_ratio</span>
                 <span class="k">elif</span> <span class="n">width</span> <span class="o">/</span> <span class="n">height</span> <span class="o">&gt;</span> <span class="n">origin_ratio</span><span class="p">:</span>
@@ -870,10 +870,10 @@
                                                   <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">resized_video_key</span><span class="p">)</span>
                     <span class="ow">or</span> <span class="n">resized_video_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loaded_video_keys</span><span class="p">):</span>
-                <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;-nostdin&#39;</span><span class="p">,</span> <span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;quiet&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;-y&#39;</span><span class="p">]</span>  <span class="c1"># close the ffmpeg log</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'-nostdin'</span><span class="p">,</span> <span class="s1">'-v'</span><span class="p">,</span> <span class="s1">'quiet'</span><span class="p">,</span>
+                        <span class="s1">'-y'</span><span class="p">]</span>  <span class="c1"># close the ffmpeg log</span>
                 <span class="n">stream</span> <span class="o">=</span> <span class="n">ffmpeg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">video_key</span><span class="p">)</span>
-                <span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
+                <span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s1">'scale'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
                 <span class="n">stream</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">resized_video_key</span><span class="p">)</span><span class="o">.</span><span class="n">global_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
                 <span class="n">stream</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 

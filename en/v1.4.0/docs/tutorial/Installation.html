@@ -786,53 +786,53 @@
 <p>For component details, plz refer to <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/v1.4.0/pyproject.toml">pyproject.toml</a>.</p>
 <p><strong>Core ML &amp; DL</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generic ML/DL capabilities</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic]"</span>
 </pre></div>
 </div>
 <p>Includes: PyTorch, Transformers, VLLM, etc.</p>
 <p><strong>Domain-Specific Features</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computer Vision</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[vision]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[vision]"</span>
 
 <span class="c1"># Natural Language Processing</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[nlp]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[nlp]"</span>
 
 <span class="c1"># Audio Processing</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[audio]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[audio]"</span>
 
 **Additional<span class="w"> </span>Components**
 
 <span class="sb">```</span>bash
 <span class="c1"># Distributed Computing</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[distributed]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[distributed]"</span>
 
 <span class="c1"># AI Services &amp; APIs</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[ai_services]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[ai_services]"</span>
 
 **Development<span class="w"> </span>Tools**
 <span class="sb">```</span>bash
 <span class="c1"># Development &amp; Testing</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[dev]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[dev]"</span>
 </pre></div>
 </div>
 </section>
 <section id="common-installation-patterns">
 <h2>Common Installation Patterns<a class="headerlink" href="#common-installation-patterns" title="Link to this heading">#</a></h2>
 <p><strong>1. Text Processing Setup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp]"</span>
 </pre></div>
 </div>
 <p><strong>2. Vision Processing Setup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,vision]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,vision]"</span>
 </pre></div>
 </div>
 <p><strong>3. Full Processing Pipeline</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp,vision,distributed]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp,vision,distributed]"</span>
 </pre></div>
 </div>
 <p><strong>4. Complete Installation</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install all features (except sandbox)</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[all]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[all]"</span>
 </pre></div>
 </div>
 <p><strong>5. For Development Mode</strong></p>
@@ -842,7 +842,7 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/model
 <span class="nb">cd</span><span class="w"> </span>data-juicer
 
 <span class="c1"># Install dev dependencies</span>
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 
 <span class="c1"># Optionally, use uv for venv and dependency management</span>
 curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh<span class="w">   </span><span class="c1"># install uv</span>

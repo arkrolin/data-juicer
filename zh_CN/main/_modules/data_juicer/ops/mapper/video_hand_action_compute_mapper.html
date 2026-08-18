@@ -710,42 +710,42 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_hand_action_compute_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_hand_action_compute_mapper"</span>
 
-<span class="n">scipy_rotation</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;scipy.spatial.transform&quot;</span><span class="p">,</span> <span class="s2">&quot;scipy&quot;</span><span class="p">)</span>
+<span class="n">scipy_rotation</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"scipy.spatial.transform"</span><span class="p">,</span> <span class="s2">"scipy"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_rotation_matrix_to_euler</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert 3x3 rotation matrix to Euler angles (roll, pitch, yaw).</span>
+<span class="w">    </span><span class="sd">"""Convert 3x3 rotation matrix to Euler angles (roll, pitch, yaw).</span>
 
-<span class="sd">    Uses scipy Rotation with &#39;xyz&#39; extrinsic convention, consistent with</span>
+<span class="sd">    Uses scipy Rotation with 'xyz' extrinsic convention, consistent with</span>
 <span class="sd">    LIBERO / Open X-Embodiment action space.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
     <span class="n">rot</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">rot</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># (3,) [roll, pitch, yaw]</span>
+    <span class="k">return</span> <span class="n">rot</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># (3,) [roll, pitch, yaw]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_euler_to_rotation_matrix</span><span class="p">(</span><span class="n">euler</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert Euler angles (roll, pitch, yaw) to 3x3 rotation matrix.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Convert Euler angles (roll, pitch, yaw) to 3x3 rotation matrix."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
-    <span class="k">return</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">euler</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">euler</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_delta_rotation_euler</span><span class="p">(</span><span class="n">euler_prev</span><span class="p">,</span> <span class="n">euler_next</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute relative rotation as Euler angles: R_delta = R_next @ R_prev^T.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute relative rotation as Euler angles: R_delta = R_next @ R_prev^T."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
-    <span class="n">R_prev</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">euler_prev</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">R_next</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">euler_next</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">R_prev</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">euler_prev</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">R_next</span> <span class="o">=</span> <span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">euler_next</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">R_delta</span> <span class="o">=</span> <span class="n">R_next</span> <span class="o">*</span> <span class="n">R_prev</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">R_delta</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">R_delta</span><span class="o">.</span><span class="n">as_euler</span><span class="p">(</span><span class="s2">"xyz"</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_estimate_gripper_from_hand_pose</span><span class="p">(</span><span class="n">hand_pose</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate gripper state from MANO hand_pose parameters.</span>
+<span class="w">    </span><span class="sd">"""Estimate gripper state from MANO hand_pose parameters.</span>
 
 <span class="sd">    Uses the average rotation angle of all 15 finger joints to estimate</span>
 <span class="sd">    whether the hand is open or closed.</span>
@@ -756,7 +756,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        float: gripper state in [-1, 1]. 1 = open, -1 = closed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">hand_pose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">hand_pose</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">1.0</span>  <span class="c1"># default: open</span>
 
@@ -801,7 +801,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoHandActionComputeMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoHandActionComputeMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute 7-DoF actions and 8-dim states from hand reconstruction</span>
+<span class="w">    </span><span class="sd">"""Compute 7-DoF actions and 8-dim states from hand reconstruction</span>
 <span class="sd">    and camera pose results.</span>
 
 <span class="sd">    Reads hand MANO parameters (from VideoHandReconstructionHaworMapper)</span>
@@ -809,7 +809,7 @@
 <span class="sd">    then produces per-frame state [x,y,z,roll,pitch,yaw,pad,gripper]</span>
 <span class="sd">    and per-frame action [dx,dy,dz,droll,dpitch,dyaw,gripper] compatible</span>
 <span class="sd">    with LIBERO / StarVLA LeRobot format.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="VideoHandActionComputeMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoHandActionComputeMapper.__init__">[文档]</a>
@@ -818,11 +818,11 @@
         <span class="n">hand_reconstruction_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">hand_reconstruction_hawor_tags</span><span class="p">,</span>
         <span class="n">camera_pose_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_camera_pose_tags</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">hand_action_tags</span><span class="p">,</span>
-        <span class="n">hand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">hand_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"both"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hand_reconstruction_field: Meta field storing HaWoR hand</span>
@@ -831,8 +831,8 @@
 <span class="sd">            (cam_c2w) results.</span>
 <span class="sd">        :param tag_field_name: Output field name in Fields.meta.</span>
 <span class="sd">        :param hand_type: Which hand to compute actions for.</span>
-<span class="sd">            &#39;right&#39;, &#39;left&#39;, or &#39;both&#39;. Default is &#39;both&#39;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            'right', 'left', or 'both'. Default is 'both'.</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hand_reconstruction_field</span> <span class="o">=</span> <span class="n">hand_reconstruction_field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera_pose_field</span> <span class="o">=</span> <span class="n">camera_pose_field</span>
@@ -841,20 +841,20 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_hand_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hand_recon</span><span class="p">,</span> <span class="n">hand_type</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract frame-indexed hand data for the specified hand type.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Extract frame-indexed hand data for the specified hand type."""</span>
         <span class="c1"># Support both new structured format and legacy flat format</span>
         <span class="n">hand</span> <span class="o">=</span> <span class="n">hand_recon</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">hand_type</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hand_recon</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">hand</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
-        <span class="n">frame_ids</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;frame_ids&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">transl_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transl&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">orient_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;global_orient&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">hand_pose_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hand_pose&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">frame_ids</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"frame_ids"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">transl_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"transl"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">orient_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"global_orient"</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">hand_pose_list</span> <span class="o">=</span> <span class="n">hand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"hand_pose"</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="k">return</span> <span class="n">frame_ids</span><span class="p">,</span> <span class="n">transl_list</span><span class="p">,</span> <span class="n">orient_list</span><span class="p">,</span> <span class="n">hand_pose_list</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_state_for_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transl</span><span class="p">,</span> <span class="n">global_orient</span><span class="p">,</span> <span class="n">hand_pose</span><span class="p">,</span> <span class="n">cam_c2w</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute 8-dim state for a single frame.</span>
+<span class="w">        </span><span class="sd">"""Compute 8-dim state for a single frame.</span>
 
 <span class="sd">        Transforms hand pose from camera space to world space.</span>
 
@@ -866,7 +866,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: (8,) [x, y, z, roll, pitch, yaw, pad, gripper]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">Rotation</span>
 
         <span class="n">transl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">transl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -905,17 +905,17 @@
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute 7-dim delta actions from consecutive states.</span>
+<span class="w">        </span><span class="sd">"""Compute 7-dim delta actions from consecutive states.</span>
 
 <span class="sd">        action[t] = state[t+1] - state[t] for position,</span>
 <span class="sd">                    delta_rotation for orientation,</span>
 <span class="sd">                    gripper from state[t].</span>
 
-<span class="sd">        The last frame&#39;s action is set to zeros with current gripper.</span>
+<span class="sd">        The last frame's action is set to zeros with current gripper.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            np.ndarray: (T, 7) actions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
         <span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
@@ -928,7 +928,7 @@
             <span class="n">euler_next</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
             <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">_delta_rotation_euler</span><span class="p">(</span><span class="n">euler_cur</span><span class="p">,</span> <span class="n">euler_next</span><span class="p">)</span>
 
-            <span class="c1"># Gripper: use next frame&#39;s gripper state</span>
+            <span class="c1"># Gripper: use next frame's gripper state</span>
             <span class="n">actions</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>  <span class="c1"># index 7 is gripper in state</span>
 
         <span class="c1"># Last frame: zero action with current gripper</span>
@@ -939,17 +939,17 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_transform_joints_cam_to_world</span><span class="p">(</span><span class="n">joints_cam</span><span class="p">,</span> <span class="n">cam_c2w_all</span><span class="p">,</span> <span class="n">frame_ids</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform MANO 21-joint positions from camera space to world space.</span>
+<span class="w">        </span><span class="sd">"""Transform MANO 21-joint positions from camera space to world space.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            joints_cam: numpy array (T_all, 21, 3) or None — all valid frames&#39;</span>
+<span class="sd">            joints_cam: numpy array (T_all, 21, 3) or None — all valid frames'</span>
 <span class="sd">                joints in camera space (from HaWoR).</span>
 <span class="sd">            cam_c2w_all: numpy array (N, 4, 4) — camera-to-world transforms.</span>
 <span class="sd">            frame_ids: list of frame indices that have valid hand data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            joints_world: list of (21, 3) arrays for valid frames, or None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">joints_cam</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -969,23 +969,23 @@
         <span class="k">return</span> <span class="n">joints_world_list</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_hand_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hand_recon</span><span class="p">,</span> <span class="n">cam_c2w_all</span><span class="p">,</span> <span class="n">hand_type</span><span class="p">,</span> <span class="n">video_idx</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute states and actions for a single hand in a single video.</span>
+<span class="w">        </span><span class="sd">"""Compute states and actions for a single hand in a single video.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict with &#39;states&#39;, &#39;actions&#39;, &#39;valid_frame_ids&#39;, &#39;hand_type&#39;,</span>
-<span class="sd">            &#39;joints_cam&#39;, &#39;joints_world&#39;, or None if insufficient data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            dict with 'states', 'actions', 'valid_frame_ids', 'hand_type',</span>
+<span class="sd">            'joints_cam', 'joints_world', or None if insufficient data.</span>
+<span class="sd">        """</span>
         <span class="n">frame_ids</span><span class="p">,</span> <span class="n">transl_list</span><span class="p">,</span> <span class="n">orient_list</span><span class="p">,</span> <span class="n">hp_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hand_data</span><span class="p">(</span><span class="n">hand_recon</span><span class="p">,</span> <span class="n">hand_type</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: insufficient </span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2"> hand &quot;</span> <span class="sa">f</span><span class="s2">&quot;frames (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">), skipping.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: insufficient </span><span class="si">{</span><span class="n">hand_type</span><span class="si">}</span><span class="s2"> hand "</span> <span class="sa">f</span><span class="s2">"frames (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">), skipping."</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">valid_frame_ids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frame_ids</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">fid</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cam_c2w_all</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame </span><span class="si">{</span><span class="n">fid</span><span class="si">}</span><span class="s2"> exceeds cam_c2w length &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cam_c2w_all</span><span class="p">)</span><span class="si">}</span><span class="s2">, skipping.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Frame </span><span class="si">{</span><span class="n">fid</span><span class="si">}</span><span class="s2"> exceeds cam_c2w length "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cam_c2w_all</span><span class="p">)</span><span class="si">}</span><span class="s2">, skipping."</span><span class="p">)</span>
                 <span class="k">continue</span>
 
             <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_state_for_frame</span><span class="p">(</span><span class="n">transl_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">orient_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hp_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cam_c2w_all</span><span class="p">[</span><span class="n">fid</span><span class="p">])</span>
@@ -1000,7 +1000,7 @@
 
         <span class="c1"># Transform MANO joints from camera space to world space</span>
         <span class="n">hand_data</span> <span class="o">=</span> <span class="n">hand_recon</span><span class="p">[</span><span class="n">hand_type</span><span class="p">]</span>
-        <span class="n">joints_cam</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;joints_cam&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">joints_cam</span> <span class="o">=</span> <span class="n">hand_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"joints_cam"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">joints_world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_joints_cam_to_world</span><span class="p">(</span><span class="n">joints_cam</span><span class="p">,</span> <span class="n">cam_c2w_all</span><span class="p">,</span> <span class="n">frame_ids</span><span class="p">)</span>
 
         <span class="c1"># Also pass through joints_cam for valid frames only</span>
@@ -1014,12 +1014,12 @@
             <span class="p">]</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="n">states</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="n">actions</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">:</span> <span class="n">valid_frame_ids</span><span class="p">,</span>
-            <span class="s2">&quot;hand_type&quot;</span><span class="p">:</span> <span class="n">hand_type</span><span class="p">,</span>
-            <span class="s2">&quot;joints_cam&quot;</span><span class="p">:</span> <span class="n">joints_cam_valid</span><span class="p">,</span>  <span class="c1"># (T, 21, 3) camera space</span>
-            <span class="s2">&quot;joints_world&quot;</span><span class="p">:</span> <span class="n">joints_world</span><span class="p">,</span>  <span class="c1"># (T, 21, 3) world space</span>
+            <span class="s2">"states"</span><span class="p">:</span> <span class="n">states</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s2">"actions"</span><span class="p">:</span> <span class="n">actions</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="s2">"valid_frame_ids"</span><span class="p">:</span> <span class="n">valid_frame_ids</span><span class="p">,</span>
+            <span class="s2">"hand_type"</span><span class="p">:</span> <span class="n">hand_type</span><span class="p">,</span>
+            <span class="s2">"joints_cam"</span><span class="p">:</span> <span class="n">joints_cam_valid</span><span class="p">,</span>  <span class="c1"># (T, 21, 3) camera space</span>
+            <span class="s2">"joints_world"</span><span class="p">:</span> <span class="n">joints_world</span><span class="p">,</span>  <span class="c1"># (T, 21, 3) world space</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="VideoHandActionComputeMapper.process_single">
@@ -1037,16 +1037,16 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">hand_recon_list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">camera_pose_list</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Missing hand reconstruction or camera pose data. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;hand_recon=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;camera_pose=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"Missing hand reconstruction or camera pose data. "</span>
+                <span class="sa">f</span><span class="s2">"hand_recon=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">)</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"camera_pose=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="c1"># Determine which hands to process</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
-            <span class="n">hand_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span> <span class="o">==</span> <span class="s2">"both"</span><span class="p">:</span>
+            <span class="n">hand_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"right"</span><span class="p">,</span> <span class="s2">"left"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">hand_types</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_type</span><span class="p">]</span>
 
@@ -1054,9 +1054,9 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;hand_recon (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">)</span><span class="si">}</span><span class="s2">) and camera_pose &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">)</span><span class="si">}</span><span class="s2">) list length mismatch. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Processing min of both.&quot;</span>
+                <span class="sa">f</span><span class="s2">"hand_recon (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">)</span><span class="si">}</span><span class="s2">) and camera_pose "</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">)</span><span class="si">}</span><span class="s2">) list length mismatch. "</span>
+                <span class="sa">f</span><span class="s2">"Processing min of both."</span>
             <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">video_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hand_recon_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">camera_pose_list</span><span class="p">))):</span>
@@ -1065,15 +1065,15 @@
 
             <span class="n">cam_c2w_raw</span> <span class="o">=</span> <span class="n">camera_pose</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CameraCalibrationKeys</span><span class="o">.</span><span class="n">cam_c2w</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">camera_pose</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">cam_c2w_raw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: missing cam_c2w, skipping.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: missing cam_c2w, skipping."</span><span class="p">)</span>
                 <span class="n">empty</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="n">ht</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;hand_type&quot;</span><span class="p">:</span> <span class="n">ht</span><span class="p">,</span>
-                        <span class="s2">&quot;joints_cam&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;joints_world&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"states"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"actions"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"valid_frame_ids"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"hand_type"</span><span class="p">:</span> <span class="n">ht</span><span class="p">,</span>
+                        <span class="s2">"joints_cam"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"joints_world"</span><span class="p">:</span> <span class="p">[],</span>
                     <span class="p">}</span>
                     <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">hand_types</span>
                 <span class="p">}</span>
@@ -1087,12 +1087,12 @@
                 <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_hand_actions</span><span class="p">(</span><span class="n">hand_recon</span><span class="p">,</span> <span class="n">cam_c2w_all</span><span class="p">,</span> <span class="n">ht</span><span class="p">,</span> <span class="n">video_idx</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">video_result</span><span class="p">[</span><span class="n">ht</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;states&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;actions&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;valid_frame_ids&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;hand_type&quot;</span><span class="p">:</span> <span class="n">ht</span><span class="p">,</span>
-                        <span class="s2">&quot;joints_cam&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                        <span class="s2">&quot;joints_world&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"states"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"actions"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"valid_frame_ids"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"hand_type"</span><span class="p">:</span> <span class="n">ht</span><span class="p">,</span>
+                        <span class="s2">"joints_cam"</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">"joints_world"</span><span class="p">:</span> <span class="p">[],</span>
                     <span class="p">}</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">video_result</span><span class="p">[</span><span class="n">ht</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>

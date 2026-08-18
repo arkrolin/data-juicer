@@ -722,11 +722,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;./thirdparty/humanvbench_models/Light-ASD&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"./thirdparty/humanvbench_models/Light-ASD"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_active_speaker_detect_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_active_speaker_detect_mapper"</span>
 
 
 <div class="viewcode-block" id="VideoActiveSpeakerDetectMapper">
@@ -734,35 +734,35 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoActiveSpeakerDetectMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Detect active speakers in a video by analyzing visual face tracks and</span>
 <span class="sd">    audio signals, including consistency checks for gender and age.</span>
 
 <span class="sd">    Source: This operator is a part of HumanVBench (CVPR 2026).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">_default_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;upsample_num_times&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">_default_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"upsample_num_times"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 
 <div class="viewcode-block" id="VideoActiveSpeakerDetectMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">temp_save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./temp_path&quot;</span><span class="p">,</span>
-        <span class="n">Light_ASD_model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./thirdparty/humanvbench_models/Light-ASD/weight/finetuning_TalkSet.model&quot;</span><span class="p">,</span>
+        <span class="n">temp_save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./temp_path"</span><span class="p">,</span>
+        <span class="n">Light_ASD_model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./thirdparty/humanvbench_models/Light-ASD/weight/finetuning_TalkSet.model"</span><span class="p">,</span>
         <span class="n">active_threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
         <span class="n">active_speaker_flag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">active_speaker_flag</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param blur_type:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;mem_required&quot;</span><span class="p">,</span> <span class="s2">&quot;10GB&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"mem_required"</span><span class="p">,</span> <span class="s2">"10GB"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active_threshold</span> <span class="o">=</span> <span class="n">active_threshold</span>
@@ -771,7 +771,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Initialize ASD model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ASD_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;Light_ASD&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">Light_ASD_model_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ASD_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"Light_ASD"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">Light_ASD_model_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">active_speaker_flag</span> <span class="o">=</span> <span class="n">active_speaker_flag</span></div>
 
@@ -779,33 +779,33 @@
 <div class="viewcode-block" id="VideoActiveSpeakerDetectMapper.active_speaker_detection_revise">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoActiveSpeakerDetectMapper.active_speaker_detection_revise">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">active_speaker_detection_revise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">active_score</span><span class="p">,</span> <span class="n">is_child_descrip</span><span class="p">,</span> <span class="n">speech_audio</span><span class="p">,</span> <span class="n">face_gender</span><span class="p">):</span>
-        <span class="n">speech_child</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">&quot;child&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">speech_male</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">&quot;male&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">speech_female</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">&quot;female&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">speech_child</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">"child"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">speech_male</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">"male"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">speech_female</span> <span class="o">=</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">"female"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">speech_male</span> <span class="o">&gt;</span> <span class="n">speech_female</span><span class="p">:</span>
-            <span class="n">speech_gender</span> <span class="o">=</span> <span class="s2">&quot;Man&quot;</span>
+            <span class="n">speech_gender</span> <span class="o">=</span> <span class="s2">"Man"</span>
             <span class="n">speech_gender_confidence</span> <span class="o">=</span> <span class="n">speech_male</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">speech_gender</span> <span class="o">=</span> <span class="s2">&quot;Woman&quot;</span>
+            <span class="n">speech_gender</span> <span class="o">=</span> <span class="s2">"Woman"</span>
             <span class="n">speech_gender_confidence</span> <span class="o">=</span> <span class="n">speech_female</span>
 
-        <span class="k">if</span> <span class="s2">&quot;No&quot;</span> <span class="ow">in</span> <span class="n">is_child_descrip</span> <span class="ow">or</span> <span class="s2">&quot;no&quot;</span> <span class="ow">in</span> <span class="n">is_child_descrip</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"No"</span> <span class="ow">in</span> <span class="n">is_child_descrip</span> <span class="ow">or</span> <span class="s2">"no"</span> <span class="ow">in</span> <span class="n">is_child_descrip</span><span class="p">:</span>
             <span class="n">is_child_apperance</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">is_child_apperance</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">speech_child</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
             <span class="n">is_child_voice</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">&quot;Age&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">speech_audio</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">:</span>
             <span class="n">is_child_voice</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">is_child_voice</span> <span class="o">=</span> <span class="s2">&quot;Not Sure&quot;</span>
+            <span class="n">is_child_voice</span> <span class="o">=</span> <span class="s2">"Not Sure"</span>
 
         <span class="c1"># Consistency detection: only perform false positive detection on positive samples</span>
         <span class="k">if</span> <span class="n">active_score</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_threshold</span><span class="p">:</span>
             <span class="n">speak_active</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="c1"># age consistency test:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_child_voice</span> <span class="o">==</span> <span class="s2">&quot;Not Sure&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_child_voice</span> <span class="o">==</span> <span class="s2">"Not Sure"</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">is_child_apperance</span> <span class="o">==</span> <span class="n">is_child_voice</span><span class="p">:</span>
                     <span class="c1"># gender consistency test</span>
                     <span class="k">if</span> <span class="n">speech_gender_confidence</span> <span class="o">&gt;</span> <span class="mf">0.85</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">face_gender</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.85</span><span class="p">:</span>
@@ -845,14 +845,14 @@
                 <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_audio_tags</span><span class="p">)</span>
 
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">] Skip sample: Missing mandatory keys </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;video_active_speaker_detect_mapper must be operated after video_tagging_from_audio_mapper. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;video_active_speaker_detect_mapper must be operated after video_human_tracks_extraction_mapper. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Please ensure prior Mappers are executed correctly.&quot;</span>
+                <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">] Skip sample: Missing mandatory keys </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"video_active_speaker_detect_mapper must be operated after video_tagging_from_audio_mapper. "</span>
+                <span class="sa">f</span><span class="s2">"video_active_speaker_detect_mapper must be operated after video_human_tracks_extraction_mapper. "</span>
+                <span class="sa">f</span><span class="s2">"Please ensure prior Mappers are executed correctly."</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="c1"># Optional dependencies for &#39;revise&#39; function</span>
+        <span class="c1"># Optional dependencies for 'revise' function</span>
         <span class="n">has_audio_attr</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">audio_speech_attribute</span> <span class="ow">in</span> <span class="n">meta</span>
         <span class="n">has_face_attr</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_facetrack_attribute_demographic</span> <span class="ow">in</span> <span class="n">meta</span>
         <span class="n">has_child_attr</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_track_is_child</span> <span class="ow">in</span> <span class="n">meta</span>
@@ -860,8 +860,8 @@
         <span class="n">revise_available</span> <span class="o">=</span> <span class="n">has_audio_attr</span> <span class="ow">and</span> <span class="n">has_face_attr</span> <span class="ow">and</span> <span class="n">has_child_attr</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">revise_available</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">] Some metadata missing. Running in &#39;Basic Mode&#39; without consistency detection. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;To enable full consistency detection, ensure these OPs are executed: video_audio_detect_age_gender_mapper, video_humantrack_face_demographic_mapper and video_captioning_from_human_tracks_mapper.&quot;</span>
+                <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">] Some metadata missing. Running in 'Basic Mode' without consistency detection. "</span>
+                <span class="sa">f</span><span class="s2">"To enable full consistency detection, ensure these OPs are executed: video_audio_detect_age_gender_mapper, video_humantrack_face_demographic_mapper and video_captioning_from_human_tracks_mapper."</span>
             <span class="p">)</span>
 
         <span class="n">loaded_video_keys</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span>
@@ -874,10 +874,10 @@
         <span class="n">Total_result</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_save_path</span><span class="p">)</span>
-        <span class="n">pyaviPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;pyavi&quot;</span><span class="p">)</span>
-        <span class="n">pyframesPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;pyframes&quot;</span><span class="p">)</span>
-        <span class="n">pyworkPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;pywork&quot;</span><span class="p">)</span>
-        <span class="n">pycropPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;pycrop&quot;</span><span class="p">)</span>
+        <span class="n">pyaviPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">"pyavi"</span><span class="p">)</span>
+        <span class="n">pyframesPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">"pyframes"</span><span class="p">)</span>
+        <span class="n">pyworkPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">"pywork"</span><span class="p">)</span>
+        <span class="n">pycropPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">"pycrop"</span><span class="p">)</span>
 
         <span class="n">audio_tag</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_audio_tags</span><span class="p">]</span>
         <span class="n">asd_detection_model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ASD_model_key</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
@@ -890,13 +890,13 @@
 
             <span class="c1"># Extract audio</span>
             <span class="n">audio_is_empty</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">audioFilePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">&quot;audio.wav&quot;</span><span class="p">)</span>
-            <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;ffmpeg -y -i &#39;</span><span class="si">%s</span><span class="s2">&#39; -qscale:a 0 -ac 1 -vn -threads </span><span class="si">%d</span><span class="s2"> -ar 16000 </span><span class="si">%s</span><span class="s2"> -loglevel panic&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">audioFilePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">"audio.wav"</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s2">"ffmpeg -y -i '</span><span class="si">%s</span><span class="s2">' -qscale:a 0 -ac 1 -vn -threads </span><span class="si">%d</span><span class="s2"> -ar 16000 </span><span class="si">%s</span><span class="s2"> -loglevel panic"</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="n">video_key</span><span class="p">,</span>
                 <span class="mi">10</span><span class="p">,</span>
                 <span class="n">audioFilePath</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="n">audio_tag</span><span class="p">[</span><span class="n">id_out</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;EMPTY&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">audio_tag</span><span class="p">[</span><span class="n">id_out</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"EMPTY"</span><span class="p">:</span>
                 <span class="n">audio_is_empty</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -904,25 +904,25 @@
             <span class="n">video_array</span> <span class="o">=</span> <span class="n">get_video_array_cv2</span><span class="p">(</span><span class="n">video_key</span><span class="p">)</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">load_pkl</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
             <span class="c1"># get allTracks</span>
             <span class="n">allTracks</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">load_pkl</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;bbox_path&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">human_track_data_path</span><span class="p">][</span><span class="n">id_out</span><span class="p">]</span>
+                <span class="n">load_pkl</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"bbox_path"</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">human_track_data_path</span><span class="p">][</span><span class="n">id_out</span><span class="p">]</span>
             <span class="p">]</span>
 
             <span class="c1"># Face clips cropping</span>
             <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">allTracks</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">allTracks</span><span class="p">)):</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">crop_video_with_facetrack</span><span class="p">(</span>
-                    <span class="n">video_array</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pycropPath</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%05d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ii</span><span class="p">),</span> <span class="n">audioFilePath</span><span class="p">,</span> <span class="n">audio_is_empty</span>
+                    <span class="n">video_array</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pycropPath</span><span class="p">,</span> <span class="s2">"</span><span class="si">%05d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">ii</span><span class="p">),</span> <span class="n">audioFilePath</span><span class="p">,</span> <span class="n">audio_is_empty</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;something wrong with crop_video_with_facetrack.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"something wrong with crop_video_with_facetrack."</span><span class="p">)</span>
 
             <span class="c1"># Active Speaker Detection</span>
-            <span class="k">if</span> <span class="n">audio_tag</span><span class="p">[</span><span class="n">id_out</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Speech&quot;</span><span class="p">:</span>
-                <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/*.avi&quot;</span> <span class="o">%</span> <span class="n">pycropPath</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">audio_tag</span><span class="p">[</span><span class="n">id_out</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Speech"</span><span class="p">:</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">/*.avi"</span> <span class="o">%</span> <span class="n">pycropPath</span><span class="p">)</span>
                 <span class="n">files</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">scores</span> <span class="o">=</span> <span class="n">evaluate_network</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">asd_detection_model</span><span class="p">,</span> <span class="n">pycropPath</span><span class="p">)</span>
@@ -933,7 +933,7 @@
                 <span class="n">scores</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">10000</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">allTracks</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)):</span>
-                <span class="n">allTracks</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">&quot;active_scores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+                <span class="n">allTracks</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="s2">"active_scores"</span><span class="p">]</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 
             <span class="n">update_track</span> <span class="o">=</span> <span class="n">allTracks</span>
             <span class="c1"># for validation</span>
@@ -946,13 +946,13 @@
 
             <span class="n">speak_flag_for_tracks_in_a_video</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">track_idx</span><span class="p">,</span> <span class="n">track_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">update_track</span><span class="p">):</span>
-                <span class="n">active_count</span> <span class="o">=</span> <span class="n">longest_continuous_actives</span><span class="p">(</span><span class="n">track_i</span><span class="p">[</span><span class="s2">&quot;active_scores&quot;</span><span class="p">])</span>
+                <span class="n">active_count</span> <span class="o">=</span> <span class="n">longest_continuous_actives</span><span class="p">(</span><span class="n">track_i</span><span class="p">[</span><span class="s2">"active_scores"</span><span class="p">])</span>
 
                 <span class="k">if</span> <span class="n">revise_available</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">audio_attri</span> <span class="o">=</span> <span class="n">audio_speech_attribute</span><span class="p">[</span><span class="n">id_out</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                         <span class="n">is_child_descrip</span> <span class="o">=</span> <span class="n">child_flag</span><span class="p">[</span><span class="n">id_out</span><span class="p">][</span><span class="n">track_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                        <span class="n">face_gender</span> <span class="o">=</span> <span class="n">face_demographic</span><span class="p">[</span><span class="n">id_out</span><span class="p">][</span><span class="n">track_idx</span><span class="p">][</span><span class="s2">&quot;gender&quot;</span><span class="p">]</span>
+                        <span class="n">face_gender</span> <span class="o">=</span> <span class="n">face_demographic</span><span class="p">[</span><span class="n">id_out</span><span class="p">][</span><span class="n">track_idx</span><span class="p">][</span><span class="s2">"gender"</span><span class="p">]</span>
                         <span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_speaker_detection_revise</span><span class="p">(</span>
                             <span class="n">active_count</span><span class="p">,</span> <span class="n">is_child_descrip</span><span class="p">,</span> <span class="n">audio_attri</span><span class="p">,</span> <span class="n">face_gender</span>
                         <span class="p">)</span>

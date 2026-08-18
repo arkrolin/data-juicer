@@ -713,25 +713,25 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-python&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-python"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_camera_calibration_droidcalib_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_camera_calibration_droidcalib_mapper"</span>
 
 
 <div class="viewcode-block" id="VideoCameraCalibrationDroidCalibMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoCameraCalibrationDroidCalibMapper">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoCameraCalibrationDroidCalibMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract camera intrinsics from videos using DroidCalib.</span>
 
 <span class="sd">    **Notice**: This operator will download the DroidCalib component from</span>
 <span class="sd">    GitHub at runtime. This component follows the AGPL-3.0 license, please</span>
 <span class="sd">    be aware for commercial use.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoCameraCalibrationDroidCalibMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoCameraCalibrationDroidCalibMapper.__init__">[docs]</a>
@@ -760,7 +760,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param weights_path: Path to the model weights.</span>
@@ -781,20 +781,20 @@
 <span class="sd">        :param backend_nms: Backend NMS.</span>
 <span class="sd">        :param upsample: Whether to upsample.</span>
 <span class="sd">        :param disable_vis: Whether to disable visualization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_deps_ready</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">&quot;DroidCalib&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="s2">&quot;droid_slam&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">"DroidCalib"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="s2">"droid_slam"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_droidcalib_ready</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span> <span class="o">=</span> <span class="n">weights_path</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="s2">&quot;droidcalib.pth&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="s2">"droidcalib.pth"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">image_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stride</span> <span class="o">=</span> <span class="n">stride</span>
@@ -819,7 +819,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">upsample</span> <span class="o">=</span> <span class="n">upsample</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">disable_vis</span> <span class="o">=</span> <span class="n">disable_vis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">stereo</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">camera_model</span> <span class="o">=</span> <span class="s2">&quot;pinhole&quot;</span>  <span class="c1"># Default to pinhole</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">camera_model</span> <span class="o">=</span> <span class="s2">"pinhole"</span>  <span class="c1"># Default to pinhole</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">droid_args</span><span class="o">.</span><span class="n">opt_intr</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="o">=</span> <span class="n">tag_field_name</span>
 
@@ -827,29 +827,29 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_droidcalib_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure DroidCalib is importable in the *current process*.</span>
+<span class="w">        </span><span class="sd">"""Ensure DroidCalib is importable in the *current process*.</span>
 
 <span class="sd">        This matters because `Dataset.map(num_proc&gt;1)` may execute in child</span>
 <span class="sd">        processes where `sys.path` changes from `__init__` are not present.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Clone DroidCalib...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Clone DroidCalib..."</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="s2">&quot;git&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;clone&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;--recursive&quot;</span><span class="p">,</span>
-                        <span class="c1"># &quot;https://github.com/boschresearch/DroidCalib.git&quot;,</span>
-                        <span class="s2">&quot;https://github.com/1van2ha0/DroidCalib.git&quot;</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="s2">"git"</span><span class="p">,</span>
+                        <span class="s2">"clone"</span><span class="p">,</span>
+                        <span class="s2">"--recursive"</span><span class="p">,</span>
+                        <span class="c1"># "https://github.com/boschresearch/DroidCalib.git",</span>
+                        <span class="s2">"https://github.com/1van2ha0/DroidCalib.git"</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
                     <span class="p">],</span>
                     <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Failed to clone DroidCalib repository. Please ensure you have git installed and an internet connection, or manually clone the repository to the path &quot;</span>
+                    <span class="s2">"Failed to clone DroidCalib repository. Please ensure you have git installed and an internet connection, or manually clone the repository to the path "</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deps_ready</span><span class="p">:</span>
@@ -861,15 +861,15 @@
             <span class="c1"># Please refer to https://github.com/rusty1s/pytorch_scatter to locate the</span>
             <span class="c1"># installation link that is compatible with your PyTorch and CUDA versions.</span>
             <span class="c1"># For example:</span>
-            <span class="c1"># torch_version = &quot;2.6.0&quot;</span>
-            <span class="c1"># cuda_version = &quot;cu124&quot;</span>
+            <span class="c1"># torch_version = "2.6.0"</span>
+            <span class="c1"># cuda_version = "cu124"</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="s2">&quot;pip&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;install&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;torch-scatter&quot;</span><span class="p">,</span>
-                    <span class="c1"># &quot;-f&quot;,</span>
-                    <span class="c1"># f&quot;https://data.pyg.org/whl/torch-{torch_version}+{cuda_version}.html&quot;,</span>
+                    <span class="s2">"pip"</span><span class="p">,</span>
+                    <span class="s2">"install"</span><span class="p">,</span>
+                    <span class="s2">"torch-scatter"</span><span class="p">,</span>
+                    <span class="c1"># "-f",</span>
+                    <span class="c1"># f"https://data.pyg.org/whl/torch-{torch_version}+{cuda_version}.html",</span>
                 <span class="p">],</span>
                 <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
@@ -877,8 +877,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load_droid_module</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;uninstall&quot;</span><span class="p">,</span> <span class="s2">&quot;droid_backends&quot;</span><span class="p">,</span> <span class="s2">&quot;-y&quot;</span><span class="p">])</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.py&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"uninstall"</span><span class="p">,</span> <span class="s2">"droid_backends"</span><span class="p">,</span> <span class="s2">"-y"</span><span class="p">])</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">"python"</span><span class="p">,</span> <span class="s2">"setup.py"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_calib_home</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_deps_ready</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -887,19 +887,19 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span><span class="p">)</span>
 
-        <span class="n">droid_module_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span><span class="si">}</span><span class="s2">/droid.py&quot;</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s2">&quot;droid&quot;</span><span class="p">,</span> <span class="n">droid_module_path</span><span class="p">)</span>
+        <span class="n">droid_module_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_path</span><span class="si">}</span><span class="s2">/droid.py"</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s2">"droid"</span><span class="p">,</span> <span class="n">droid_module_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load spec from </span><span class="si">{</span><span class="n">droid_module_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not load spec from </span><span class="si">{</span><span class="n">droid_module_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">droid_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
         <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">droid_module</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">droid_module</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_image_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Generator that yields (t, image, intrinsics, size_factor)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
             <span class="k">return</span>
@@ -935,7 +935,7 @@
             <span class="c1"># h1 = int(h0 * np.sqrt((ht * wd) / (h0 * w0)))</span>
             <span class="c1"># w1 = int(w0 * np.sqrt((ht * wd) / (h0 * w0)))</span>
             <span class="c1"># Actually demo.py logic seems to try to maintain aspect ratio but target specific area?</span>
-            <span class="c1"># Let&#39;s stick to demo.py logic</span>
+            <span class="c1"># Let's stick to demo.py logic</span>
             <span class="n">ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">ht</span> <span class="o">*</span> <span class="n">wd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">h0</span> <span class="o">*</span> <span class="n">w0</span><span class="p">))</span>
             <span class="n">h1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h0</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span>
             <span class="n">w1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">w0</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span>
@@ -969,7 +969,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">video_path</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="c1"># Let&#39;s create a generator</span>
+        <span class="c1"># Let's create a generator</span>
         <span class="n">stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_stream</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
 
         <span class="n">droid</span> <span class="o">=</span> <span class="kc">None</span>
@@ -991,7 +991,7 @@
             <span class="c1"># We need to pass the stream again for terminate?</span>
             <span class="c1"># demo.py: droid.terminate(image_stream(...))</span>
             <span class="c1"># It seems terminate does a final BA pass using the stream?</span>
-            <span class="c1"># Let&#39;s recreate stream</span>
+            <span class="c1"># Let's recreate stream</span>
             <span class="n">stream_second_pass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_stream</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
             <span class="n">traj_est</span><span class="p">,</span> <span class="n">intr_est</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">terminate</span><span class="p">(</span><span class="n">stream_second_pass</span><span class="p">)</span>
 

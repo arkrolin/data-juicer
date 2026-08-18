@@ -766,7 +766,7 @@
 <ul class="simple">
 <li><p>Simple scenarios, single path for local/HF file</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/your/dataset&#39;</span><span class="w">  </span><span class="c1"># path to your dataset directory or file</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'/path/to/your/dataset'</span><span class="w">  </span><span class="c1"># path to your dataset directory or file</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -774,8 +774,8 @@
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">configs</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;local&#39;</span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;path/to/your/dataset&#39;</span><span class="w"> </span><span class="c1"># path to your dataset directory or file</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">'local'</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">'path/to/your/dataset'</span><span class="w"> </span><span class="c1"># path to your dataset directory or file</span>
 </pre></div>
 </div>
 <p>Refer to <a class="reference internal" href="../DatasetCfg.html"><span class="std std-doc">Dataset Configuration Guide</span></a> for more details.</p>
@@ -799,11 +799,11 @@ The default download cache directory is <code class="docutils literal notranslat
 <li><p><strong>Note:</strong> When using operators with third-party models, it’s necessary to declare the corresponding <code class="docutils literal notranslate"><span class="pre">mem_required</span></code> in the configuration file (you can refer to the settings in the <code class="docutils literal notranslate"><span class="pre">config_all.yaml</span></code> file). During runtime, Data-Juicer will control the number of processes based on memory availability and the memory requirements of the operator models to achieve better data processing efficiency. When running with CUDA environments, if the mem_required for an operator is not declared correctly, it could potentially lead to a CUDA Out of Memory issue.</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># cache home</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">"/path/to/another/directory"</span>
 <span class="c1"># cache models</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/models&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/models"</span>
 <span class="c1"># cache assets</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/assets&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/assets"</span>
 </pre></div>
 </div>
 <ul class="simple">

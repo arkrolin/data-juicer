@@ -714,10 +714,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_camera_pose_megasam_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_camera_pose_megasam_mapper"</span>
 
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-python&quot;</span><span class="p">)</span>
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-python"</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="to_standard_list">
@@ -739,9 +739,9 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoCameraPoseMegaSaMMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract camera poses by leveraging MegaSaM and MoGe-2.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Extract camera poses by leveraging MegaSaM and MoGe-2."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoCameraPoseMegaSaMMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoCameraPoseMegaSaMMapper.__init__">[docs]</a>
@@ -749,7 +749,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_camera_pose_tags</span><span class="p">,</span>
         <span class="n">frame_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_frames</span><span class="p">,</span>
-        <span class="n">camera_calibration_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;camera_calibration&quot;</span><span class="p">,</span>
+        <span class="n">camera_calibration_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"camera_calibration"</span><span class="p">,</span>
         <span class="n">max_frames</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
         <span class="n">droid_buffer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
         <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -757,9 +757,9 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
-<span class="sd">        :param tag_field_name: The field name to store the tags. It&#39;s &quot;video_camera_pose_tags&quot; in default.</span>
+<span class="sd">        :param tag_field_name: The field name to store the tags. It's "video_camera_pose_tags" in default.</span>
 <span class="sd">        :param frame_field: The field name where the video frames are stored.</span>
 <span class="sd">        :param camera_calibration_field: The field name where the camera calibration info is stored.</span>
 <span class="sd">        :param max_frames: Maximum number of frames to save.</span>
@@ -775,7 +775,7 @@
 <span class="sd">        :param use_prepare_env: Whether to prepare the environment.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">droid_buffer</span> <span class="o">=</span> <span class="n">droid_buffer</span>
@@ -783,9 +783,9 @@
         <span class="k">if</span> <span class="n">save_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">megasam_repo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">&quot;mega-sam&quot;</span><span class="p">)</span>
+        <span class="n">megasam_repo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">"mega-sam"</span><span class="p">)</span>
         <span class="c1"># droid_slam conflict with the VideoCalibrationMapper</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;droid_slam&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"droid_slam"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_env</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_home</span><span class="p">,</span> <span class="n">use_prepare_env</span><span class="p">)</span>
 
@@ -803,10 +803,10 @@
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">lietorch</span><span class="w"> </span><span class="kn">import</span> <span class="n">SE3</span>
 
-        <span class="n">droid_module_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_home</span><span class="si">}</span><span class="s2">/droid.py&quot;</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s2">&quot;droid&quot;</span><span class="p">,</span> <span class="n">droid_module_path</span><span class="p">)</span>
+        <span class="n">droid_module_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">droid_slam_home</span><span class="si">}</span><span class="s2">/droid.py"</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s2">"droid"</span><span class="p">,</span> <span class="n">droid_module_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load spec from </span><span class="si">{</span><span class="n">droid_module_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not load spec from </span><span class="si">{</span><span class="n">droid_module_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">droid</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
         <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">droid</span><span class="p">)</span>
 
@@ -817,8 +817,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">megasam_repo_path</span><span class="p">,</span> <span class="n">droid_slam_home</span><span class="p">,</span> <span class="n">use_prepare_env</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="s2">&quot;DroidCalib/droid_slam&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Removing DroidCalib/droid_slam from sys.path, it maybe conflicting with mega-sam.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"DroidCalib/droid_slam"</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Removing DroidCalib/droid_slam from sys.path, it maybe conflicting with mega-sam."</span><span class="p">)</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="k">break</span>
 
@@ -827,58 +827,58 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">):</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="s2">&quot;--recursive&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/mega-sam/mega-sam.git&quot;</span><span class="p">,</span> <span class="n">megasam_repo_path</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"clone"</span><span class="p">,</span> <span class="s2">"--recursive"</span><span class="p">,</span> <span class="s2">"https://github.com/mega-sam/mega-sam.git"</span><span class="p">,</span> <span class="n">megasam_repo_path</span><span class="p">],</span>
                 <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;altcorr_kernel.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"altcorr_kernel.cu"</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.type()&quot;</span><span class="p">,</span> <span class="s2">&quot;.scalar_type()&quot;</span><span class="p">)</span>
+                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".type()"</span><span class="p">,</span> <span class="s2">".scalar_type()"</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;altcorr_kernel.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"altcorr_kernel.cu"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">temp_file_content</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;correlation_kernels.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"correlation_kernels.cu"</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.type()&quot;</span><span class="p">,</span> <span class="s2">&quot;.scalar_type()&quot;</span><span class="p">)</span>
+                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".type()"</span><span class="p">,</span> <span class="s2">".scalar_type()"</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;correlation_kernels.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"correlation_kernels.cu"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">temp_file_content</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;droid_kernels.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"droid_kernels.cu"</span><span class="p">),</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.type()&quot;</span><span class="p">,</span> <span class="s2">&quot;.scalar_type()&quot;</span><span class="p">)</span>
+                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".type()"</span><span class="p">,</span> <span class="s2">".scalar_type()"</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;droid_kernels.cu&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"droid_kernels.cu"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">temp_file_content</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;thirdparty&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch_gpu.cu&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;r&quot;</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"thirdparty"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"lietorch_gpu.cu"</span><span class="p">),</span>
+                <span class="s2">"r"</span><span class="p">,</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.type()&quot;</span><span class="p">,</span> <span class="s2">&quot;.scalar_type()&quot;</span><span class="p">)</span>
+                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".type()"</span><span class="p">,</span> <span class="s2">".scalar_type()"</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;thirdparty&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch_gpu.cu&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"thirdparty"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"lietorch_gpu.cu"</span><span class="p">),</span>
+                <span class="s2">"w"</span><span class="p">,</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">temp_file_content</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;thirdparty&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch_cpu.cpp&quot;</span>
+                    <span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"thirdparty"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"lietorch_cpu.cpp"</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;r&quot;</span><span class="p">,</span>
+                <span class="s2">"r"</span><span class="p">,</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.type()&quot;</span><span class="p">,</span> <span class="s2">&quot;.scalar_type()&quot;</span><span class="p">)</span>
+                <span class="n">temp_file_content</span> <span class="o">=</span> <span class="n">temp_file_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".type()"</span><span class="p">,</span> <span class="s2">".scalar_type()"</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">,</span> <span class="s2">&quot;thirdparty&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;lietorch_cpu.cpp&quot;</span>
+                    <span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">,</span> <span class="s2">"thirdparty"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"lietorch"</span><span class="p">,</span> <span class="s2">"src"</span><span class="p">,</span> <span class="s2">"lietorch_cpu.cpp"</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                <span class="s2">"w"</span><span class="p">,</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">temp_file_content</span><span class="p">)</span>
 
@@ -886,35 +886,35 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">torch_scatter</span>  <span class="c1"># noqa F401</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot; &quot;Please refer to https://github.com/rusty1s/pytorch_scatter to locate the</span>
-<span class="sd">                installation link that is compatible with your PyTorch and CUDA versions.&quot;&quot;&quot;</span>
-                <span class="c1"># torch_version = &quot;2.6.0&quot;</span>
-                <span class="c1"># cuda_version = &quot;cu124&quot;</span>
+<span class="w">                </span><span class="sd">""" "Please refer to https://github.com/rusty1s/pytorch_scatter to locate the</span>
+<span class="sd">                installation link that is compatible with your PyTorch and CUDA versions."""</span>
+                <span class="c1"># torch_version = "2.6.0"</span>
+                <span class="c1"># cuda_version = "cu124"</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="s2">&quot;pip&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;install&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;torch-scatter&quot;</span><span class="p">,</span>
-                        <span class="c1"># &quot;-f&quot;,</span>
-                        <span class="c1"># f&quot;https://data.pyg.org/whl/torch-{torch_version}+{cuda_version}.html&quot;,</span>
+                        <span class="s2">"pip"</span><span class="p">,</span>
+                        <span class="s2">"install"</span><span class="p">,</span>
+                        <span class="s2">"torch-scatter"</span><span class="p">,</span>
+                        <span class="c1"># "-f",</span>
+                        <span class="c1"># f"https://data.pyg.org/whl/torch-{torch_version}+{cuda_version}.html",</span>
                     <span class="p">],</span>
-                    <span class="n">cwd</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">),</span>
+                    <span class="n">cwd</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">),</span>
                 <span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">droid_backends</span>  <span class="c1"># noqa F401</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">lietorch</span>  <span class="c1"># noqa F401</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;uninstall&quot;</span><span class="p">,</span> <span class="s2">&quot;droid_backends&quot;</span><span class="p">,</span> <span class="s2">&quot;-y&quot;</span><span class="p">])</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.py&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">&quot;base&quot;</span><span class="p">))</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"uninstall"</span><span class="p">,</span> <span class="s2">"droid_backends"</span><span class="p">,</span> <span class="s2">"-y"</span><span class="p">])</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">"python"</span><span class="p">,</span> <span class="s2">"setup.py"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">megasam_repo_path</span><span class="p">,</span> <span class="s2">"base"</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_preprocess_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">depth_list</span><span class="p">,</span> <span class="n">intrinsics_list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre-process all frames once and cache the results.</span>
+<span class="w">        </span><span class="sd">"""Pre-process all frames once and cache the results.</span>
 
 <span class="sd">        Returns a list of (t, image, depth, intrinsics, mask) tuples.</span>
 <span class="sd">        Avoids the cost of repeated image decoding / resize when</span>
 <span class="sd">        image_stream is consumed multiple times (tracking + terminate).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">_logger</span>
 
         <span class="n">cached</span> <span class="o">=</span> <span class="p">[]</span>
@@ -925,7 +925,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">raw_image</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MegaSaM: frame </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> decode failed, skipping.&quot;</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MegaSaM: frame </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> decode failed, skipping."</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">h0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span>
             <span class="n">h1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">384</span> <span class="o">*</span> <span class="mi">512</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">h0</span> <span class="o">*</span> <span class="n">w0</span><span class="p">)))</span>
@@ -941,7 +941,7 @@
                 <span class="n">depth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">raw_depth</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">depth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">raw_depth</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-            <span class="n">depth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">depth</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">w1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;nearest-exact&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">depth</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">w1</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"nearest-exact"</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
             <span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span><span class="p">[:</span> <span class="n">h1</span> <span class="o">-</span> <span class="n">h1</span> <span class="o">%</span> <span class="mi">8</span><span class="p">,</span> <span class="p">:</span> <span class="n">w1</span> <span class="o">-</span> <span class="n">w1</span> <span class="o">%</span> <span class="mi">8</span><span class="p">]</span>
 
             <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
@@ -959,7 +959,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_iter_cached</span><span class="p">(</span><span class="n">cached</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield from a cached preprocessed list (same interface as image_stream).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Yield from a cached preprocessed list (same interface as image_stream)."""</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cached</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">item</span>
 
@@ -969,7 +969,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_initialized</span><span class="p">()</span>
 
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -991,9 +991,9 @@
                 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">_logger</span>
 
                 <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;need &gt;= </span><span class="si">{</span><span class="n">MIN_FRAMES_FOR_SLAM</span><span class="si">}</span><span class="s2"> for SLAM. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Producing empty camera pose.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Video </span><span class="si">{</span><span class="n">video_idx</span><span class="si">}</span><span class="s2">: only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames, "</span>
+                    <span class="sa">f</span><span class="s2">"need &gt;= </span><span class="si">{</span><span class="n">MIN_FRAMES_FOR_SLAM</span><span class="si">}</span><span class="s2"> for SLAM. "</span>
+                    <span class="sa">f</span><span class="s2">"Producing empty camera pose."</span>
                 <span class="p">)</span>
                 <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
                 <span class="k">continue</span>
@@ -1012,9 +1012,9 @@
                 <span class="k">assert</span> <span class="n">intrinsics</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
                 <span class="n">intrinsics</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">intrinsics</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">intrinsics</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">intrinsics</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">intrinsics</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">intrinsics</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">intrinsics</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid intrinsics shape: </span><span class="si">{</span><span class="n">intrinsics</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, expected (N, 3, 3) or (3, 3)&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid intrinsics shape: </span><span class="si">{</span><span class="n">intrinsics</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, expected (N, 3, 3) or (3, 3)"</span><span class="p">)</span>
 
             <span class="n">intrinsics_list</span> <span class="o">=</span> <span class="n">intrinsics</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
@@ -1061,7 +1061,7 @@
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
 
             <span class="n">intrinsics</span> <span class="o">=</span> <span class="n">intrinsics</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">8.0</span>
-            <span class="n">poses_th</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">poses</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="n">poses_th</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">poses</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">)</span>
             <span class="n">cam_c2w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SE3</span><span class="p">(</span><span class="n">poses_th</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">()</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
             <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -1079,12 +1079,12 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">depth_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;megasam_depth_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span><span class="si">}</span><span class="s2">.npy&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"megasam_depth_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span><span class="si">}</span><span class="s2">.npy"</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">depth_path</span><span class="p">,</span> <span class="n">return_depths</span><span class="p">)</span>
                 <span class="n">c2w_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;megasam_c2w_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span><span class="si">}</span><span class="s2">.npy&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"megasam_c2w_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span><span class="si">}</span><span class="s2">.npy"</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">c2w_path</span><span class="p">,</span> <span class="n">return_cam_c2w</span><span class="p">)</span>
                 <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1114,7 +1114,7 @@
 <div class="viewcode-block" id="droid_args.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.video_camera_pose_megasam_mapper.html#data_juicer.ops.mapper.droid_args.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">&quot;mega-sam&quot;</span><span class="p">,</span> <span class="s2">&quot;checkpoints&quot;</span><span class="p">,</span> <span class="s2">&quot;megasam_final.pth&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">"mega-sam"</span><span class="p">,</span> <span class="s2">"checkpoints"</span><span class="p">,</span> <span class="s2">"megasam_final.pth"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disable_vis</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">image_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">buffer</span>

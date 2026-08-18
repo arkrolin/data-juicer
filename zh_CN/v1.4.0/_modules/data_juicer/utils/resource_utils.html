@@ -715,20 +715,20 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.resource_utils.html#data_juicer.utils.resource_utils.query_cuda_info">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">query_cuda_info</span><span class="p">(</span><span class="n">query_key</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">NVSMI_REPORT</span>
-    <span class="c1"># get cuda info using &quot;nvidia-smi&quot; command in MB</span>
+    <span class="c1"># get cuda info using "nvidia-smi" command in MB</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span>
-            <span class="s1">&#39;nvidia-smi&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;--query-gpu=</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;--format=csv,noheader,nounits&#39;</span>
-        <span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="s1">'nvidia-smi'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'--query-gpu=</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="s1">'--format=csv,noheader,nounits'</span>
+        <span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;non-zero exit status 2&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;The specified query_key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">] might not be &#39;</span> \
-                      <span class="sa">f</span><span class="s1">&#39;supported by command nvidia-smi. Please check and &#39;</span> \
-                      <span class="sa">f</span><span class="s1">&#39;retry!&#39;</span>
-        <span class="k">elif</span> <span class="s1">&#39;No such file or directory&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Command nvidia-smi is not found. There might be no &#39;</span> \
-                      <span class="s1">&#39;GPUs on this machine.&#39;</span>
+        <span class="k">if</span> <span class="s1">'non-zero exit status 2'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'The specified query_key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">] might not be '</span> \
+                      <span class="sa">f</span><span class="s1">'supported by command nvidia-smi. Please check and '</span> \
+                      <span class="sa">f</span><span class="s1">'retry!'</span>
+        <span class="k">elif</span> <span class="s1">'No such file or directory'</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">'Command nvidia-smi is not found. There might be no '</span> \
+                      <span class="s1">'GPUs on this machine.'</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">NVSMI_REPORT</span><span class="p">:</span>
@@ -736,7 +736,7 @@
             <span class="n">NVSMI_REPORT</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">cuda_info_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">):</span>
         <span class="n">cuda_info_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">cuda_info_list</span></div>
 
@@ -761,8 +761,8 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">query_mem_info</span><span class="p">(</span><span class="n">query_key</span><span class="p">):</span>
     <span class="n">mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">query_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No such query key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">] for memory info. &#39;</span>
-                       <span class="sa">f</span><span class="s1">&#39;Should be one of </span><span class="si">{</span><span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No such query key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s1">] for memory info. '</span>
+                       <span class="sa">f</span><span class="s1">'Should be one of </span><span class="si">{</span><span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">val</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># in MB</span>
     <span class="k">return</span> <span class="n">val</span></div>

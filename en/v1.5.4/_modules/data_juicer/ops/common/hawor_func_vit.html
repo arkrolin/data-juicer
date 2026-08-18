@@ -701,10 +701,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">F</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch.nn.functional&quot;</span><span class="p">)</span>
-<span class="n">timm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;timm&quot;</span><span class="p">)</span>
-<span class="n">nn</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch.nn&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">F</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch.nn.functional"</span><span class="p">)</span>
+<span class="n">timm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"timm"</span><span class="p">)</span>
+<span class="n">nn</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch.nn"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="vit">
@@ -728,7 +728,7 @@
 <div class="viewcode-block" id="get_abs_pos">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.get_abs_pos">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_abs_pos</span><span class="p">(</span><span class="n">abs_pos</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">ori_h</span><span class="p">,</span> <span class="n">ori_w</span><span class="p">,</span> <span class="n">has_cls_token</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculate absolute positional embeddings. If needed, resize embeddings and remove cls_token</span>
 <span class="sd">        dimension for the original embeddings.</span>
 <span class="sd">    Args:</span>
@@ -738,7 +738,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Absolute positional embeddings after processing with shape (1, H, W, C)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">cls_token</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">B</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">abs_pos</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">if</span> <span class="n">has_cls_token</span><span class="p">:</span>
@@ -750,7 +750,7 @@
             <span class="n">F</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
                 <span class="n">abs_pos</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ori_h</span><span class="p">,</span> <span class="n">ori_w</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
                 <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span>
-                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bicubic&quot;</span><span class="p">,</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s2">"bicubic"</span><span class="p">,</span>
                 <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -769,7 +769,7 @@
 <div class="viewcode-block" id="DropPath">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.DropPath">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DropPath</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks)."""</span>
 
 <div class="viewcode-block" id="DropPath.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.DropPath.__init__">[docs]</a>
@@ -787,7 +787,7 @@
 <div class="viewcode-block" id="DropPath.extra_repr">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.DropPath.extra_repr">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;p=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_prob</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">"p=</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_prob</span><span class="p">)</span></div>
 </div>
 
 
@@ -928,7 +928,7 @@
 <div class="viewcode-block" id="PatchEmbed">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.PatchEmbed">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PatchEmbed</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Image to Patch Embedding&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Image to Patch Embedding"""</span>
 
 <div class="viewcode-block" id="PatchEmbed.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.PatchEmbed.__init__">[docs]</a>
@@ -968,9 +968,9 @@
 <div class="viewcode-block" id="HybridEmbed">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.HybridEmbed">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HybridEmbed</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;CNN Feature Map Embedding</span>
+<span class="w">    </span><span class="sd">"""CNN Feature Map Embedding</span>
 <span class="sd">    Extract feature map from CNN, flatten, project to embedding dim.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="HybridEmbed.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.HybridEmbed.__init__">[docs]</a>
@@ -1034,7 +1034,7 @@
         <span class="n">frozen_stages</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">last_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">patch_padding</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">,</span>
+        <span class="n">patch_padding</span><span class="o">=</span><span class="s2">"pad"</span><span class="p">,</span>
         <span class="n">freeze_attn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">freeze_ffn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1089,7 +1089,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_freeze_stages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Freeze parameters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Freeze parameters."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen_stages</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_embed</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
@@ -1128,11 +1128,11 @@
 <div class="viewcode-block" id="ViT.init_weights">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.ViT.init_weights">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the weights in backbone.</span>
+<span class="w">        </span><span class="sd">"""Initialize the weights in backbone.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            pretrained (str, optional): Path to pre-trained weights.</span>
 <span class="sd">                Defaults to None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_init_weights</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
@@ -1156,7 +1156,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.ViT.no_weight_decay">[docs]</a>
     <span class="nd">@torch</span><span class="o">.</span><span class="n">jit</span><span class="o">.</span><span class="n">ignore</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">no_weight_decay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;pos_embed&quot;</span><span class="p">,</span> <span class="s2">&quot;cls_token&quot;</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"pos_embed"</span><span class="p">,</span> <span class="s2">"cls_token"</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="ViT.forward_features">
@@ -1193,7 +1193,7 @@
 <div class="viewcode-block" id="ViT.train">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.hawor_func_vit.html#data_juicer.ops.common.hawor_func_vit.ViT.train">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the model into training mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert the model into training mode."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeze_stages</span><span class="p">()</span></div>
 </div>

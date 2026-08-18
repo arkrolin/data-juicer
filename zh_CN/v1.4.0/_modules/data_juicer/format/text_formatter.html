@@ -720,29 +720,29 @@
 <div class="viewcode-block" id="extract_txt_from_docx">
 <a class="viewcode-back" href="../../../api/data_juicer.format.text_formatter.html#data_juicer.format.extract_txt_from_docx">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_txt_from_docx</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">tgt_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract text from a docx file and save to target path.</span>
 
 <span class="sd">    :param fn: path to input pdf file</span>
 <span class="sd">    :param tgt_path: path to save text file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">para</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">para</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span> <span class="k">if</span> <span class="n">para</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-    <span class="n">base_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.docx&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tgt_path</span><span class="p">,</span> <span class="n">base_fn</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
+    <span class="n">base_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.docx'</span><span class="p">,</span> <span class="s1">'.txt'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tgt_path</span><span class="p">,</span> <span class="n">base_fn</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="extract_txt_from_pdf">
 <a class="viewcode-back" href="../../../api/data_juicer.format.text_formatter.html#data_juicer.format.extract_txt_from_pdf">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_txt_from_pdf</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">tgt_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract text from a pdf file and save to target path.</span>
 
 <span class="sd">    :param fn: path to input pdf file</span>
 <span class="sd">    :param tgt_path: path to save text file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">with</span> <span class="n">pdfplumber</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdf</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">pdf</span><span class="o">.</span><span class="n">pages</span><span class="p">:</span>
@@ -757,9 +757,9 @@
                 <span class="n">page_text</span> <span class="o">=</span> <span class="n">page_text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">page_num</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">page_text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                 <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">page_text</span><span class="p">)</span>
-        <span class="n">base_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tgt_path</span><span class="p">,</span> <span class="n">base_fn</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
+        <span class="n">base_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.pdf'</span><span class="p">,</span> <span class="s1">'.txt'</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tgt_path</span><span class="p">,</span> <span class="n">base_fn</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span></div>
 
 
 
@@ -767,22 +767,22 @@
 <a class="viewcode-back" href="../../../api/data_juicer.format.text_formatter.html#data_juicer.format.TextFormatter">[文档]</a>
 <span class="nd">@FORMATTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">()</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextFormatter</span><span class="p">(</span><span class="n">LocalFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The class is used to load and format text-type files.</span>
 
-<span class="sd">    e.g. `[&#39;.txt&#39;, &#39;.pdf&#39;, &#39;.cpp&#39;, &#39;.docx&#39;]`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    e.g. `['.txt', '.pdf', '.cpp', '.docx']`</span>
+<span class="sd">    """</span>
 
     <span class="n">SUFFIXES</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;.docx&#39;</span><span class="p">,</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;.md&#39;</span><span class="p">,</span> <span class="s1">&#39;.tex&#39;</span><span class="p">,</span> <span class="s1">&#39;.asm&#39;</span><span class="p">,</span> <span class="s1">&#39;.bat&#39;</span><span class="p">,</span> <span class="s1">&#39;.cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;.c&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.h&#39;</span><span class="p">,</span> <span class="s1">&#39;.cs&#39;</span><span class="p">,</span> <span class="s1">&#39;.cpp&#39;</span><span class="p">,</span> <span class="s1">&#39;.hpp&#39;</span><span class="p">,</span> <span class="s1">&#39;.c++&#39;</span><span class="p">,</span> <span class="s1">&#39;.h++&#39;</span><span class="p">,</span> <span class="s1">&#39;.cc&#39;</span><span class="p">,</span> <span class="s1">&#39;.hh&#39;</span><span class="p">,</span> <span class="s1">&#39;.C&#39;</span><span class="p">,</span> <span class="s1">&#39;.H&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.cmake&#39;</span><span class="p">,</span> <span class="s1">&#39;.css&#39;</span><span class="p">,</span> <span class="s1">&#39;.dockerfile&#39;</span><span class="p">,</span> <span class="s1">&#39;.f90&#39;</span><span class="p">,</span> <span class="s1">&#39;.f&#39;</span><span class="p">,</span> <span class="s1">&#39;.f03&#39;</span><span class="p">,</span> <span class="s1">&#39;.f08&#39;</span><span class="p">,</span> <span class="s1">&#39;.f77&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.f95&#39;</span><span class="p">,</span> <span class="s1">&#39;.for&#39;</span><span class="p">,</span> <span class="s1">&#39;.fpp&#39;</span><span class="p">,</span> <span class="s1">&#39;.go&#39;</span><span class="p">,</span> <span class="s1">&#39;.hs&#39;</span><span class="p">,</span> <span class="s1">&#39;.html&#39;</span><span class="p">,</span> <span class="s1">&#39;.java&#39;</span><span class="p">,</span> <span class="s1">&#39;.js&#39;</span><span class="p">,</span> <span class="s1">&#39;.jl&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.lua&#39;</span><span class="p">,</span> <span class="s1">&#39;.markdown&#39;</span><span class="p">,</span> <span class="s1">&#39;.php&#39;</span><span class="p">,</span> <span class="s1">&#39;.php3&#39;</span><span class="p">,</span> <span class="s1">&#39;.php4&#39;</span><span class="p">,</span> <span class="s1">&#39;.php5&#39;</span><span class="p">,</span> <span class="s1">&#39;.phps&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.phpt&#39;</span><span class="p">,</span> <span class="s1">&#39;.pl&#39;</span><span class="p">,</span> <span class="s1">&#39;.pm&#39;</span><span class="p">,</span> <span class="s1">&#39;.pod&#39;</span><span class="p">,</span> <span class="s1">&#39;.perl&#39;</span><span class="p">,</span> <span class="s1">&#39;.ps1&#39;</span><span class="p">,</span> <span class="s1">&#39;.psd1&#39;</span><span class="p">,</span> <span class="s1">&#39;.psm1&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.py&#39;</span><span class="p">,</span> <span class="s1">&#39;.rb&#39;</span><span class="p">,</span> <span class="s1">&#39;.rs&#39;</span><span class="p">,</span> <span class="s1">&#39;.sql&#39;</span><span class="p">,</span> <span class="s1">&#39;.scala&#39;</span><span class="p">,</span> <span class="s1">&#39;.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;.bash&#39;</span><span class="p">,</span> <span class="s1">&#39;.command&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.zsh&#39;</span><span class="p">,</span> <span class="s1">&#39;.ts&#39;</span><span class="p">,</span> <span class="s1">&#39;.tsx&#39;</span><span class="p">,</span> <span class="s1">&#39;.vb&#39;</span><span class="p">,</span> <span class="s1">&#39;Dockerfile&#39;</span><span class="p">,</span> <span class="s1">&#39;Makefile&#39;</span><span class="p">,</span> <span class="s1">&#39;.xml&#39;</span><span class="p">,</span> <span class="s1">&#39;.rst&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;.m&#39;</span><span class="p">,</span> <span class="s1">&#39;.smali&#39;</span>
+        <span class="s1">'.docx'</span><span class="p">,</span> <span class="s1">'.pdf'</span><span class="p">,</span> <span class="s1">'.txt'</span><span class="p">,</span> <span class="s1">'.md'</span><span class="p">,</span> <span class="s1">'.tex'</span><span class="p">,</span> <span class="s1">'.asm'</span><span class="p">,</span> <span class="s1">'.bat'</span><span class="p">,</span> <span class="s1">'.cmd'</span><span class="p">,</span> <span class="s1">'.c'</span><span class="p">,</span>
+        <span class="s1">'.h'</span><span class="p">,</span> <span class="s1">'.cs'</span><span class="p">,</span> <span class="s1">'.cpp'</span><span class="p">,</span> <span class="s1">'.hpp'</span><span class="p">,</span> <span class="s1">'.c++'</span><span class="p">,</span> <span class="s1">'.h++'</span><span class="p">,</span> <span class="s1">'.cc'</span><span class="p">,</span> <span class="s1">'.hh'</span><span class="p">,</span> <span class="s1">'.C'</span><span class="p">,</span> <span class="s1">'.H'</span><span class="p">,</span>
+        <span class="s1">'.cmake'</span><span class="p">,</span> <span class="s1">'.css'</span><span class="p">,</span> <span class="s1">'.dockerfile'</span><span class="p">,</span> <span class="s1">'.f90'</span><span class="p">,</span> <span class="s1">'.f'</span><span class="p">,</span> <span class="s1">'.f03'</span><span class="p">,</span> <span class="s1">'.f08'</span><span class="p">,</span> <span class="s1">'.f77'</span><span class="p">,</span>
+        <span class="s1">'.f95'</span><span class="p">,</span> <span class="s1">'.for'</span><span class="p">,</span> <span class="s1">'.fpp'</span><span class="p">,</span> <span class="s1">'.go'</span><span class="p">,</span> <span class="s1">'.hs'</span><span class="p">,</span> <span class="s1">'.html'</span><span class="p">,</span> <span class="s1">'.java'</span><span class="p">,</span> <span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.jl'</span><span class="p">,</span>
+        <span class="s1">'.lua'</span><span class="p">,</span> <span class="s1">'.markdown'</span><span class="p">,</span> <span class="s1">'.php'</span><span class="p">,</span> <span class="s1">'.php3'</span><span class="p">,</span> <span class="s1">'.php4'</span><span class="p">,</span> <span class="s1">'.php5'</span><span class="p">,</span> <span class="s1">'.phps'</span><span class="p">,</span>
+        <span class="s1">'.phpt'</span><span class="p">,</span> <span class="s1">'.pl'</span><span class="p">,</span> <span class="s1">'.pm'</span><span class="p">,</span> <span class="s1">'.pod'</span><span class="p">,</span> <span class="s1">'.perl'</span><span class="p">,</span> <span class="s1">'.ps1'</span><span class="p">,</span> <span class="s1">'.psd1'</span><span class="p">,</span> <span class="s1">'.psm1'</span><span class="p">,</span>
+        <span class="s1">'.py'</span><span class="p">,</span> <span class="s1">'.rb'</span><span class="p">,</span> <span class="s1">'.rs'</span><span class="p">,</span> <span class="s1">'.sql'</span><span class="p">,</span> <span class="s1">'.scala'</span><span class="p">,</span> <span class="s1">'.sh'</span><span class="p">,</span> <span class="s1">'.bash'</span><span class="p">,</span> <span class="s1">'.command'</span><span class="p">,</span>
+        <span class="s1">'.zsh'</span><span class="p">,</span> <span class="s1">'.ts'</span><span class="p">,</span> <span class="s1">'.tsx'</span><span class="p">,</span> <span class="s1">'.vb'</span><span class="p">,</span> <span class="s1">'Dockerfile'</span><span class="p">,</span> <span class="s1">'Makefile'</span><span class="p">,</span> <span class="s1">'.xml'</span><span class="p">,</span> <span class="s1">'.rst'</span><span class="p">,</span>
+        <span class="s1">'.m'</span><span class="p">,</span> <span class="s1">'.smali'</span>
     <span class="p">]</span>
 
 <div class="viewcode-block" id="TextFormatter.__init__">
@@ -792,7 +792,7 @@
                  <span class="n">suffixes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">add_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param dataset_path: a dataset file or a dataset directory</span>
@@ -800,11 +800,11 @@
 <span class="sd">        :param add_suffix: Whether to add file suffix to dataset meta</span>
 <span class="sd">            info</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">dataset_path</span><span class="o">=</span><span class="n">dataset_path</span><span class="p">,</span>
             <span class="n">suffixes</span><span class="o">=</span><span class="n">suffixes</span> <span class="k">if</span> <span class="n">suffixes</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUFFIXES</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s1">'text'</span><span class="p">,</span>
             <span class="n">add_suffix</span><span class="o">=</span><span class="n">add_suffix</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
@@ -815,13 +815,13 @@
 <div class="viewcode-block" id="TextFormatter.load_dataset">
 <a class="viewcode-back" href="../../../api/data_juicer.format.text_formatter.html#data_juicer.format.TextFormatter.load_dataset">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">global_cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Load a dataset from local text-type files.</span>
 
 <span class="sd">        :param num_proc: number of processes when loading the dataset</span>
 <span class="sd">        :param global_cfg: the global cfg used in consequent processes,</span>
 <span class="sd">        :return: unified_format_dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># extract text to cache directory</span>
         <span class="n">extracted_dataset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">DATA_JUICER_CACHE_HOME</span><span class="p">,</span>
@@ -830,16 +830,16 @@
         <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">:</span>
 
             <span class="c1"># extract text from docx or pdf files, and save as txt type</span>
-            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;.docx&#39;</span> <span class="ow">or</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">'.docx'</span> <span class="ow">or</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">'.pdf'</span><span class="p">:</span>
                 <span class="n">extracted_filetype_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">extracted_dataset_path</span><span class="p">,</span>
-                                                       <span class="n">file_type</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+                                                       <span class="n">file_type</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">))</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">extracted_filetype_path</span><span class="p">):</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">extracted_filetype_path</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Extracting text from </span><span class="si">{}</span><span class="s1"> files...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">file_type</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'Extracting text from </span><span class="si">{}</span><span class="s1"> files...'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">file_type</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)))</span>
 
                 <span class="n">extract_func</span> <span class="o">=</span> <span class="n">extract_txt_from_docx</span> \
-                    <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">&#39;.docx&#39;</span> <span class="k">else</span> <span class="n">extract_txt_from_pdf</span>
+                    <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s1">'.docx'</span> <span class="k">else</span> <span class="n">extract_txt_from_pdf</span>
                 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">num_proc</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">data_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">file_type</span><span class="p">]:</span>
                     <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">extract_func</span><span class="p">,</span>
@@ -849,25 +849,25 @@
                                      <span class="p">))</span>
                 <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracted text files are stored in directory &#39;</span>
-                            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">extracted_filetype_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Extracted text files are stored in directory '</span>
+                            <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">extracted_filetype_path</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
                 <span class="c1"># look for extracted txt files</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_files_with_suffix</span><span class="p">(</span>
-                    <span class="n">extracted_filetype_path</span><span class="p">,</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)[</span><span class="s1">&#39;.txt&#39;</span><span class="p">]</span>
+                    <span class="n">extracted_filetype_path</span><span class="p">,</span> <span class="s1">'.txt'</span><span class="p">)[</span><span class="s1">'.txt'</span><span class="p">]</span>
 
         <span class="c1"># load text dataset, one text file as one sample</span>
-        <span class="n">datasets</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s1">'text'</span><span class="p">,</span>
                                 <span class="n">data_files</span><span class="o">=</span><span class="p">{</span>
-                                    <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                                    <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'.'</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                                     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span>
                                 <span class="p">},</span>
-                                <span class="n">sample_by</span><span class="o">=</span><span class="s1">&#39;document&#39;</span><span class="p">,</span>
+                                <span class="n">sample_by</span><span class="o">=</span><span class="s1">'document'</span><span class="p">,</span>
                                 <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span>
                                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># whether to add file suffix to dataset meta info</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_suffix</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Add suffix info into dataset...&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'Add suffix info into dataset...'</span><span class="p">)</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">add_suffixes</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">concatenate_datasets</span><span class="p">([</span><span class="n">ds</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>

@@ -808,7 +808,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.sn
 <h2>资源感知分区<a class="headerlink" href="#id3" title="链接到此标题。">#</a></h2>
 <p>系统根据集群资源和数据特征自动优化分区大小。</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">  </span><span class="c1"># 目标分区大小（可配置）</span>
 </pre></div>
 </div>
@@ -837,8 +837,8 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.sn
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.logger_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_logger</span>
 
 <span class="n">setup_logger</span><span class="p">(</span>
-    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;./outputs&quot;</span><span class="p">,</span>
-    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">"./outputs"</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">"log.txt"</span><span class="p">,</span>
     <span class="n">max_log_size_mb</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">backup_count</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>

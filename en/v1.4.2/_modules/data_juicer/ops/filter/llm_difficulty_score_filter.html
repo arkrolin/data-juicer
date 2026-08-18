@@ -707,22 +707,22 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_difficulty_score_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_difficulty_score_filter"</span>
 
 
 <div class="viewcode-block" id="LLMDifficultyScoreFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_difficulty_score_filter.html#data_juicer.ops.filter.llm_difficulty_score_filter.LLMDifficultyScoreFilter">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMDifficultyScoreFilter</span><span class="p">(</span><span class="n">LLMAnalysisFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Filter to keep sample with high difficulty score estimated by LLM.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># avoid leading whitespace</span>
-    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">You are an expert pedagogical evaluator for LLM training data. Analyze each data sample through multiple difficulty lenses and provide calibrated scores with detailed reasoning. Follow these guidelines:</span>
 
 <span class="s2">1. Evaluation Dimensions</span>
@@ -736,15 +736,15 @@
 <span class="s2">2. Output Format</span>
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;linguistic_complexity&quot;: ,</span>
-<span class="s2">    &quot;conceptual_depth&quot;: ,</span>
-<span class="s2">    &quot;prior_knowledge&quot;: ,</span>
-<span class="s2">    &quot;step_complexity&quot;: ,</span>
-<span class="s2">    &quot;ambiguity&quot;:</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "linguistic_complexity": ,</span>
+<span class="s2">    "conceptual_depth": ,</span>
+<span class="s2">    "prior_knowledge": ,</span>
+<span class="s2">    "step_complexity": ,</span>
+<span class="s2">    "ambiguity":</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;multistep_reasoning&quot;, &quot;cultural_context&quot;, ...],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;Technical analysis of challenge sources&quot;</span>
+<span class="s2">  "flags": ["multistep_reasoning", "cultural_context", ...],</span>
+<span class="s2">  "rationale": "Technical analysis of challenge sources"</span>
 <span class="s2">}</span>
 <span class="s2">3. Special Instructions</span>
 <span class="s2">- Differentiate intrinsic vs. extrinsic difficulty factors</span>
@@ -758,29 +758,29 @@
 
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;linguistic_complexity&quot;: 3,</span>
-<span class="s2">    &quot;conceptual_depth&quot;: 5,</span>
-<span class="s2">    &quot;prior_knowledge&quot;: 4,</span>
-<span class="s2">    &quot;step_complexity&quot;: 4,</span>
-<span class="s2">    &quot;ambiguity&quot;: 5</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "linguistic_complexity": 3,</span>
+<span class="s2">    "conceptual_depth": 5,</span>
+<span class="s2">    "prior_knowledge": 4,</span>
+<span class="s2">    "step_complexity": 4,</span>
+<span class="s2">    "ambiguity": 5</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;nonlinear_reasoning&quot;, &quot;semantic_ambiguity&quot;],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;High conceptual difficulty due to multi-layered metaphor interpretation requiring philosophy background. Moderate linguistic complexity offset by implicit cultural references.&quot;</span>
+<span class="s2">  "flags": ["nonlinear_reasoning", "semantic_ambiguity"],</span>
+<span class="s2">  "rationale": "High conceptual difficulty due to multi-layered metaphor interpretation requiring philosophy background. Moderate linguistic complexity offset by implicit cultural references."</span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="s2">"""</span>  <span class="c1"># noqa: E501</span>
     <span class="n">DEFAULT_DIM_REQUIRED_KEYS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;linguistic_complexity&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;conceptual_depth&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;prior_knowledge&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;step_complexity&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ambiguity&quot;</span><span class="p">,</span>
+        <span class="s2">"linguistic_complexity"</span><span class="p">,</span>
+        <span class="s2">"conceptual_depth"</span><span class="p">,</span>
+        <span class="s2">"prior_knowledge"</span><span class="p">,</span>
+        <span class="s2">"step_complexity"</span><span class="p">,</span>
+        <span class="s2">"ambiguity"</span><span class="p">,</span>
     <span class="p">]</span>
 
 <div class="viewcode-block" id="LLMDifficultyScoreFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_difficulty_score_filter.html#data_juicer.ops.filter.llm_difficulty_score_filter.LLMDifficultyScoreFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_score</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

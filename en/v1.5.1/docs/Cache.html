@@ -794,7 +794,7 @@
 <h3>Basic Cache Settings<a class="headerlink" href="#basic-cache-settings" title="Link to this heading">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">use_cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">           </span><span class="c1"># Enable/disable HuggingFace dataset caching</span>
 <span class="nt">ds_cache_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">         </span><span class="c1"># Custom cache directory (overrides HF_DATASETS_CACHE)</span>
-<span class="nt">cache_compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">       </span><span class="c1"># Compression method: &#39;gzip&#39;, &#39;zstd&#39;, &#39;lz4&#39;, or null</span>
+<span class="nt">cache_compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">       </span><span class="c1"># Compression method: 'gzip', 'zstd', 'lz4', or null</span>
 <span class="nt">temp_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">             </span><span class="c1"># Temp directory for intermediate files when cache is disabled</span>
 </pre></div>
 </div>
@@ -970,13 +970,13 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml
 <p>Low-level API for manual compression/decompression:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.compress</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompressManager</span>
 
-<span class="n">manager</span> <span class="o">=</span> <span class="n">CompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">&quot;zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">CompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">"zstd"</span><span class="p">)</span>
 
 <span class="c1"># Compress a file</span>
-<span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="s2">&quot;input.arrow&quot;</span><span class="p">,</span> <span class="s2">&quot;input.arrow.zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="s2">"input.arrow"</span><span class="p">,</span> <span class="s2">"input.arrow.zstd"</span><span class="p">)</span>
 
 <span class="c1"># Decompress a file</span>
-<span class="n">manager</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="s2">&quot;input.arrow.zstd&quot;</span><span class="p">,</span> <span class="s2">&quot;input.arrow&quot;</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="s2">"input.arrow.zstd"</span><span class="p">,</span> <span class="s2">"input.arrow"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -985,9 +985,9 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml
 <p>High-level API for managing HuggingFace dataset cache compression:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.compress</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheCompressManager</span>
 
-<span class="n">manager</span> <span class="o">=</span> <span class="n">CacheCompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">&quot;zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">CacheCompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">"zstd"</span><span class="p">)</span>
 
-<span class="c1"># Compress previous dataset&#39;s cache files</span>
+<span class="c1"># Compress previous dataset's cache files</span>
 <span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">prev_ds</span><span class="o">=</span><span class="n">previous_dataset</span><span class="p">,</span> <span class="n">this_ds</span><span class="o">=</span><span class="n">current_dataset</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
 <span class="c1"># Decompress cache files for a dataset</span>

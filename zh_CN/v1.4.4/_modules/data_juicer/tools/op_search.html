@@ -701,9 +701,9 @@
 
   <h1>data_juicer.tools.op_search 源代码</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Operator Searcher - A tool for filtering Data-Juicer operators by tags</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
@@ -715,7 +715,7 @@
 <div class="viewcode-block" id="OPRecord">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.OPRecord">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OPRecord</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A record class for storing operator metadata&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A record class for storing operator metadata"""</span>
 
 <div class="viewcode-block" id="OPRecord.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.OPRecord.__init__">[文档]</a>
@@ -732,12 +732,12 @@
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.OPRecord.to_dict">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">,</span>
-            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
-            <span class="s2">&quot;sig&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig</span><span class="p">,</span>
-            <span class="s2">&quot;param_desc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_desc</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">"desc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">,</span>
+            <span class="s2">"tags"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
+            <span class="s2">"sig"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig</span><span class="p">,</span>
+            <span class="s2">"param_desc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_desc</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 
@@ -747,24 +747,24 @@
 <div class="viewcode-block" id="analyze_modality_tag">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.analyze_modality_tag">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyze_modality_tag</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">op_prefix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Analyze the modality tag for the given code content string. Should be one</span>
-<span class="sd">    of the &quot;Modality Tags&quot; in `tagging_mappings.json`. It makes the choice by</span>
+<span class="sd">    of the "Modality Tags" in `tagging_mappings.json`. It makes the choice by</span>
 <span class="sd">    finding the usages of attributes `{modality}_key` and the prefix of the OP</span>
-<span class="sd">    name. If there are multiple modality keys are used, the &#39;multimodal&#39; tag</span>
+<span class="sd">    name. If there are multiple modality keys are used, the 'multimodal' tag</span>
 <span class="sd">    will be returned instead.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="s2">&quot;self.text_key&quot;</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
-        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;self.image_key&quot;</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span>
-        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;self.audio_key&quot;</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">&quot;audio&quot;</span><span class="p">:</span>
-        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;audio&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;self.video_key&quot;</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">&quot;video&quot;</span><span class="p">:</span>
-        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;video&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"self.text_key"</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">"text"</span><span class="p">:</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"self.image_key"</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">"image"</span><span class="p">:</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"image"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"self.audio_key"</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">"audio"</span><span class="p">:</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"audio"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"self.video_key"</span> <span class="ow">in</span> <span class="n">code</span> <span class="ow">or</span> <span class="n">op_prefix</span> <span class="o">==</span> <span class="s2">"video"</span><span class="p">:</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"video"</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;multimodal&quot;</span><span class="p">]</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"multimodal"</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">tags</span></div>
 
 
@@ -772,16 +772,16 @@
 <div class="viewcode-block" id="analyze_resource_tag">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.analyze_resource_tag">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyze_resource_tag</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Analyze the resource tag for the given code content string. Should be one</span>
-<span class="sd">    of the &quot;Resource Tags&quot; in `tagging_mappings.json`. It makes the choice</span>
+<span class="sd">    of the "Resource Tags" in `tagging_mappings.json`. It makes the choice</span>
 <span class="sd">    according to their assigning statement to attribute `_accelerator`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;_accelerator = &quot;</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;_accelerator = &#39;cuda&#39;&quot;</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;gpu&quot;</span><span class="p">]</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="s2">"_accelerator = "</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"_accelerator = 'cuda'"</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">"gpu"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">"cpu"</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
@@ -790,31 +790,31 @@
 <div class="viewcode-block" id="analyze_model_tags">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.analyze_model_tags">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyze_model_tags</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Analyze the model tag for the given code content string. SHOULD be one of</span>
-<span class="sd">    the &quot;Model Tags&quot; in `tagging_mappings.json`. It makes the choice by finding</span>
+<span class="sd">    the "Model Tags" in `tagging_mappings.json`. It makes the choice by finding</span>
 <span class="sd">    the `model_type` arg in `prepare_model` method invocation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;model_type=[\&#39;|</span><span class="se">\&quot;</span><span class="s2">](.*?)[\&#39;|</span><span class="se">\&quot;</span><span class="s2">]&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"model_type=[\'|</span><span class="se">\"</span><span class="s2">](.*?)[\'|</span><span class="se">\"</span><span class="s2">]"</span>
     <span class="n">groups</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
     <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="s2">&quot;api&quot;</span><span class="p">:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;api&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">group</span> <span class="o">==</span> <span class="s2">&quot;vllm&quot;</span><span class="p">:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="s2">&quot;diffusion&quot;</span><span class="p">,</span> <span class="s2">&quot;simple_aesthetics&quot;</span><span class="p">,</span> <span class="s2">&quot;video_blip&quot;</span><span class="p">}:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;hf&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="s2">"api"</span><span class="p">:</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"api"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">group</span> <span class="o">==</span> <span class="s2">"vllm"</span><span class="p">:</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="s2">"diffusion"</span><span class="p">,</span> <span class="s2">"simple_aesthetics"</span><span class="p">,</span> <span class="s2">"video_blip"</span><span class="p">}:</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"hf"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tags</span></div>
 
 
 
 <span class="c1"># def analyze_tag_from_code(content, op_name):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     """</span>
 <span class="c1">#     Analyze the tags for the OP from the given code.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     """</span>
 <span class="c1">#     tags = []</span>
-<span class="c1">#     op_prefix = op_name.split(&#39;_&#39;)[0]</span>
+<span class="c1">#     op_prefix = op_name.split('_')[0]</span>
 
 <span class="c1">#     tags.extend(analyze_modality_tag(content, op_prefix))</span>
 <span class="c1">#     tags.extend(analyze_resource_tag(content))</span>
@@ -825,9 +825,9 @@
 <div class="viewcode-block" id="analyze_tag_with_inheritance">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.analyze_tag_with_inheritance">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyze_tag_with_inheritance</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">analyze_func</span><span class="p">,</span> <span class="n">default_tags</span><span class="o">=</span><span class="p">[],</span> <span class="n">other_parm</span><span class="o">=</span><span class="nb">dict</span><span class="p">()):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Universal inheritance chain label analysis function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">mro_classes</span> <span class="o">=</span> <span class="n">op_cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">mro_classes</span><span class="p">:</span>
@@ -846,16 +846,16 @@
 <div class="viewcode-block" id="analyze_tag_from_cls">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.analyze_tag_from_cls">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">analyze_tag_from_cls</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">op_name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Analyze the tags for the OP from the given cls.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">op_prefix</span> <span class="o">=</span> <span class="n">op_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">op_prefix</span> <span class="o">=</span> <span class="n">op_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">content</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">op_cls</span><span class="p">)</span>
 
     <span class="c1"># Try to find from the inheritance chain</span>
-    <span class="n">resource_tags</span> <span class="o">=</span> <span class="n">analyze_tag_with_inheritance</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">analyze_resource_tag</span><span class="p">,</span> <span class="n">default_tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">])</span>
+    <span class="n">resource_tags</span> <span class="o">=</span> <span class="n">analyze_tag_with_inheritance</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">analyze_resource_tag</span><span class="p">,</span> <span class="n">default_tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"cpu"</span><span class="p">])</span>
     <span class="n">model_tags</span> <span class="o">=</span> <span class="n">analyze_tag_with_inheritance</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">analyze_model_tags</span><span class="p">)</span>
 
     <span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">resource_tags</span><span class="p">)</span>
@@ -868,15 +868,15 @@
 <div class="viewcode-block" id="extract_param_docstring">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.extract_param_docstring">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_param_docstring</span><span class="p">(</span><span class="n">docstring</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract parameter descriptions from __init__ method docstring.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">param_docstring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">param_docstring</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">docstring</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">param_docstring</span>
-    <span class="n">param_docstring</span> <span class="o">=</span> <span class="s2">&quot;:param &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">docstring</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:param&quot;</span><span class="p">))</span>
-    <span class="k">if</span> <span class="s2">&quot;:param&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_docstring</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">param_docstring</span> <span class="o">=</span> <span class="s2">":param "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">docstring</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":param"</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s2">":param"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">param_docstring</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="k">return</span> <span class="n">param_docstring</span></div>
 
 
@@ -884,7 +884,7 @@
 <div class="viewcode-block" id="OPSearcher">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.OPSearcher">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OPSearcher</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operator search engine&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Operator search engine"""</span>
 
 <div class="viewcode-block" id="OPSearcher.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.op_search.html#data_juicer.tools.op_search.OPSearcher.__init__">[文档]</a>
@@ -896,26 +896,26 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_scan_specified_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specified_op_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OPRecord</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scan specified operators&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Scan specified operators"""</span>
         <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">op_name</span> <span class="ow">in</span> <span class="n">specified_op_list</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">op_name</span> <span class="ow">in</span> <span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-                <span class="n">op_type</span> <span class="o">=</span> <span class="s2">&quot;formatter&quot;</span>
+                <span class="n">op_type</span> <span class="o">=</span> <span class="s2">"formatter"</span>
                 <span class="n">op_cls</span> <span class="o">=</span> <span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">op_type</span> <span class="o">=</span> <span class="n">op_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">op_type</span> <span class="o">=</span> <span class="n">op_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">op_cls</span> <span class="o">=</span> <span class="n">OPERATORS</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span>
-            <span class="n">desc</span> <span class="o">=</span> <span class="n">op_cls</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">op_cls</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">""</span>
             <span class="n">tags</span> <span class="o">=</span> <span class="n">analyze_tag_from_cls</span><span class="p">(</span><span class="n">op_cls</span><span class="p">,</span> <span class="n">op_name</span><span class="p">)</span>
             <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">op_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
-            <span class="n">init_param_desc</span> <span class="o">=</span> <span class="n">extract_param_docstring</span><span class="p">(</span><span class="n">op_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">init_param_desc</span> <span class="o">=</span> <span class="n">extract_param_docstring</span><span class="p">(</span><span class="n">op_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
             <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">OPRecord</span><span class="p">(</span><span class="n">op_type</span><span class="o">=</span><span class="n">op_type</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span> <span class="n">sig</span><span class="o">=</span><span class="n">sig</span><span class="p">,</span> <span class="n">param_desc</span><span class="o">=</span><span class="n">init_param_desc</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">records</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_scan_all_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_formatter</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">OPRecord</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scan all operators&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Scan all operators"""</span>
         <span class="n">all_ops_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">OPERATORS</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">include_formatter</span><span class="p">:</span>
             <span class="n">all_ops_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -926,13 +926,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">op_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">match_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Search operators by criteria</span>
 <span class="sd">        :param tags: List of tags to match</span>
 <span class="sd">        :param op_type: Operator type (mapper/filter/etc)</span>
 <span class="sd">        :param match_all: True requires matching all tags, False matches any tag</span>
 <span class="sd">        :return: List of matched operator records</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">op_records</span><span class="p">:</span>
             <span class="c1"># Filter by type</span>
@@ -966,20 +966,20 @@
 
     <span class="n">results</span> <span class="o">=</span> <span class="n">searcher</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span> <span class="n">op_type</span><span class="o">=</span><span class="n">op_type</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> operators:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> operators:"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[</span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tags: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;desc&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;param_desc&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Signature: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">&#39;sig&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[</span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tags: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Description: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">'desc'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Parameters: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">'param_desc'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Signature: </span><span class="si">{</span><span class="n">op</span><span class="p">[</span><span class="s1">'sig'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span></div>
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">op_type</span> <span class="o">=</span> <span class="s2">&quot;formatter&quot;</span>
+    <span class="n">op_type</span> <span class="o">=</span> <span class="s2">"formatter"</span>
     <span class="n">main</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">op_type</span><span class="o">=</span><span class="n">op_type</span><span class="p">)</span>
 </pre></div>
 

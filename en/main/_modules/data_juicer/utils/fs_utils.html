@@ -697,7 +697,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.fs_utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Unified filesystem utilities for Data-Juicer.</span>
 
 <span class="sd">Provides a single dispatch entry to create a PyArrow FileSystem</span>
@@ -709,7 +709,7 @@
 <span class="sd">Iceberg/Delta/Hudi), prefer extending the scheme branches in</span>
 <span class="sd">``create_filesystem_for_path`` instead of re-implementing per-callsite</span>
 <span class="sd">prefix-detection logic in exporters or load strategies.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
@@ -721,14 +721,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_split_args</span><span class="p">(</span><span class="n">extra_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">consumed_keys</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Split ``extra_args`` into (consumed conf, remaining args) according to</span>
 <span class="sd">    ``consumed_keys``, without mutating the input dict.</span>
 
 <span class="sd">    :param extra_args: the original extra-args dict.</span>
 <span class="sd">    :param consumed_keys: keys to be consumed by the filesystem backend.</span>
 <span class="sd">    :return: a tuple of (conf, remaining_args), both are new dicts.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">conf</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">remaining_args</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">extra_args</span><span class="p">:</span>
@@ -744,12 +744,12 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">create_filesystem_for_path</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">extra_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;pyarrow.fs.FileSystem&quot;</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="s2">"pyarrow.fs.FileSystem"</span><span class="p">],</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a PyArrow FileSystem for ``path`` according to its scheme.</span>
 
-<span class="sd">    - &#39;s3://...&#39;: delegate to ``create_pyarrow_s3_filesystem``.</span>
-<span class="sd">    - &#39;hdfs://...&#39;: delegate to ``create_pyarrow_hdfs_filesystem``. The</span>
+<span class="sd">    - 's3://...': delegate to ``create_pyarrow_s3_filesystem``.</span>
+<span class="sd">    - 'hdfs://...': delegate to ``create_pyarrow_hdfs_filesystem``. The</span>
 <span class="sd">      config passed to it includes ``path`` so that host/port can be</span>
 <span class="sd">      inferred from the path when not explicitly provided.</span>
 <span class="sd">    - other (local) paths: no filesystem is created.</span>
@@ -764,16 +764,16 @@
 <span class="sd">    :return: a tuple of (fs, remaining_args). ``fs`` is a PyArrow</span>
 <span class="sd">        FileSystem instance for remote paths, or None for local paths;</span>
 <span class="sd">        ``remaining_args`` is a new dict without the consumed keys.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid path for filesystem creation: </span><span class="si">{</span><span class="n">path</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid path for filesystem creation: </span><span class="si">{</span><span class="n">path</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">extra_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">extra_args</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="c1"># urlparse already lowercases the scheme; keep .lower() as a defensive</span>
     <span class="c1"># guarantee for case-insensitive dispatch</span>
     <span class="n">scheme</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;s3&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">"s3"</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ACCEPTED_CONFIG_KEYS</span> <span class="k">as</span> <span class="n">S3_FS_KEYS</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
             <span class="n">create_pyarrow_s3_filesystem</span><span class="p">,</span>
@@ -781,11 +781,11 @@
         <span class="p">)</span>
 
         <span class="n">validate_s3_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected S3 path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. Creating PyArrow S3 filesystem.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected S3 path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. Creating PyArrow S3 filesystem."</span><span class="p">)</span>
         <span class="n">s3_conf</span><span class="p">,</span> <span class="n">remaining_args</span> <span class="o">=</span> <span class="n">_split_args</span><span class="p">(</span><span class="n">extra_args</span><span class="p">,</span> <span class="n">S3_FS_KEYS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">create_pyarrow_s3_filesystem</span><span class="p">(</span><span class="n">s3_conf</span><span class="p">),</span> <span class="n">remaining_args</span>
 
-    <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;hdfs&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">"hdfs"</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ACCEPTED_CONFIG_KEYS</span> <span class="k">as</span> <span class="n">HDFS_FS_KEYS</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.hdfs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
             <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">,</span>
@@ -793,10 +793,10 @@
         <span class="p">)</span>
 
         <span class="n">validate_hdfs_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected HDFS path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. Creating PyArrow HDFS filesystem.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected HDFS path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">. Creating PyArrow HDFS filesystem."</span><span class="p">)</span>
         <span class="n">hdfs_conf</span><span class="p">,</span> <span class="n">remaining_args</span> <span class="o">=</span> <span class="n">_split_args</span><span class="p">(</span><span class="n">extra_args</span><span class="p">,</span> <span class="n">HDFS_FS_KEYS</span><span class="p">)</span>
         <span class="c1"># include the original path so host/port can be inferred from it</span>
-        <span class="n">hdfs_conf</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="n">hdfs_conf</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
         <span class="k">return</span> <span class="n">create_pyarrow_hdfs_filesystem</span><span class="p">(</span><span class="n">hdfs_conf</span><span class="p">),</span> <span class="n">remaining_args</span>
 
     <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">extra_args</span><span class="p">)</span></div>

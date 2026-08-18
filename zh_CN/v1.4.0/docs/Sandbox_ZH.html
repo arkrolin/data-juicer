@@ -860,43 +860,43 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sandbox config example</span>
 
 <span class="c1"># global parameters</span>
-<span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-sandbox&#39;</span>
-<span class="nt">experiment_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-sandbox-run0&#39;</span><span class="w">              </span><span class="c1"># for wandb tracer name</span>
+<span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-sandbox'</span>
+<span class="nt">experiment_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-sandbox-run0'</span><span class="w">              </span><span class="c1"># for wandb tracer name</span>
 <span class="nt">hpo_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                                  </span><span class="c1"># path to a configuration file when using auto-HPO tool.</span>
 
 <span class="c1"># configs for each job, the jobs will be executed according to the order in the list</span>
 <span class="nt">probe_job_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ProbeViaAnalyzerHook&#39;</span>
-<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;analysis_ori_data&#39;</span>
-<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;configs/demo/process.yaml&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'ProbeViaAnalyzerHook'</span>
+<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">'analysis_ori_data'</span>
+<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'configs/demo/process.yaml'</span>
 <span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span>
 
 <span class="nt">refine_recipe_job_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;RefineRecipeViaKSigmaHook&#39;</span>
-<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;analysis_ori_data&#39;</span>
-<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;configs/demo/process.yaml&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'RefineRecipeViaKSigmaHook'</span>
+<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">'analysis_ori_data'</span>
+<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'configs/demo/process.yaml'</span>
 <span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">path_k_sigma_recipe</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo-process/k_sigma_new_recipe.yaml&#39;</span>
+<span class="w">      </span><span class="nt">path_k_sigma_recipe</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo-process/k_sigma_new_recipe.yaml'</span>
 
 <span class="nt">execution_job_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ProcessDataHook&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'ProcessDataHook'</span>
 <span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo-process/k_sigma_new_recipe.yaml&#39;</span>
+<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo-process/k_sigma_new_recipe.yaml'</span>
 <span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;TrainModelHook&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'TrainModelHook'</span>
 <span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;configs/demo/sandbox/gpt3_extra_train_config.json&#39;</span>
+<span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'configs/demo/sandbox/gpt3_extra_train_config.json'</span>
 
 <span class="nt">evaluation_job_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ProbeViaAnalyzerHook&#39;</span>
-<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;analysis_processed_data&#39;</span>
-<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;configs/demo/process.yaml&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'ProbeViaAnalyzerHook'</span>
+<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">'analysis_processed_data'</span>
+<span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'configs/demo/process.yaml'</span>
 <span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;EvaluateDataHook&#39;</span>
-<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;eval_data&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hook</span><span class="p">:</span><span class="w"> </span><span class="s">'EvaluateDataHook'</span>
+<span class="w">    </span><span class="nt">meta_name</span><span class="p">:</span><span class="w"> </span><span class="s">'eval_data'</span>
 <span class="w">    </span><span class="nt">dj_configs</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;configs/demo/sandbox/gpt3_data_quality_eval_config.yaml&#39;</span>
+<span class="w">    </span><span class="nt">extra_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'configs/demo/sandbox/gpt3_data_quality_eval_config.yaml'</span>
 </pre></div>
 </div>
 <p>根据这个配置文件，sandbox：</p>
@@ -912,8 +912,8 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sandbox config example</span>
 
 <span class="c1"># global parameters</span>
-<span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-sandbox&#39;</span>
-<span class="nt">experiment_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-sandbox-run0&#39;</span><span class="w">              </span><span class="c1"># for wandb tracer name</span>
+<span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-sandbox'</span>
+<span class="nt">experiment_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-sandbox-run0'</span><span class="w">              </span><span class="c1"># for wandb tracer name</span>
 <span class="nt">hpo_config</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                                  </span><span class="c1"># path to a configuration file when using auto-HPO tool.</span>
 
 <span class="nt">pipelines</span><span class="p">:</span>
@@ -1258,14 +1258,14 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <span class="w">  </span><span class="nt">input</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">dj_configs.dataset_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pipeline1.name3.res4_key</span>
 <span class="w">    </span><span class="nt">extra_configs.meta_paths</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1.res5_key</span>
-<span class="w">  </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;res6_key&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;res7_key&#39;</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">output</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'res6_key'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'res7_key'</span><span class="p p-Indicator">]</span>
 <span class="w">  </span><span class="nt">local</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">extra_configs.arg2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
-<span class="w">  </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/dj_configs.yaml&#39;</span>
+<span class="w">  </span><span class="nt">dj_configs</span><span class="p">:</span><span class="w"> </span><span class="s">'/path/to/dj_configs.yaml'</span>
 <span class="w">  </span><span class="nt">extra_configs</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">arg1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;arg1_val&quot;</span>
+<span class="w">    </span><span class="nt">arg1</span><span class="p">:</span><span class="w"> </span><span class="s">"arg1_val"</span>
 <span class="w">    </span><span class="nt">arg2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">404</span>
-<span class="w">    </span><span class="nt">meta_paths</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;placeholder&gt;&quot;</span>
+<span class="w">    </span><span class="nt">meta_paths</span><span class="p">:</span><span class="w"> </span><span class="s">"&lt;placeholder&gt;"</span>
 </pre></div>
 </div>
 <p>此钩子使用了所有的三个参数：</p>
@@ -1274,9 +1274,9 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <li><p>在 <code class="docutils literal notranslate"><span class="pre">output</span></code> 中，该钩子输出两个结果，分别命名为 <code class="docutils literal notranslate"><span class="pre">res6_key</span></code> 和 <code class="docutils literal notranslate"><span class="pre">res7_key</span></code>，它们将存储在上下文信息中，如下所示：</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s1">&#39;meta_name&#39;</span><span class="p">:</span> <span class="s1">&#39;job_xxx&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;res6_key&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">output_1</span><span class="o">&gt;</span><span class="p">,</span>
-  <span class="s1">&#39;res7_key&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">output_2</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="s1">'meta_name'</span><span class="p">:</span> <span class="s1">'job_xxx'</span><span class="p">,</span>
+  <span class="s1">'res6_key'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">output_1</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="s1">'res7_key'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">output_2</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1448,27 +1448,27 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </ul>
 <p>以下是 <code class="docutils literal notranslate"><span class="pre">context_infos</span></code> 的一个示例：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;pipeline_0&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s1">'pipeline_0'</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s1">&#39;meta_name&#39;</span><span class="p">:</span> <span class="s1">&#39;name1&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;res1_key&#39;</span><span class="p">:</span> <span class="s1">&#39;res1_value&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;res2_key&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">res2_value</span><span class="o">&gt;</span><span class="p">,</span>
+            <span class="s1">'meta_name'</span><span class="p">:</span> <span class="s1">'name1'</span><span class="p">,</span>
+            <span class="s1">'res1_key'</span><span class="p">:</span> <span class="s1">'res1_value'</span><span class="p">,</span>
+            <span class="s1">'res2_key'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">res2_value</span><span class="o">&gt;</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="p">{</span>
-            <span class="s1">&#39;meta_name&#39;</span><span class="p">:</span> <span class="s1">&#39;name2&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;res3_key&#39;</span><span class="p">:</span> <span class="s1">&#39;res3_value&#39;</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">],</span>
-    <span class="s1">&#39;pipeline_1&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s1">&#39;meta_name&#39;</span><span class="p">:</span> <span class="s1">&#39;name3&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;res4_key&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">res4_value</span><span class="o">&gt;</span><span class="p">,</span>
+            <span class="s1">'meta_name'</span><span class="p">:</span> <span class="s1">'name2'</span><span class="p">,</span>
+            <span class="s1">'res3_key'</span><span class="p">:</span> <span class="s1">'res3_value'</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">],</span>
-    <span class="s1">&#39;pipeline_2&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s1">'pipeline_1'</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s1">&#39;meta_name&#39;</span><span class="p">:</span> <span class="s1">&#39;name4&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;res5_key&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;res5_1_value&#39;</span><span class="p">,</span> <span class="s1">&#39;res5_2_value&#39;</span><span class="p">],</span>
+            <span class="s1">'meta_name'</span><span class="p">:</span> <span class="s1">'name3'</span><span class="p">,</span>
+            <span class="s1">'res4_key'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">res4_value</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">],</span>
+    <span class="s1">'pipeline_2'</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">'meta_name'</span><span class="p">:</span> <span class="s1">'name4'</span><span class="p">,</span>
+            <span class="s1">'res5_key'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'res5_1_value'</span><span class="p">,</span> <span class="s1">'res5_2_value'</span><span class="p">],</span>
         <span class="p">},</span>
     <span class="p">],</span>
 <span class="p">}</span>
@@ -1483,43 +1483,43 @@ bash<span class="w"> </span>setup_easyanimate.sh
   
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        创建一个环境</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;This method must be implemented in subclass.&#39;</span><span class="p">)</span>
+            <span class="s1">'This method must be implemented in subclass.'</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_availability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        检查环境管理器的可用性</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;This method must be implemented in subclass.&#39;</span><span class="p">)</span>
+            <span class="s1">'This method must be implemented in subclass.'</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        检查环境是否存在</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;This method must be implemented in subclass.&#39;</span><span class="p">)</span>
+            <span class="s1">'This method must be implemented in subclass.'</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">install_py_deps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        安装 Python 依赖项</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;This method must be implemented in subclass.&#39;</span><span class="p">)</span>
+            <span class="s1">'This method must be implemented in subclass.'</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        在该环境中运行命令</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;This method must be implemented in subclass.&#39;</span><span class="p">)</span>
+            <span class="s1">'This method must be implemented in subclass.'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>它包含五个主要的抽象方法：</p>
@@ -1538,8 +1538,8 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <p>在初始化环境管理器时，我们可以通过设置配置文件中的 <code class="docutils literal notranslate"><span class="pre">env_manager</span></code> 参数来指定要使用的环境管理器，并通过设置 <code class="docutils literal notranslate"><span class="pre">env_name</span></code> 参数来指定环境的名称。基本用法示例如下：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.sandbox.env_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENV_ROUTER</span>
 
-<span class="n">env_manager</span> <span class="o">=</span> <span class="s1">&#39;conda&#39;</span>
-<span class="n">env_name</span> <span class="o">=</span> <span class="s1">&#39;new_conda_env&#39;</span>
+<span class="n">env_manager</span> <span class="o">=</span> <span class="s1">'conda'</span>
+<span class="n">env_name</span> <span class="o">=</span> <span class="s1">'new_conda_env'</span>
 
 <span class="c1"># 创建一个环境</span>
 <span class="n">env</span> <span class="o">=</span>  <span class="n">ENV_ROUTER</span><span class="p">[</span><span class="n">env_manager</span><span class="p">](</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">datajuicer</span><span class="o">/</span><span class="n">data</span><span class="o">-</span><span class="n">juicer</span><span class="o">/</span><span class="n">blob</span><span class="o">/</span><span class="n">v1</span><span class="mf">.4.0</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span>
@@ -1553,15 +1553,15 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <span class="n">env</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1"># 安装额外的依赖项</span>
-<span class="c1"># 使用 &quot;requirements.txt&quot; 文件</span>
-<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">(</span><span class="s2">&quot;/path/to/requirements.txt&quot;</span><span class="p">)</span>
+<span class="c1"># 使用 "requirements.txt" 文件</span>
+<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">(</span><span class="s2">"/path/to/requirements.txt"</span><span class="p">)</span>
 <span class="c1"># 使用依赖项列表</span>
-<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">([</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;torchvision&quot;</span><span class="p">])</span>
+<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">([</span><span class="s2">"torch"</span><span class="p">,</span> <span class="s2">"torchvision"</span><span class="p">])</span>
 <span class="c1"># 使用指向库代码库的目录路径，如 InternVL</span>
-<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">(</span><span class="s2">&quot;/path/to/a/third-party/library&quot;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">install_py_deps</span><span class="p">(</span><span class="s2">"/path/to/a/third-party/library"</span><span class="p">)</span>
 
 <span class="c1"># 在该环境中运行一条命令</span>
-<span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;python train.py&quot;</span>
+<span class="n">cmd</span> <span class="o">=</span> <span class="s2">"python train.py"</span>
 <span class="n">env</span><span class="o">.</span><span class="n">run_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 </pre></div>
 </div>

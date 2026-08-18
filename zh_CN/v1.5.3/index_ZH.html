@@ -720,7 +720,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WhitespaceNormalizationMapper</span>
 
 <span class="n">ds</span> <span class="o">=</span> <span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span>
-    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Short&quot;</span><span class="p">,</span> <span class="s2">&quot;This passes the filter.&quot;</span><span class="p">,</span> <span class="s2">&quot;Text   with   spaces&quot;</span><span class="p">]</span>
+    <span class="s2">"text"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Short"</span><span class="p">,</span> <span class="s2">"This passes the filter."</span><span class="p">,</span> <span class="s2">"Text   with   spaces"</span><span class="p">]</span>
 <span class="p">})</span>
 <span class="n">res_ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">process</span><span class="p">([</span>
     <span class="n">TextLengthFilter</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
