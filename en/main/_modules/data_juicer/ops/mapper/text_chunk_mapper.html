@@ -814,7 +814,8 @@
             <span class="n">cur_text</span> <span class="o">=</span> <span class="n">sub_text</span><span class="p">[:</span> <span class="n">last_match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
             <span class="n">left_text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">last_match</span><span class="o">.</span><span class="n">end</span><span class="p">()</span> <span class="p">:]</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">cur_text</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recursively_chunk</span><span class="p">(</span><span class="n">left_text</span><span class="p">)</span></div>
+        <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">cur_text</span><span class="p">]</span> <span class="k">if</span> <span class="n">cur_text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">chunks</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recursively_chunk</span><span class="p">(</span><span class="n">left_text</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TextChunkMapper.get_text_chunks">
