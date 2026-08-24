@@ -556,5 +556,355 @@ class ModalityTypeEnumTest(DataJuicerTestCaseBase):
         self.assertEqual(ModalityType.MULTIMODAL.value, "multimodal")
 
 
+class ResourceDetectorAdditionalTest(DataJuicerTestCaseBase):
+    """Tests for ResourceDetector edge cases."""
+
+    def test_detect_local_resources_includes_disk_space(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            ResourceDetector,
+        )
+        resources = ResourceDetector.detect_local_resources()
+        self.assertIsNotNone(resources.disk_space_gb)
+        self.assertGreater(resources.disk_space_gb, 0)
+
+    def test_calculate_optimal_worker_count_few_partitions(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            LocalResources,
+            ResourceDetector,
+        )
+        resources = LocalResources(
+            cpu_cores=16,
+            available_memory_gb=32.0,
+            total_memory_gb=64.0,
+            gpu_count=0,
+        )
+        workers = ResourceDetector.calculate_optimal_worker_count(
+            resources, partition_size=1000, total_samples=3000)
+        self.assertGreaterEqual(workers, 1)
+        self.assertLessEqual(workers, 16)
+
+    def test_calculate_optimal_worker_count_many_partitions(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            LocalResources,
+            ResourceDetector,
+        )
+        resources = LocalResources(
+            cpu_cores=8,
+            available_memory_gb=16.0,
+            total_memory_gb=32.0,
+            gpu_count=0,
+        )
+        workers = ResourceDetector.calculate_optimal_worker_count(
+            resources, partition_size=100, total_samples=100000)
+        self.assertGreaterEqual(workers, 1)
+        self.assertLessEqual(workers, 8)
+
+    def test_calculate_optimal_worker_count_with_cluster(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            ClusterResources,
+            LocalResources,
+            ResourceDetector,
+        )
+        local = LocalResources(
+            cpu_cores=4,
+            available_memory_gb=8.0,
+            total_memory_gb=16.0,
+            gpu_count=0,
+        )
+        cluster = ClusterResources(
+            num_nodes=4,
+            total_cpu_cores=64,
+            total_memory_gb=256.0,
+            available_cpu_cores=48,
+            available_memory_gb=200.0,
+            gpu_resources={},
+        )
+        workers = ResourceDetector.calculate_optimal_worker_count(
+            local, cluster_resources=cluster)
+        self.assertGreater(workers, 4)
+
+
+class PartitionSizeOptimizerAdvancedTest(DataJuicerTestCaseBase):
+    """Tests for advanced optimization scenarios."""
+
+    def setUp(self):
+        super().setUp()
+        from data_juicer.core.executor.partition_size_optimizer import (
+            PartitionSizeOptimizer,
+        )
+
+        class SimpleCfg:
+            text_key = 'text'
+            image_key = 'images'
+            audio_key = 'audios'
+            video_key = 'videos'
+            partition_size = None
+            max_partition_size_mb = None
+
+        self.optimizer = PartitionSizeOptimizer(SimpleCfg())
+
+    def test_estimate_sample_size_nested_objects(self):
+        sample = {
+            'text': 'a' * 10000,
+            'images': ['path1.jpg', 'path2.jpg'],
+            'metadata': {'key': 'value', 'nested': {'deep': [1, 2, 3]}},
+        }
+        size_mb = self.optimizer.estimate_sample_size_mb(sample)
+        self.assertGreater(size_mb, 0)
+        self.assertLess(size_mb, 1.0)
+
+    def test_deep_getsizeof_handles_cycles(self):
+        a = {}
+        b = {'ref': a}
+        a['ref'] = b
+        size = self.optimizer._deep_getsizeof(a)
+        self.assertGreater(size, 0)
+
+    def test_analyze_processing_complexity_high(self):
+        pipeline = [
+            {'embedding_similarity_filter': None},
+            {'model_based_mapper': None},
+            {'neural_scorer_filter': None},
+        ]
+        score = self.optimizer.analyze_processing_complexity(pipeline)
+        self.assertGreater(score, 1.5)
+
+    def test_analyze_processing_complexity_low(self):
+        pipeline = [
+            {'text_normalizer': None},
+            {'whitespace_cleaner': None},
+        ]
+        score = self.optimizer.analyze_processing_complexity(pipeline)
+        self.assertGreater(score, 1.0)
+        self.assertLess(score, 1.5)
+
+    def test_calculate_text_partition_size_simple(self):
+        size = self.optimizer.calculate_text_partition_size_simple(
+            avg_text_length=500, complexity_score=1.0,
+            target_memory_mb=64)
+        self.assertGreater(size, 100)
+        self.assertLessEqual(size, 500000)
+
+    def test_calculate_text_partition_size_long_text(self):
+        size = self.optimizer.calculate_text_partition_size_simple(
+            avg_text_length=50000, complexity_score=2.0,
+            target_memory_mb=64)
+        self.assertGreater(size, 0)
+        self.assertLess(size, 100000)
+
+    def test_calculate_text_partition_size_zero_length(self):
+        size = self.optimizer.calculate_text_partition_size_simple(
+            avg_text_length=0, complexity_score=1.0,
+            target_memory_mb=64)
+        self.assertGreater(size, 0)
+
+    def test_calculate_optimal_max_size_mb(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            DataCharacteristics,
+            LocalResources,
+            ModalityType,
+        )
+        chars = DataCharacteristics(
+            primary_modality=ModalityType.TEXT,
+            modality_distribution={ModalityType.TEXT: 100},
+            avg_text_length=500,
+            avg_images_per_sample=0,
+            avg_audio_per_sample=0,
+            avg_video_per_sample=0,
+            total_samples=10000,
+            sample_size_analyzed=100,
+            memory_per_sample_mb=0.002,
+            processing_complexity_score=1.0,
+            data_skew_factor=0.3,
+        )
+        local = LocalResources(
+            cpu_cores=8,
+            available_memory_gb=16.0,
+            total_memory_gb=32.0,
+            gpu_count=0,
+        )
+        max_mb = self.optimizer.calculate_optimal_max_size_mb(
+            chars, local, None, 1.0)
+        self.assertGreaterEqual(max_mb, 32)
+        self.assertLessEqual(max_mb, 512)
+
+    def test_calculate_optimal_max_size_with_high_complexity(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            DataCharacteristics,
+            LocalResources,
+            ModalityType,
+        )
+        chars = DataCharacteristics(
+            primary_modality=ModalityType.VIDEO,
+            modality_distribution={ModalityType.VIDEO: 100},
+            avg_text_length=0,
+            avg_images_per_sample=0,
+            avg_audio_per_sample=0,
+            avg_video_per_sample=1,
+            total_samples=1000,
+            sample_size_analyzed=100,
+            memory_per_sample_mb=50.0,
+            processing_complexity_score=3.0,
+            data_skew_factor=0.5,
+        )
+        local = LocalResources(
+            cpu_cores=8,
+            available_memory_gb=16.0,
+            total_memory_gb=32.0,
+            gpu_count=0,
+        )
+        max_mb = self.optimizer.calculate_optimal_max_size_mb(
+            chars, local, None, 3.0)
+        self.assertGreaterEqual(max_mb, 32)
+
+    def test_resource_aware_partition_size_memory_constraint(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            DataCharacteristics,
+            LocalResources,
+            ModalityType,
+        )
+        chars = DataCharacteristics(
+            primary_modality=ModalityType.VIDEO,
+            modality_distribution={ModalityType.VIDEO: 100},
+            avg_text_length=0,
+            avg_images_per_sample=0,
+            avg_audio_per_sample=0,
+            avg_video_per_sample=1,
+            total_samples=10000,
+            sample_size_analyzed=100,
+            memory_per_sample_mb=100.0,
+            processing_complexity_score=1.0,
+            data_skew_factor=0.3,
+        )
+        local = LocalResources(
+            cpu_cores=4,
+            available_memory_gb=4.0,
+            total_memory_gb=8.0,
+            gpu_count=0,
+        )
+        size = self.optimizer.calculate_resource_aware_partition_size(
+            chars, local, None, 1.0)
+        self.assertGreaterEqual(size, 10)
+        self.assertLess(size, 1000)
+
+    def test_resource_aware_partition_size_high_skew(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            DataCharacteristics,
+            LocalResources,
+            ModalityType,
+        )
+        chars = DataCharacteristics(
+            primary_modality=ModalityType.TEXT,
+            modality_distribution={ModalityType.TEXT: 100},
+            avg_text_length=1000,
+            avg_images_per_sample=0,
+            avg_audio_per_sample=0,
+            avg_video_per_sample=0,
+            total_samples=100000,
+            sample_size_analyzed=1000,
+            memory_per_sample_mb=0.005,
+            processing_complexity_score=1.0,
+            data_skew_factor=0.9,
+        )
+        local = LocalResources(
+            cpu_cores=16,
+            available_memory_gb=32.0,
+            total_memory_gb=64.0,
+            gpu_count=0,
+        )
+        size = self.optimizer.calculate_resource_aware_partition_size(
+            chars, local, None, 1.0)
+        self.assertGreater(size, 0)
+
+    def test_resource_aware_partition_size_parallelism_adjustment(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            DataCharacteristics,
+            LocalResources,
+            ModalityType,
+        )
+        chars = DataCharacteristics(
+            primary_modality=ModalityType.TEXT,
+            modality_distribution={ModalityType.TEXT: 1000000},
+            avg_text_length=100,
+            avg_images_per_sample=0,
+            avg_audio_per_sample=0,
+            avg_video_per_sample=0,
+            total_samples=1000000,
+            sample_size_analyzed=1000,
+            memory_per_sample_mb=0.001,
+            processing_complexity_score=1.0,
+            data_skew_factor=0.1,
+        )
+        local = LocalResources(
+            cpu_cores=64,
+            available_memory_gb=128.0,
+            total_memory_gb=256.0,
+            gpu_count=0,
+        )
+        size = self.optimizer.calculate_resource_aware_partition_size(
+            chars, local, None, 1.0)
+        self.assertGreater(size, 0)
+        estimated_partitions = chars.total_samples / size
+        self.assertGreater(estimated_partitions, 1)
+
+    def test_analyze_dataset_with_take_method(self):
+        from data_juicer.core.executor.partition_size_optimizer import (
+            ModalityType,
+        )
+
+        class TakeDataset:
+            def __len__(self):
+                return 50
+
+            def take(self, n):
+                return [{'text': f'sample {i}'} for i in range(n)]
+
+        chars = self.optimizer.analyze_dataset_characteristics(TakeDataset())
+        self.assertEqual(chars.primary_modality, ModalityType.TEXT)
+        self.assertEqual(chars.total_samples, 50)
+
+    def test_analyze_dataset_with_getitem_method(self):
+        data = [{'text': f'item {i}', 'images': []} for i in range(100)]
+
+        class SliceDataset:
+            def __len__(self):
+                return len(data)
+
+            def __getitem__(self, key):
+                return data[key]
+
+        chars = self.optimizer.analyze_dataset_characteristics(SliceDataset())
+        self.assertEqual(chars.total_samples, 100)
+
+    def test_analyze_dataset_with_iterable(self):
+        class IterDataset:
+            def __len__(self):
+                return 30
+
+            def __iter__(self):
+                for i in range(30):
+                    yield {'text': f'iter sample {i}'}
+
+        chars = self.optimizer.analyze_dataset_characteristics(IterDataset())
+        self.assertEqual(chars.total_samples, 30)
+        self.assertGreater(chars.sample_size_analyzed, 0)
+
+    def test_get_partition_recommendations_full(self):
+        dataset = MockDataset([
+            {'text': 'hello world', 'images': [], 'audios': [], 'videos': []},
+            {'text': 'another sample', 'images': [], 'audios': [], 'videos': []},
+        ] * 50)
+        pipeline = [
+            {'whitespace_normalization_mapper': None},
+            {'language_id_score_filter': {'lang': 'en'}},
+        ]
+        recs = self.optimizer.get_partition_recommendations(
+            dataset, pipeline)
+        self.assertIn('recommended_partition_size', recs)
+        self.assertIn('recommended_max_size_mb', recs)
+        self.assertIn('recommended_worker_count', recs)
+        self.assertIn('data_characteristics', recs)
+
+
 if __name__ == '__main__':
     unittest.main()
