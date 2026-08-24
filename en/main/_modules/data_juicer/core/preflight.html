@@ -1,0 +1,1123 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>data_juicer.core.preflight &#8212; Data Juicer</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=34d13042" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/ask-ai-widget.css?v=028e49fc" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script>window.JUICER_API_URL = 'https://datajuicer.online:443';</script>
+    <script src="../../../_static/documentation_options.js?v=8a448e45"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/data_juicer/core/preflight';</script>
+    <script src="../../../_static/sidebar.js?v=3fc1065c"></script>
+    <script src="../../../_static/switcher-mobile.js?v=07875724"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="../../../_static/ask-ai-widget.js?v=7a5b498f"></script>
+    <link rel="icon" href="../../../_static/icon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search docs..."
+         aria-label="Search docs..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/icon.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Data Juicer</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datajuicer/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../../en/main/_modules/data_juicer/core/preflight.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../../zh_CN/main/_modules/data_juicer/core/preflight_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../../main/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+        <a href="../../../../v1.5.5/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.5
+        </a>
+        
+        <a href="../../../../v1.5.4/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.4
+        </a>
+        
+        <a href="../../../../v1.5.3/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.3
+        </a>
+        
+        <a href="../../../../v1.5.2/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.2
+        </a>
+        
+        <a href="../../../../v1.5.1/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.1
+        </a>
+        
+        <a href="../../../../v1.5.0/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.0
+        </a>
+        
+        <a href="../../../../v1.4.6/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.6
+        </a>
+        
+        <a href="../../../../v1.4.5/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.5
+        </a>
+        
+        <a href="../../../../v1.4.4/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.4
+        </a>
+        
+        <a href="../../../../v1.4.3/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.3
+        </a>
+        
+        <a href="../../../../v1.4.2/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.2
+        </a>
+        
+        <a href="../../../../v1.4.1/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.1
+        </a>
+        
+        <a href="../../../../v1.4.0/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.0
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datajuicer/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../../en/main/_modules/data_juicer/core/preflight.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../../zh_CN/main/_modules/data_juicer/core/preflight_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../../main/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+        <a href="../../../../v1.5.5/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.5
+        </a>
+        
+        <a href="../../../../v1.5.4/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.4
+        </a>
+        
+        <a href="../../../../v1.5.3/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.3
+        </a>
+        
+        <a href="../../../../v1.5.2/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.2
+        </a>
+        
+        <a href="../../../../v1.5.1/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.1
+        </a>
+        
+        <a href="../../../../v1.5.0/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.5.0
+        </a>
+        
+        <a href="../../../../v1.4.6/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.6
+        </a>
+        
+        <a href="../../../../v1.4.5/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.5
+        </a>
+        
+        <a href="../../../../v1.4.4/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.4
+        </a>
+        
+        <a href="../../../../v1.4.3/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.3
+        </a>
+        
+        <a href="../../../../v1.4.2/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.2
+        </a>
+        
+        <a href="../../../../v1.4.1/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.1
+        </a>
+        
+        <a href="../../../../v1.4.0/_modules/data_juicer/core/preflight.html"
+           class="dropdown-item "
+           role="menuitem"
+           >
+          v1.4.0
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.core.preflight</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for data_juicer.core.preflight</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Preflight checks for Data-Juicer pipelines.</span>
+
+<span class="sd">Two-stage validation that catches configuration errors before expensive</span>
+<span class="sd">computation begins:</span>
+
+<span class="sd">1. pre_instantiation_check: validates op names, param names, param types</span>
+<span class="sd">   (runs before load_ops)</span>
+<span class="sd">2. post_instantiation_check: validates schema compatibility, environment</span>
+<span class="sd">   readiness (runs after load_ops, before dataset.process)</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">difflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_close_matches</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OP</span><span class="p">,</span> <span class="n">OPERATORS</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.data.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schema</span>
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Error classes</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="PreflightError">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PreflightError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PreflightError</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Single preflight error entry."""</span>
+
+<div class="viewcode-block" id="PreflightError.__init__">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PreflightError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suggestions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op_name</span> <span class="o">=</span> <span class="n">op_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suggestions</span> <span class="o">=</span> <span class="n">suggestions</span> <span class="ow">or</span> <span class="p">[]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op_name</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suggestions</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" (did you mean: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suggestions</span><span class="p">)</span><span class="si">}</span><span class="s2">?)"</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="PipelineConfigError">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PipelineConfigError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineConfigError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when pre-instantiation checks find errors."""</span>
+
+<div class="viewcode-block" id="PipelineConfigError.__init__">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PipelineConfigError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PreflightError</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="n">errors</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Pipeline configuration errors detected:"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ✗ </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span><span class="si">}</span><span class="s2"> error(s) found. Fix the config and retry."</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Set 'strict_preflight: false' in config to skip preflight checks."</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PipelineRuntimeError">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PipelineRuntimeError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineRuntimeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised when post-instantiation checks find errors."""</span>
+
+<div class="viewcode-block" id="PipelineRuntimeError.__init__">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.PipelineRuntimeError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PreflightError</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="n">errors</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Pipeline runtime preflight errors detected:"</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ✗ </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span><span class="si">}</span><span class="s2"> error(s) found. Fix the config and retry."</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Set 'strict_preflight: false' in config to skip preflight checks."</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Pre-instantiation check</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_valid_params</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OP</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Get the set of valid parameter names and their type annotations</span>
+<span class="sd">    for an OP class. Merges:</span>
+<span class="sd">    1. _BASE_PARAMS from each class in the MRO (OP, Filter, etc.)</span>
+<span class="sd">    2. Explicit __init__ signature params from each class in the MRO</span>
+
+<span class="sd">    Returns: {param_name: expected_type_or_None}</span>
+<span class="sd">    """</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Walk the MRO to collect _BASE_PARAMS and __init__ signatures</span>
+    <span class="k">for</span> <span class="n">klass</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmro</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">klass</span> <span class="ow">is</span> <span class="nb">object</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Collect _BASE_PARAMS declared on this class</span>
+        <span class="k">if</span> <span class="s2">"_BASE_PARAMS"</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="p">(</span><span class="n">param_type</span><span class="p">,</span> <span class="n">_default</span><span class="p">)</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="n">_BASE_PARAMS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">param_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                    <span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_type</span>
+
+        <span class="c1"># Collect explicit __init__ signature params</span>
+        <span class="k">if</span> <span class="s2">"__init__"</span> <span class="ow">in</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"self"</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">annotation</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">annotation</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">annotation</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                    <span class="n">params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation</span>
+
+    <span class="k">return</span> <span class="n">params</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_type_compatible</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Check if value is compatible with expected_type.</span>
+<span class="sd">    Lenient for numerics: int annotation accepts int; float annotation accepts int or float.</span>
+<span class="sd">    None type means no check.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Handle typing module types (Optional, Union, etc.)</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">expected_type</span><span class="p">,</span> <span class="s2">"__origin__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># For complex types (Union, Optional, List, etc.), skip checking</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Numeric leniency: int annotation accepts int only;</span>
+    <span class="c1"># float annotation accepts int or float</span>
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1"># For other types, use isinstance</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="c1"># If isinstance fails (e.g., with some typing constructs), skip</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="pre_instantiation_check">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.pre_instantiation_check">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pre_instantiation_check</span><span class="p">(</span><span class="n">process_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate pipeline config before operator instantiation.</span>
+
+<span class="sd">    Checks:</span>
+<span class="sd">    - Operator names exist in the registry (with fuzzy match suggestions)</span>
+<span class="sd">    - Parameter names are valid for the operator (with fuzzy match suggestions)</span>
+<span class="sd">    - Parameter types match annotations</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        process_list: cfg.process - list of {op_name: args_dict} dicts</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        PipelineConfigError: if any errors are found, with all errors collected</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">process_list</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PreflightError</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_op_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">OPERATORS</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">process_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PreflightError</span><span class="p">(</span><span class="s2">"__config__"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Malformed process entry: </span><span class="si">{</span><span class="n">item</span><span class="si">!r}</span><span class="s2">"</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="n">op_name</span><span class="p">,</span> <span class="n">op_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Check 1: operator name exists</span>
+        <span class="k">if</span> <span class="n">op_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">OPERATORS</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+            <span class="n">suggestions</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">all_op_names</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PreflightError</span><span class="p">(</span>
+                    <span class="n">op_name</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"Unknown operator '</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">' not found in registry"</span><span class="p">,</span>
+                    <span class="n">suggestions</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># No args to check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">op_args</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">OPERATORS</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span>
+        <span class="n">valid_params</span> <span class="o">=</span> <span class="n">_get_valid_params</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="n">valid_param_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">valid_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_value</span> <span class="ow">in</span> <span class="n">op_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Check 2: parameter name is valid</span>
+            <span class="k">if</span> <span class="n">param_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_params</span><span class="p">:</span>
+                <span class="n">suggestions</span> <span class="o">=</span> <span class="n">get_close_matches</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">valid_param_names</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">PreflightError</span><span class="p">(</span>
+                        <span class="n">op_name</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">"Unknown parameter '</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2">'"</span><span class="p">,</span>
+                        <span class="n">suggestions</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check 3: parameter type matches</span>
+            <span class="n">expected_type</span> <span class="o">=</span> <span class="n">valid_params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">expected_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">param_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_type_compatible</span><span class="p">(</span><span class="n">param_value</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">PreflightError</span><span class="p">(</span>
+                            <span class="n">op_name</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">"Parameter '</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s2">' expects type "</span>
+                            <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="n">expected_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">', got "</span>
+                            <span class="sa">f</span><span class="s2">"'</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">param_value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">' (value: </span><span class="si">{</span><span class="n">param_value</span><span class="si">!r}</span><span class="s2">)"</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineConfigError</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Post-instantiation check</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="post_instantiation_check">
+<a class="viewcode-back" href="../../../api/data_juicer.core.preflight.html#data_juicer.core.preflight.post_instantiation_check">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">post_instantiation_check</span><span class="p">(</span>
+    <span class="n">ops</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OP</span><span class="p">],</span>
+    <span class="n">dataset_schema</span><span class="p">:</span> <span class="s2">"Schema"</span><span class="p">,</span>
+    <span class="n">cfg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Validate pipeline state after operator instantiation.</span>
+
+<span class="sd">    Checks:</span>
+<span class="sd">    - Each op's text_key exists in the dataset schema (non-default only)</span>
+<span class="sd">    - Op type is supported by the configured executor (Ray mode restrictions)</span>
+<span class="sd">    - Export path accessibility (if cfg provided)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ops: list of instantiated OP objects</span>
+<span class="sd">        dataset_schema: Schema object from the dataset</span>
+<span class="sd">        cfg: optional global config namespace</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        PipelineRuntimeError: if any errors are found</span>
+<span class="sd">    """</span>
+    <span class="n">errors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PreflightError</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">schema_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset_schema</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">if</span> <span class="n">dataset_schema</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="c1"># Determine executor type for compatibility checks</span>
+    <span class="n">executor_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"executor_type"</span><span class="p">,</span> <span class="s2">"default"</span><span class="p">)</span> <span class="k">if</span> <span class="n">cfg</span> <span class="k">else</span> <span class="s2">"default"</span>
+
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+        <span class="n">op_display_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># Check: text_key exists in schema — only when user explicitly set</span>
+        <span class="c1"># a non-default text_key (meaning they expect that column to exist).</span>
+        <span class="c1"># Default text_key may not be needed by multimedia ops.</span>
+        <span class="n">op_base_params</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="n">_BASE_PARAMS</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">),</span> <span class="s2">"_BASE_PARAMS"</span><span class="p">)</span> <span class="k">else</span> <span class="n">OP</span><span class="o">.</span><span class="n">_BASE_PARAMS</span>
+        <span class="n">default_text_key</span> <span class="o">=</span> <span class="n">op_base_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text_key"</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">schema_columns</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">text_key</span> <span class="o">!=</span> <span class="n">default_text_key</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">text_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">schema_columns</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PreflightError</span><span class="p">(</span>
+                    <span class="n">op_display_name</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"text_key '</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">text_key</span><span class="si">}</span><span class="s2">' not found in dataset "</span> <span class="sa">f</span><span class="s2">"columns: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">schema_columns</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check: op type is supported by the current executor mode</span>
+        <span class="k">if</span> <span class="n">executor_type</span> <span class="ow">and</span> <span class="n">executor_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">_supported_exec_modes</span><span class="p">:</span>
+            <span class="n">op_type_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">OP</span><span class="p">)</span> <span class="ow">and</span> <span class="n">b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">OP</span><span class="p">),</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PreflightError</span><span class="p">(</span>
+                    <span class="n">op_display_name</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"Operator type '</span><span class="si">{</span><span class="n">op_type_name</span><span class="si">}</span><span class="s2">' does not support "</span>
+                    <span class="sa">f</span><span class="s2">"executor mode '</span><span class="si">{</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">'. "</span>
+                    <span class="sa">f</span><span class="s2">"Supported modes: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_supported_exec_modes</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Check config-level constraints</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_check_export_path</span><span class="p">(</span><span class="n">cfg</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">errors</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PipelineRuntimeError</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_export_path</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">PreflightError</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Check export path accessibility (local paths only)."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
+
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">export_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"export_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">export_path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">errors</span>
+
+    <span class="n">scheme</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="s2">"hdfs"</span><span class="p">,</span> <span class="s2">"oss"</span><span class="p">):</span>
+        <span class="c1"># Remote paths: rely on the SDK's credential provider chain at export</span>
+        <span class="c1"># time. Preflight cannot reliably detect all valid auth mechanisms</span>
+        <span class="c1"># (IAM roles, Web Identity, shared credential files, etc.)</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Local path: check parent directory is writable</span>
+        <span class="n">export_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">export_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">export_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PreflightError</span><span class="p">(</span>
+                    <span class="s2">"__config__"</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"Export directory '</span><span class="si">{</span><span class="n">export_dir</span><span class="si">}</span><span class="s2">' is not writable"</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">errors</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Data-Juicer Team.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1028,10 +1028,53 @@
     <span class="c1"># whether this operator is a batched operator</span>
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">False</span>
 
+    <span class="c1"># executor modes this operator supports: "default", "ray", "ray_partitioned"</span>
+    <span class="n">_supported_exec_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"default"</span><span class="p">,)</span>
+
     <span class="c1"># extra requirements for this operator. Should be:</span>
     <span class="c1">#   1. a list of packages</span>
     <span class="c1">#   2. a string of the path to the requirements.txt file</span>
     <span class="n">_requirements</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Centralized declaration of all parameters accepted by the OP base class.</span>
+    <span class="c1"># Format: {param_name: (type_or_None, default_value)}</span>
+    <span class="c1"># This serves as the authoritative source for:</span>
+    <span class="c1">#   - preflight parameter name validation</span>
+    <span class="c1">#   - preflight parameter type checking</span>
+    <span class="c1">#   - documentation generation</span>
+    <span class="n">_BASE_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Data keys</span>
+        <span class="s2">"text_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+        <span class="s2">"image_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">),</span>
+        <span class="s2">"audio_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"audios"</span><span class="p">),</span>
+        <span class="s2">"video_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"videos"</span><span class="p">),</span>
+        <span class="s2">"image_bytes_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"image_bytes"</span><span class="p">),</span>
+        <span class="s2">"system_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"system"</span><span class="p">),</span>
+        <span class="s2">"instruction_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"instruction"</span><span class="p">),</span>
+        <span class="s2">"prompt_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"prompt"</span><span class="p">),</span>
+        <span class="s2">"query_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"query"</span><span class="p">),</span>
+        <span class="s2">"response_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"response"</span><span class="p">),</span>
+        <span class="s2">"history_key"</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"history"</span><span class="p">),</span>
+        <span class="s2">"index_key"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"work_dir"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="c1"># Behavior control</span>
+        <span class="s2">"skip_op_error"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="s2">"auto_op_parallelism"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="s2">"batch_mode"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"accelerator"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"batch_size"</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">DEFAULT_BATCH_SIZE</span><span class="p">),</span>
+        <span class="s2">"num_proc"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"turbo"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="c1"># Resource declarations</span>
+        <span class="s2">"cpu_required"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"gpu_required"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"mem_required"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"num_cpus"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"num_gpus"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"memory"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"runtime_env"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"ray_execution_mode"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">}</span>
 
     <span class="c1"># Attributes excluded from cache fingerprinting only (not from</span>
     <span class="c1"># pickling/dill serialization).  These do not affect data</span>
@@ -1375,6 +1418,8 @@
 <div class="viewcode-block" id="Mapper">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Mapper">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Mapper</span><span class="p">(</span><span class="n">OP</span><span class="p">):</span>
+    <span class="n">_supported_exec_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="s2">"ray"</span><span class="p">,</span> <span class="s2">"ray_partitioned"</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Mapper.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Mapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1501,6 +1546,16 @@
 <div class="viewcode-block" id="Filter">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Filter">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Filter</span><span class="p">(</span><span class="n">OP</span><span class="p">):</span>
+    <span class="n">_supported_exec_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="s2">"ray"</span><span class="p">,</span> <span class="s2">"ray_partitioned"</span><span class="p">)</span>
+
+    <span class="n">_BASE_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">**</span><span class="n">OP</span><span class="o">.</span><span class="n">_BASE_PARAMS</span><span class="p">,</span>
+        <span class="s2">"stats_export_path"</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">"min_closed_interval"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="s2">"max_closed_interval"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="s2">"reversed_range"</span><span class="p">:</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+    <span class="p">}</span>
+
 <div class="viewcode-block" id="Filter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Filter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1675,6 +1730,8 @@
 <div class="viewcode-block" id="Deduplicator">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Deduplicator">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Deduplicator</span><span class="p">(</span><span class="n">OP</span><span class="p">):</span>
+    <span class="n">_supported_exec_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="s2">"ray"</span><span class="p">,</span> <span class="s2">"ray_partitioned"</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Deduplicator.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Deduplicator.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1943,6 +2000,8 @@
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Pipeline">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="n">OP</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Base class for Operators that represent a data processing pipeline."""</span>
+
+    <span class="n">_supported_exec_modes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"default"</span><span class="p">,</span> <span class="s2">"ray"</span><span class="p">,</span> <span class="s2">"ray_partitioned"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.ops.base_op.html#data_juicer.ops.Pipeline.__init__">[文档]</a>

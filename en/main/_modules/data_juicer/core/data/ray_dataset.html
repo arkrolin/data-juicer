@@ -957,6 +957,12 @@
         <span class="k">if</span> <span class="n">cached_columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cached_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">())</span>
 
+        <span class="k">if</span> <span class="s2">"ray"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">_supported_exec_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Operator '</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">' does not support "</span>
+                <span class="sa">f</span><span class="s2">"Ray mode. Supported modes: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_supported_exec_modes</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="n">TAGGING_OPS</span><span class="o">.</span><span class="n">modules</span> <span class="ow">and</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cached_columns</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">process_batch_arrow</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">Table</span><span class="p">):</span>
@@ -1093,9 +1099,6 @@
                             <span class="n">op</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">original_process</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="p">(</span><span class="n">Deduplicator</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Ray executor only support Filter, Mapper, Deduplicator and Pipeline OPs for now"</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span>
         <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"An error occurred during Op [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">]."</span><span class="p">)</span>
             <span class="k">raise</span>

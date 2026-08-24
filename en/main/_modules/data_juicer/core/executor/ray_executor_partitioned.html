@@ -1380,6 +1380,13 @@
         <span class="c1"># Note: Config validation is handled in _resume_job() if resuming</span>
 
         <span class="c1"># Load the full dataset using a single DatasetBuilder</span>
+        <span class="c1"># Preflight stage 1: validate config before any expensive I/O</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"strict_preflight"</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.preflight</span><span class="w"> </span><span class="kn">import</span> <span class="n">pre_instantiation_check</span>
+
+            <span class="n">pre_instantiation_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+
+        <span class="c1"># Load the full dataset using single DatasetBuilder</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Loading dataset with single DatasetBuilder..."</span><span class="p">)</span>
 
         <span class="c1"># Ray Dataset captures a copy of DataContext when it is created. This</span>
@@ -1388,11 +1395,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_enable_deterministic_execution</span><span class="p">()</span>
         <span class="n">override_num_blocks</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"override_num_blocks"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasetbuilder</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">num_proc</span><span class="o">=</span><span class="n">load_data_np</span><span class="p">,</span> <span class="n">override_num_blocks</span><span class="o">=</span><span class="n">override_num_blocks</span><span class="p">)</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">schema</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">dataset_schema</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">schema</span><span class="p">()</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">dataset_schema</span><span class="o">.</span><span class="n">columns</span>
 
         <span class="c1"># Prepare operations</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Preparing operations..."</span><span class="p">)</span>
         <span class="n">ops</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_operators</span><span class="p">()</span>
+
+        <span class="c1"># Preflight stage 2: validate ops against dataset schema and environment</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"strict_preflight"</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.preflight</span><span class="w"> </span><span class="kn">import</span> <span class="n">post_instantiation_check</span>
+
+            <span class="n">post_instantiation_check</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span> <span class="n">dataset_schema</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">)</span>
 
         <span class="c1"># A resumed job must reuse the saved partition count before DAG</span>
         <span class="c1"># initialization. Auto mode can otherwise choose a different count if</span>
