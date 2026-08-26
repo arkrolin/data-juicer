@@ -1,778 +1,186 @@
-
 <!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sandbox — data-juicer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" id="pygments-dark-css" href="../_static/pygments_dark.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/ask-ai-widget.css" type="text/css" />
+  <link rel="icon" href="../_static/icon.png" />
 
-<html lang="en" data-content_root="../" >
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Sandbox &#8212; Data Juicer</title>
-  
-  
-  
-  <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  <script>
+  (function(){var t=localStorage.getItem('dj-theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);var d=document.getElementById('pygments-dark-css');if(d){d.disabled=(t!=='dark')}})();
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="navbar-left">
+        <button class="sidebar-toggle" aria-label="Toggle sidebar" id="sidebar-toggle">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="../index.html" class="navbar-brand">
+          <img src="../_static/images/icon.png" alt="data-juicer" class="navbar-logo" />
+          <span class="navbar-title">data-juicer</span>
+        </a>
+      </div>
 
-    </style>
-  </noscript>
-  
-  <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+      <nav class="navbar-center">
+        <a href="https://datajuicer.github.io/data-juicer-sandbox/en/main/" class="navbar-link" target="_blank" rel="noopener">Sandbox<svg class="external-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5h7v7M10.5 1.5L4 8"/></svg></a>
+        <a href="https://datajuicer.github.io/data-juicer-hub/en/main/" class="navbar-link" target="_blank" rel="noopener">Hub<svg class="external-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5h7v7M10.5 1.5L4 8"/></svg></a>
+        <a href="https://datajuicer.github.io/data-juicer-agents/en/main/" class="navbar-link" target="_blank" rel="noopener">Agents<svg class="external-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5h7v7M10.5 1.5L4 8"/></svg></a>
+      </nav>
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=34d13042" />
-    <link rel="stylesheet" type="text/css" href="../_static/ask-ai-widget.css?v=028e49fc" />
-  
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
-
-    <script>window.JUICER_API_URL = 'https://datajuicer.online:443';</script>
-    <script src="../_static/documentation_options.js?v=8a448e45"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/Sandbox';</script>
-    <script src="../_static/sidebar.js?v=3fc1065c"></script>
-    <script src="../_static/switcher-mobile.js?v=07875724"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="../_static/ask-ai-widget.js?v=7a5b498f"></script>
-    <link rel="icon" href="../_static/icon.png"/>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Awesome Data-Model Co-Development of MLLMs" href="awesome_llm_data.html" />
-    <link rel="prev" title="Data Recipe Gallery" href="RecipeGallery.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
-  </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
-  
-  
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
-  
-  <dialog id="pst-search-dialog">
-    
-<form class="bd-search d-flex align-items-center"
-      action="../search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         placeholder="Search docs..."
-         aria-label="Search docs..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
-  
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
-<div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
-    <span class="fa-solid fa-bars"></span>
-  </button>
-  
-  
-  <div class="col-lg-3 navbar-header-items__start">
-    
-      <div class="navbar-item">
-
-  
-    
-  
-
-<a class="navbar-brand logo" href="../index.html">
-  
-  
-  
-  
-  
-    
-    
-      
-    
-    
-    <img src="../_static/icon.png" class="logo__image only-light" alt=""/>
-    <img src="../_static/icon.png" class="logo__image only-dark pst-js-only" alt=""/>
-  
-  
-    <p class="title logo__title">Data Juicer</p>
-  
-</a></div>
-    
-  </div>
-  
-  <div class="col-lg-9 navbar-header-items">
-    
-    <div class="me-auto navbar-header-items__center">
-      
-        <div class="navbar-item">
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../docs_index.html">
-    DOCS
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api.html">
-    API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
-    Sandbox
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
-    Hub
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
-    Agents
-  </a>
-</li>
-
-  </ul>
-</nav></div>
-      
-    </div>
-    
-    
-    <div class="navbar-header-items__end">
-      
-        <div class="navbar-item navbar-persistent--container">
-          
-
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+      <div class="navbar-right">
+        <button class="search-trigger" id="search-trigger" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14" stroke-linecap="round"/></svg>
+          <span>Search...</span>
+          <kbd>⌘K</kbd>
+        </button>
+        <div class="dropdown" id="lang-dropdown">
+          <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+            <svg class="dropdown-icon-svg" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c-2 2.5-2 10.5 0 13M8 1.5c2 2.5 2 10.5 0 13"/></svg>
+            <span class="dropdown-text">en</span>
+            <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
+          <div class="dropdown-panel">
+            <a href="../../../en/v1.4.1/docs/Sandbox.html" class="dropdown-item active">English</a>
+            <a href="../../../zh_CN/v1.4.1/docs/Sandbox_ZH.html" class="dropdown-item">简体中文</a>
+          </div>
         </div>
-      
-      
-        <div class="navbar-item"><ul class="navbar-icon-links"
-    aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/datajuicer/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
-        </li>
-</ul></div>
-      
-        <div class="navbar-item">
+        <div class="dropdown" id="version-dropdown"
+             data-versions-url="https://datajuicer.github.io/data-juicer/versions.json"
+             data-link-prefix="../../"
+             data-page="docs/Sandbox"
+             data-current="v1.4.1">
+          <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+            <svg class="dropdown-icon-svg" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4l5.5 2.5L13.5 4M8 6.5V14"/><path d="M13.5 4v6l-5.5 4L2.5 10V4L8 1.5 13.5 4z"/></svg>
+            <span class="dropdown-text">v1.4.1</span>
+            <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </button>
+          <div class="dropdown-panel">
+            <a href="../../main/docs/Sandbox.html" class="dropdown-item">main</a>
+            <a href="../../v1.5.5/docs/Sandbox.html" class="dropdown-item">v1.5.5</a>
+            <a href="../../v1.5.4/docs/Sandbox.html" class="dropdown-item">v1.5.4</a>
+            <a href="../../v1.5.3/docs/Sandbox.html" class="dropdown-item">v1.5.3</a>
+            <a href="../../v1.5.2/docs/Sandbox.html" class="dropdown-item">v1.5.2</a>
+            <a href="../../v1.5.1/docs/Sandbox.html" class="dropdown-item">v1.5.1</a>
+            <a href="../../v1.5.0/docs/Sandbox.html" class="dropdown-item">v1.5.0</a>
+            <a href="../../v1.4.6/docs/Sandbox.html" class="dropdown-item">v1.4.6</a>
+            <a href="../../v1.4.5/docs/Sandbox.html" class="dropdown-item">v1.4.5</a>
+            <a href="../../v1.4.4/docs/Sandbox.html" class="dropdown-item">v1.4.4</a>
+            <a href="../../v1.4.3/docs/Sandbox.html" class="dropdown-item">v1.4.3</a>
+            <a href="../../v1.4.2/docs/Sandbox.html" class="dropdown-item">v1.4.2</a>
+            <a href="../../v1.4.1/docs/Sandbox.html" class="dropdown-item active">v1.4.1</a>
+            <a href="../../v1.4.0/docs/Sandbox.html" class="dropdown-item">v1.4.0</a>
+          </div>
+        </div>
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
-      
-        <div class="navbar-item"><div class="navbar-switcher-container">
-  
-  <div class="navbar-dropdown language-dropdown">
-    <button type="button" 
-            class="navbar-dropdown-trigger" 
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Select language: en">
-      <span class="switcher-icon" aria-hidden="true">🌐</span>
-      <span class="switcher-text">en</span>
-      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
-    </button>
-    <div class="navbar-dropdown-panel" role="menu">
-      <div class="dropdown-content">
-        
-          
-          
-          <a href="../../../en/v1.4.1/docs/Sandbox.html"
-             class="dropdown-item active"
-             role="menuitem"
-             aria-current="true">
-            English
-          </a>
-        
-          
-          
-          <a href="../../../zh_CN/v1.4.1/docs/Sandbox_ZH.html"
-             class="dropdown-item "
-             role="menuitem"
-             >
-            简体中文
-          </a>
-        
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M15.75 9.59A6.75 6.75 0 1 1 8.41 2.25 5.25 5.25 0 0 0 15.75 9.59z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a href="https://github.com/datajuicer/data-juicer" class="navbar-icon-link" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
       </div>
     </div>
-  </div>
-  
+  </header>
 
-  
-  <div class="navbar-dropdown version-dropdown">
-    <button type="button" 
-            class="navbar-dropdown-trigger" 
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Select version: v1.4.1">
-      <span class="switcher-icon" aria-hidden="true">📦</span>
-      <span class="switcher-text">v1.4.1</span>
-      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
-    </button>
-    <div class="navbar-dropdown-panel" role="menu">
-      <div class="dropdown-content">
-        
-        <a href="../../main/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          main
-        </a>
-        
-        <a href="../../v1.5.5/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.5
-        </a>
-        
-        <a href="../../v1.5.4/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.4
-        </a>
-        
-        <a href="../../v1.5.3/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.3
-        </a>
-        
-        <a href="../../v1.5.2/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.2
-        </a>
-        
-        <a href="../../v1.5.1/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.1
-        </a>
-        
-        <a href="../../v1.5.0/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.0
-        </a>
-        
-        <a href="../../v1.4.6/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.6
-        </a>
-        
-        <a href="../../v1.4.5/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.5
-        </a>
-        
-        <a href="../../v1.4.4/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.4
-        </a>
-        
-        <a href="../../v1.4.3/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.3
-        </a>
-        
-        <a href="../../v1.4.2/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.2
-        </a>
-        
-        <a href="../../v1.4.1/docs/Sandbox.html"
-           class="dropdown-item active"
-           role="menuitem"
-           aria-current="true">
-          v1.4.1
-        </a>
-        
-        <a href="../../v1.4.0/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.0
-        </a>
-        
-      </div>
-    </div>
-  </div>
-  
-</div></div>
-      
-    </div>
-    
-  </div>
-  
-  
-    <div class="navbar-persistent--mobile">
-
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-    </div>
-  
-
-  
-    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
-      <span class="fa-solid fa-outdent"></span>
-    </button>
-  
-</div>
-
-    </header>
-  
-
-  <div class="bd-container">
-    <div class="bd-container__inner bd-page-width">
-      
-      
-      
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
-        
-
-  
-  <div class="sidebar-header-items sidebar-primary__section">
-    
-    
-      <div class="sidebar-header-items__center">
-        
-          
-          
-            <div class="navbar-item">
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../docs_index.html">
-    DOCS
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api.html">
-    API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
-    Sandbox
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
-    Hub
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
-    Agents
-  </a>
-</li>
-
-  </ul>
-</nav></div>
-          
-        
-      </div>
-    
-    
-    
-      <div class="sidebar-header-items__end">
-        
-          <div class="navbar-item"><ul class="navbar-icon-links"
-    aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/datajuicer/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
-        </li>
-</ul></div>
-        
-          <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
-        
-          <div class="navbar-item"><div class="navbar-switcher-container">
-  
-  <div class="navbar-dropdown language-dropdown">
-    <button type="button" 
-            class="navbar-dropdown-trigger" 
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Select language: en">
-      <span class="switcher-icon" aria-hidden="true">🌐</span>
-      <span class="switcher-text">en</span>
-      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
-    </button>
-    <div class="navbar-dropdown-panel" role="menu">
-      <div class="dropdown-content">
-        
-          
-          
-          <a href="../../../en/v1.4.1/docs/Sandbox.html"
-             class="dropdown-item active"
-             role="menuitem"
-             aria-current="true">
-            English
-          </a>
-        
-          
-          
-          <a href="../../../zh_CN/v1.4.1/docs/Sandbox_ZH.html"
-             class="dropdown-item "
-             role="menuitem"
-             >
-            简体中文
-          </a>
-        
-      </div>
-    </div>
-  </div>
-  
-
-  
-  <div class="navbar-dropdown version-dropdown">
-    <button type="button" 
-            class="navbar-dropdown-trigger" 
-            aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Select version: v1.4.1">
-      <span class="switcher-icon" aria-hidden="true">📦</span>
-      <span class="switcher-text">v1.4.1</span>
-      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
-    </button>
-    <div class="navbar-dropdown-panel" role="menu">
-      <div class="dropdown-content">
-        
-        <a href="../../main/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          main
-        </a>
-        
-        <a href="../../v1.5.5/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.5
-        </a>
-        
-        <a href="../../v1.5.4/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.4
-        </a>
-        
-        <a href="../../v1.5.3/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.3
-        </a>
-        
-        <a href="../../v1.5.2/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.2
-        </a>
-        
-        <a href="../../v1.5.1/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.1
-        </a>
-        
-        <a href="../../v1.5.0/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.5.0
-        </a>
-        
-        <a href="../../v1.4.6/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.6
-        </a>
-        
-        <a href="../../v1.4.5/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.5
-        </a>
-        
-        <a href="../../v1.4.4/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.4
-        </a>
-        
-        <a href="../../v1.4.3/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.3
-        </a>
-        
-        <a href="../../v1.4.2/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.2
-        </a>
-        
-        <a href="../../v1.4.1/docs/Sandbox.html"
-           class="dropdown-item active"
-           role="menuitem"
-           aria-current="true">
-          v1.4.1
-        </a>
-        
-        <a href="../../v1.4.0/docs/Sandbox.html"
-           class="dropdown-item "
-           role="menuitem"
-           >
-          v1.4.0
-        </a>
-        
-      </div>
-    </div>
-  </div>
-  
-</div></div>
-        
-      </div>
-    
-  </div>
-  
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="tutorial/DJ-Cookbook.html">DJ-Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/Installation.html">Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial/QuickStart.html">Quick Start</a></li>
+  <div class="page-wrapper">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <ul class="sidebar-home">
+            <li class="">
+              <a href="../index.html">Home</a>
+            </li>
+          </ul>
+          <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../docs_index.html">DOCS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial/DJ-Cookbook.html">DJ-Cookbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/Installation.html">Installation Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/QuickStart.html">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Operators.html">Operator Schemas 算子提要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DatasetCfg.html">Dataset Configuration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="BadDataExhibition.html">“Bad” Data Exhibition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DJ_SORA.html">DJ-SORA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DJ_service.html">DJ_service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DeveloperGuide.html">How-to Guide for Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RecipeGallery.html">Data Recipe Gallery</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
+<li class="toctree-l2"><a class="reference internal" href="../demos/README.html">Demos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/distributed_deduplication/README.html">Distributed Fuzzy Deduplication Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/evaluator/README.html">Auto Evaluation Toolkit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/evaluator/gpt_eval/README.html">GPT EVAL: Evaluate your model with OpenAI API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/evaluator/recorder/README.html">Evaluation Results Recorder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/fmt_conversion/README.html">Format Conversion Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/fmt_conversion/multimodal/README.html">Multimodal Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/fmt_conversion/post_tuning_dialog/README.html">Post Tuning Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/hpo/README.html">Hyper-parameter Optimization for Data Recipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/humanops/README.html">Label Studio Service Utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/mm_eval/inception_metrics/README.html">Metrics for video generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/postprocess/README.html">Postprocess tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/preprocess/README.html">Preprocess Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/quality_classifier/README.html">Data Scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">docs</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="Operators.html">Operator Schemas 算子提要</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DatasetCfg.html">Dataset Configuration Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="BadDataExhibition.html">“Bad” Data Exhibition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DJ_SORA.html">DJ-SORA</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DJ_service.html">DJ_service</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DeveloperGuide.html">How-to Guide for Developers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="RecipeGallery.html">Data Recipe Gallery</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sandbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
+</li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">demos</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../demos/README.html">Demos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.core.html">data_juicer.core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.html">data_juicer.ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.filter.html">data_juicer.ops.filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.mapper.html">data_juicer.ops.mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.deduplicator.html">data_juicer.ops.deduplicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.selector.html">data_juicer.ops.selector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.ops.common.html">data_juicer.ops.common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.analysis.html">data_juicer.analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.config.html">data_juicer.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data_juicer.format.html">data_juicer.format</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../tools/distributed_deduplication/README.html">Distributed Fuzzy Deduplication Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/evaluator/README.html">Auto Evaluation Toolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/evaluator/gpt_eval/README.html">GPT EVAL: Evaluate your model with OpenAI API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/evaluator/recorder/README.html">Evaluation Results Recorder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/fmt_conversion/README.html">Format Conversion Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/fmt_conversion/multimodal/README.html">Multimodal Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/fmt_conversion/post_tuning_dialog/README.html">Post Tuning Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/hpo/README.html">Hyper-parameter Optimization for Data Recipe</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/humanops/README.html">Label Studio Service Utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/mm_eval/inception_metrics/README.html">Metrics for video generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/postprocess/README.html">Postprocess tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/preprocess/README.html">Preprocess Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tools/quality_classifier/README.html">Data Scoring</a></li>
+</li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
-</ul>
-</div>
-</nav></div>
-    </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
-  </div>
 
 
+        </nav>
       </div>
-      
-      <main id="main-content" class="bd-main" role="main">
-        
-        
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article d-print-none">
-<div class="header-article-items header-article__inner">
-  
-    <div class="header-article-items__start">
-      
-        <div class="header-article-item">
+    </aside>
 
-<nav aria-label="Breadcrumb" class="d-print-none">
-  <ul class="bd-breadcrumbs">
-    
-    <li class="breadcrumb-item breadcrumb-home">
-      <a href="../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
-      </a>
-    </li>
-    
-    <li class="breadcrumb-item"><a href="../docs_index.html" class="nav-link">DOCS</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sandbox</span></li>
-  </ul>
-</nav>
-</div>
-      
-    </div>
-  
-  
-</div>
-</div>
-              
-              
-              
-                
-<div id="searchbox"></div>
-                <article class="bd-article">
-                  
-
-
+    <main class="main-content">
+      <div class="content-wrapper">
+        <article class="article" role="main">
   <section id="sandbox">
-<h1>Sandbox<a class="headerlink" href="#sandbox" title="Link to this heading">#</a></h1>
+<h1>Sandbox<a class="headerlink" href="#sandbox" title="Link to this heading">¶</a></h1>
 <section id="user-guide">
-<h2>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h2>
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">¶</a></h2>
 <section id="what-is-dj-sandbox">
-<h3>What is DJ-Sandbox?<a class="headerlink" href="#what-is-dj-sandbox" title="Link to this heading">#</a></h3>
+<h3>What is DJ-Sandbox?<a class="headerlink" href="#what-is-dj-sandbox" title="Link to this heading">¶</a></h3>
 <p>In Data-Juicer, the DJ-Sandbox is a middleware that links data and model feedback, enabling high performance and low-cost verification across a wide range of tasks. It aims to provide users with the best practices for continuously enhancing data-model recipes, featuring low overhead, portability, and guidance. In the sandbox, users can quickly experiment, iterate, and refine recipes based on small-scale datasets and models before scaling up to produce high-quality data to serve large-scale models.</p>
 <p>In addition to the basic data optimization and recipe refinement features offered by Data-Juicer, users can seamlessly use configurable components such as data probing and analysis, model training and evaluation, and data and model feedback-based recipe refinement to form preferred pipelines for data-model research and development.</p>
 <p>For more detailed information, please refer to our <a class="reference external" href="http://arxiv.org/abs/2407.11784">paper</a> (ICML’25 spotlight).</p>
 </section>
 <section id="applications-and-use-cases">
-<h3>Applications and Use-Cases<a class="headerlink" href="#applications-and-use-cases" title="Link to this heading">#</a></h3>
+<h3>Applications and Use-Cases<a class="headerlink" href="#applications-and-use-cases" title="Link to this heading">¶</a></h3>
 <p>We apply the sandbox to many cutting-edge models, such as Mini-Gemini and InternVL-2.0 (two LLaVA-inspired models for image-to-text generation), EasyAnimate and T2V-Turbo (two Diffusion Transformer-based models for text-to-video generation), and a CLIP model for image-text pre-training. Among these, we have secured a new leading position on the <a class="reference external" href="https://huggingface.co/spaces/Vchitect/VBench_Leaderboard">VBench</a> text-to-video leaderboard.
 <img alt="top-1_in_vbench" src="https://img.alicdn.com/imgextra/i1/O1CN01I9wHW91UNnX9wtCWu_!!6000000002506-2-tps-1275-668.png" /></p>
 <p>The model is now publicly available on the ModelScope and HuggingFace platforms, and the training dataset has also been available.</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Open-source model or dataset</p></th>
 <th class="head"><p>Link</p></th>
@@ -798,9 +206,8 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>Following is the case study for Data-Juicer (DJ, 228k) outputs.</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Prompt</p></th>
 <th class="head"><p>Generated Video</p></th>
@@ -827,14 +234,13 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>To reproduce the paper’s experiments, please refer to the sandbox usage guide below, the experimental process in the following figure, the <a class="reference external" href="http://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/MM_data/our_refined_data/Data-Juicer-T2V/data_juicer_t2v_init_data_pool.zip">initial dataset</a>, and the configuration file demos for the process: <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/v1.4.1/configs/data_juicer_recipes/sandbox/easyanimate_text_to_video/1_single_op_pipeline.yaml">1_single_op_pipeline.yaml</a>, <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/v1.4.1/configs/data_juicer_recipes/sandbox/easyanimate_text_to_video/2_multi_op_pipeline.yaml">2_multi_op_pipeline.yaml</a>, <a class="reference external" href="https://github.com/datajuicer/data-juicer/blob/v1.4.1/configs/data_juicer_recipes/sandbox/easyanimate_text_to_video/3_duplicate_pipeline.yaml">3_duplicate_pipeline.yaml</a>.
 <img alt="bench_bottom_up" src="https://img.alicdn.com/imgextra/i2/O1CN01xvu2fo1HU80biR6Q5_!!6000000000760-2-tps-7756-3693.png" /></p>
 </section>
 <section id="quick-start">
-<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h3>
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h3>
 <section id="requirements">
-<h4>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h4>
+<h4>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h4>
 <p>Before using sandbox, you might need to install sandbox-related dependencies by running the command below:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>sandbox<span class="o">]</span>
 </pre></div>
@@ -859,7 +265,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <p>If some Module-Not-Found errors are raised by these third-party libraries when running the sandbox, users need to check their docs first.</p>
 </section>
 <section id="prepare-configuration-files-for-sandbox">
-<h4>Prepare Configuration Files for Sandbox<a class="headerlink" href="#prepare-configuration-files-for-sandbox" title="Link to this heading">#</a></h4>
+<h4>Prepare Configuration Files for Sandbox<a class="headerlink" href="#prepare-configuration-files-for-sandbox" title="Link to this heading">¶</a></h4>
 <p>The sandbox will sequentially execute four types of jobs: Data/Model Probe (<code class="docutils literal notranslate"><span class="pre">probe_job_configs</span></code>), Iterative Recipe Refinement based on Probe Results(<code class="docutils literal notranslate"><span class="pre">refine_recipe_job_configs</span></code>), Dataset Processing and Model Training (<code class="docutils literal notranslate"><span class="pre">execution_job_configs</span></code>) and Data/Model Evaluation (<code class="docutils literal notranslate"><span class="pre">evaluation_job_configs</span></code>). Within each category of jobs, jobs are carried out in the order specified by the configured job list. Each task requires specifying: the hook for mounting this job (<code class="docutils literal notranslate"><span class="pre">hook</span></code>), the tag name for identifying the hook (<code class="docutils literal notranslate"><span class="pre">meta_name</span></code>), Data-Juicer data processing parameters (<code class="docutils literal notranslate"><span class="pre">dj_configs</span></code>), as well as other specific parameters for the job (<code class="docutils literal notranslate"><span class="pre">extra_configs</span></code>). Among these parameters, hook is required, while others may be left empty. dj_configs can refer to the full Data-Juicer data processing parameters available in <a class="reference external" href="https://github.com/modelscope/data-juicer/blob/main/configs/config_all.yaml">config_all.yaml</a>. The <code class="docutils literal notranslate"><span class="pre">extra_configs</span></code> are task-specific parameters without restrictions. They can include parameters for model training, inference, evaluation, etc. For example, <code class="docutils literal notranslate"><span class="pre">path_k_sigma_recipe</span></code> can be used to specify the path for saving the data recipe refined using the k-sigma method. An example of a sandbox configuration file can be found at <code class="docutils literal notranslate"><span class="pre">configs/demo/sandbox/sandbox.yaml</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sandbox config example</span>
 
@@ -944,7 +350,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </div></blockquote>
 </section>
 <section id="start-sandbox">
-<h4>Start Sandbox<a class="headerlink" href="#start-sandbox" title="Link to this heading">#</a></h4>
+<h4>Start Sandbox<a class="headerlink" href="#start-sandbox" title="Link to this heading">¶</a></h4>
 <p>The entry point for running the sandbox is <code class="docutils literal notranslate"><span class="pre">tools/sandbox_starter.py</span></code>. The usage is similar to the data processing and analysis tool, requiring specifying the sandbox configuration file:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">python tools/sandbox_starter.py --config configs/demo/sandbox/sandbox.yaml</span>
 </pre></div>
@@ -961,7 +367,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </section>
 </section>
 <section id="component-factory">
-<h3>Component Factory<a class="headerlink" href="#component-factory" title="Link to this heading">#</a></h3>
+<h3>Component Factory<a class="headerlink" href="#component-factory" title="Link to this heading">¶</a></h3>
 <p>In a single trial of the sandbox pipeline, four major steps involve various configurable components. Each of these components corresponds to a factory class used to initialize them:</p>
 <ul class="simple">
 <li><p><strong>Data Processing (DataExecutor)</strong>: Executor for dataset processing, i.e., the Executor of Data-Juicer</p></li>
@@ -980,7 +386,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <ul class="simple">
 <li><p>DataExecutorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -996,11 +402,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>DataPoolManipulatorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1031,11 +436,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>GeneralDataExecutorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1056,11 +460,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>DataAnalyzerFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1076,11 +479,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>DataEvaluatorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1106,11 +508,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>GeneralProbeFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1126,11 +527,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>ModelInferEvaluatorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1146,11 +546,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>ModelTrainExecutorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1181,11 +580,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>ModelInferExecutorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1201,11 +599,10 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <ul class="simple">
 <li><p>ModelEvaluatorFactory</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Component</p></th>
 <th class="head"><p>Function</p></th>
@@ -1221,19 +618,18 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <p>Please refer to <code class="docutils literal notranslate"><span class="pre">data_juicer/core/sandbox/factories.py</span></code> for detailed definitions.</p>
 </section>
 <section id="context-sharing">
-<h3>Context Sharing<a class="headerlink" href="#context-sharing" title="Link to this heading">#</a></h3>
+<h3>Context Sharing<a class="headerlink" href="#context-sharing" title="Link to this heading">¶</a></h3>
 <p>Sometimes, information needs to be shared between different hooks. For example, the <code class="docutils literal notranslate"><span class="pre">TrainModelHook</span></code> needs to share the model checkpoint path with the <code class="docutils literal notranslate"><span class="pre">EvaluateModelHook</span></code> to perform evaluation on the model after training.</p>
 <p>To achieve this, we integrate a global, both cross-hook and cross-pipeline information container called <code class="docutils literal notranslate"><span class="pre">context_infos</span></code> to store the executed results of hooks in each pipeline. The <code class="docutils literal notranslate"><span class="pre">context_infos</span></code> are constructed automatically when the pipeline is executed.</p>
 <section id="resume-mode">
-<h4>Resume Mode<a class="headerlink" href="#resume-mode" title="Link to this heading">#</a></h4>
+<h4>Resume Mode<a class="headerlink" href="#resume-mode" title="Link to this heading">¶</a></h4>
 <p>After each pipeline is finished, the <code class="docutils literal notranslate"><span class="pre">context_infos</span></code> are saved on disk. Based on this, Sandbox allows a pipeline-level resume mode to continue the sandbox execution from the last pipeline checkpoint. All we need to do is to set the <code class="docutils literal notranslate"><span class="pre">resume</span></code> parameter in the sandbox configuration file to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
 </section>
 <section id="input-output-and-local-parameter-of-hooks">
-<h4>Input, Output, and Local Parameter of Hooks<a class="headerlink" href="#input-output-and-local-parameter-of-hooks" title="Link to this heading">#</a></h4>
+<h4>Input, Output, and Local Parameter of Hooks<a class="headerlink" href="#input-output-and-local-parameter-of-hooks" title="Link to this heading">¶</a></h4>
 <p>To obtain the context infos, three new parameters are added to the hook:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code>: used to obtain results from the previous hook stored in the context infos, and update it in the configuration of the current hook.</p>
@@ -1291,11 +687,11 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </section>
 </section>
 <section id="developer-guide">
-<h2>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h2>
+<h2>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">¶</a></h2>
 <p>As mentioned in the previous section, developers can develop customized configurable components and add them to the corresponding factory classes, then route to appropriate instantiation methods using the <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter. Once the components are implemented, developers can encapsulate them as hooks and register the hooks into the job list. After the job list is orchestrated in the pipeline, when the sandbox pipeline is executed, each job in the job list will be executed in sequence at each step. Each of these parts - components, component factory, hooks, job lists, and the registration and execution orchestration of the pipeline - can be customized by the developer. The relationship among these parts is illustrated in the diagram below.
 <img alt="sandbox-pipeline" src="https://img.alicdn.com/imgextra/i3/O1CN01ERmGre1uz3luKOn4n_!!6000000006107-2-tps-4655-1918.png" /></p>
 <section id="the-internal-implementation-of-components">
-<h3>The Internal Implementation of Components<a class="headerlink" href="#the-internal-implementation-of-components" title="Link to this heading">#</a></h3>
+<h3>The Internal Implementation of Components<a class="headerlink" href="#the-internal-implementation-of-components" title="Link to this heading">¶</a></h3>
 <p>Currently, components are mainly divided into three major categories:</p>
 <ul class="simple">
 <li><p><strong>Executor</strong>: Since the data executor is already handled by the Data-Juicer’s Executor, the executor here specifically refers to the model executor, including model training, inference, evaluation, etc. The code is located in <code class="docutils literal notranslate"><span class="pre">data_juicer/core/sandbox/model_executors.py</span></code>.</p></li>
@@ -1303,7 +699,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <li><p><strong>DataPoolManipulator</strong>: Used for manipulating the data pool, such as construction, combination, sampling, etc. The code is located in <code class="docutils literal notranslate"><span class="pre">data_juicer/core/sandbox/data_pool_manipulators.py</span></code>.</p></li>
 </ul>
 <section id="executor">
-<h4>Executor<a class="headerlink" href="#executor" title="Link to this heading">#</a></h4>
+<h4>Executor<a class="headerlink" href="#executor" title="Link to this heading">¶</a></h4>
 <p>The core function of the model executor is to train, infer, or evaluate the model specified in the configuration file with the specified dataset. The model executor needs to inherit from <code class="docutils literal notranslate"><span class="pre">BaseModelExecutor</span></code> and implement several core methods:</p>
 <ul class="simple">
 <li><p>The specific behavior of the model executor (training, inference, evaluation, etc.) needs to be defined in the <code class="docutils literal notranslate"><span class="pre">_run</span></code> method.</p></li>
@@ -1317,7 +713,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </ul>
 </section>
 <section id="evaluator">
-<h4>Evaluator<a class="headerlink" href="#evaluator" title="Link to this heading">#</a></h4>
+<h4>Evaluator<a class="headerlink" href="#evaluator" title="Link to this heading">¶</a></h4>
 <p>The core function of the evaluator is to evaluate the quality and performance of the target using some specific methods and return the evaluation result, usually a numerical value. The evaluator needs to inherit from the base class <code class="docutils literal notranslate"><span class="pre">BaseEvaluator</span></code> and implement the <code class="docutils literal notranslate"><span class="pre">run</span></code> method. The <code class="docutils literal notranslate"><span class="pre">run</span></code> method typically takes two required parameters:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">eval_type</span></code>: The type of evaluation, used for internal evaluation type routine within a certain evaluator.</p></li>
@@ -1326,13 +722,13 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <p>Users can also extend the usage of these two parameters based on their implementation.</p>
 </section>
 <section id="datapoolmanipulator">
-<h4>DataPoolManipulator<a class="headerlink" href="#datapoolmanipulator" title="Link to this heading">#</a></h4>
+<h4>DataPoolManipulator<a class="headerlink" href="#datapoolmanipulator" title="Link to this heading">¶</a></h4>
 <p>The core function of the data pool manipulator is to manipulate the data pool, such as construction, combination, sampling, etc. The data pool manipulator needs to inherit from the base class <code class="docutils literal notranslate"><span class="pre">BaseDataPoolManipulator</span></code> and implement the <code class="docutils literal notranslate"><span class="pre">run</span></code> method. The <code class="docutils literal notranslate"><span class="pre">run</span></code> method. The necessary parameters usually come from the input data pool configs in the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method, covering input data pools, export paths, and specific parameters for each type of manipulators.</p>
 <p>Users can refer to the doc string of the <code class="docutils literal notranslate"><span class="pre">run</span></code> method of each manipulator for more details in <code class="docutils literal notranslate"><span class="pre">data_juicer/core/sandbox/data_pool_manipulators.py</span></code>.</p>
 </section>
 </section>
 <section id="pipeline-hook">
-<h3>Pipeline Hook<a class="headerlink" href="#pipeline-hook" title="Link to this heading">#</a></h3>
+<h3>Pipeline Hook<a class="headerlink" href="#pipeline-hook" title="Link to this heading">¶</a></h3>
 <p>As mentioned at the start of this section, in the pipeline, we need to implement several hooks to connect components with the pipeline execution steps through the job list. Activated hooks will be registered in the pipeline’s job list and then executed one by one during the pipeline execution at each step. The job lists for the four corresponding steps are as follows:</p>
 <ol class="arabic simple">
 <li><p><strong>Data/Model Probe</strong>: Probe job list – probe_jobs</p></li>
@@ -1341,7 +737,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 <li><p><strong>Data/Model Evaluation</strong>: Evaluation job list - evaluation_jobs</p></li>
 </ol>
 <p>In general, we only need to implement one type of hook function for a type of component factory. In addition to hooks that depend on components, some hooks depend on the existing functionality and tools of Data-Juicer or other third-party libraries. The correspondence among these hooks, dependent components, tools, and job lists is as follows:</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Hook</p></th>
 <th class="head"><p>Function</p></th>
@@ -1425,15 +821,14 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </tr>
 </tbody>
 </table>
-</div>
 <p>It is worth noting that a hook can be registered in multiple job lists, as this hook can play different roles in different steps of the pipeline. For example, we can analyze and probe both the pre-processed and post-processed datasets to compare the changes in quality, diversity, and other dimensions before and after data processing.</p>
 </section>
 <section id="customized-sandbox-pipeline">
-<h3>Customized Sandbox Pipeline<a class="headerlink" href="#customized-sandbox-pipeline" title="Link to this heading">#</a></h3>
+<h3>Customized Sandbox Pipeline<a class="headerlink" href="#customized-sandbox-pipeline" title="Link to this heading">¶</a></h3>
 <p>Users can directly modify the job configuration list in the parameter configuration file to achieve task modification and orchestration.</p>
 </section>
 <section id="watcher">
-<h3>Watcher<a class="headerlink" href="#watcher" title="Link to this heading">#</a></h3>
+<h3>Watcher<a class="headerlink" href="#watcher" title="Link to this heading">¶</a></h3>
 <p>In the above sections, the concept of “monitoring” is repeatedly mentioned. The pipeline will monitor several metrics produced in each step, and these monitoring processes are implemented by <code class="docutils literal notranslate"><span class="pre">SandboxWatcher</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">SandboxWatcher</span></code> is based on wandb library and mainly includes four methods:</p>
 <ul class="simple">
@@ -1444,7 +839,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </ul>
 </section>
 <section id="details-of-context-infos">
-<h3>Details of Context Infos<a class="headerlink" href="#details-of-context-infos" title="Link to this heading">#</a></h3>
+<h3>Details of Context Infos<a class="headerlink" href="#details-of-context-infos" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">context_infos</span></code> consists of two levels:</p>
 <ul class="simple">
 <li><p>pipeline level: it’s the 1st level of <code class="docutils literal notranslate"><span class="pre">context_infos</span></code>, which is a dict with keys are the pipeline names and values are a list of context information of each job in this pipeline.</p></li>
@@ -1480,7 +875,7 @@ bash<span class="w"> </span>setup_easyanimate.sh
 </div>
 </section>
 <section id="environment-manager">
-<h3>Environment Manager<a class="headerlink" href="#environment-manager" title="Link to this heading">#</a></h3>
+<h3>Environment Manager<a class="headerlink" href="#environment-manager" title="Link to this heading">¶</a></h3>
 <p>Sandbox supports different kinds of third-party libraries for training, evaluation and so on. If we put all of them into
 one environment, version conflicts on some important and complex dependencies will occur. Therefore, we provide an
 easy-to-use environment manager to manage different environments for different third-party libraries, allow users to run
@@ -1576,7 +971,7 @@ commands in isolated environments independently.</p>
 </section>
 </section>
 <section id="q-a">
-<h2>Q&amp;A<a class="headerlink" href="#q-a" title="Link to this heading">#</a></h2>
+<h2>Q&amp;A<a class="headerlink" href="#q-a" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> when training InternVL:</p></li>
 </ol>
@@ -1619,152 +1014,92 @@ commands in isolated environments independently.</p>
 </section>
 
 
-
-                </article>
-              
-              
-              
-              
-              
-                <footer class="prev-next-footer d-print-none">
-                  
-<div class="prev-next-area">
-    <a class="left-prev"
-       href="RecipeGallery.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Data Recipe Gallery</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="awesome_llm_data.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Awesome Data-Model Co-Development of MLLMs </p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
-</div>
-                </footer>
-              
-            </div>
-            
-            
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#user-guide">User Guide</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-dj-sandbox">What is DJ-Sandbox?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#applications-and-use-cases">Applications and Use-Cases</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#prepare-configuration-files-for-sandbox">Prepare Configuration Files for Sandbox</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#start-sandbox">Start Sandbox</a></li>
+        </article>
+        <aside class="toc-sidebar">
+          <div class="toc-sidebar-inner">
+            <p class="toc-title">On this page</p>
+            <ul>
+<li><a class="reference internal" href="#">Sandbox</a><ul>
+<li><a class="reference internal" href="#user-guide">User Guide</a><ul>
+<li><a class="reference internal" href="#what-is-dj-sandbox">What is DJ-Sandbox?</a></li>
+<li><a class="reference internal" href="#applications-and-use-cases">Applications and Use-Cases</a></li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#prepare-configuration-files-for-sandbox">Prepare Configuration Files for Sandbox</a></li>
+<li><a class="reference internal" href="#start-sandbox">Start Sandbox</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-factory">Component Factory</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#context-sharing">Context Sharing</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#resume-mode">Resume Mode</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#input-output-and-local-parameter-of-hooks">Input, Output, and Local Parameter of Hooks</a></li>
+<li><a class="reference internal" href="#component-factory">Component Factory</a></li>
+<li><a class="reference internal" href="#context-sharing">Context Sharing</a><ul>
+<li><a class="reference internal" href="#resume-mode">Resume Mode</a></li>
+<li><a class="reference internal" href="#input-output-and-local-parameter-of-hooks">Input, Output, and Local Parameter of Hooks</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-guide">Developer Guide</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-internal-implementation-of-components">The Internal Implementation of Components</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#executor">Executor</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluator">Evaluator</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#datapoolmanipulator">DataPoolManipulator</a></li>
+<li><a class="reference internal" href="#developer-guide">Developer Guide</a><ul>
+<li><a class="reference internal" href="#the-internal-implementation-of-components">The Internal Implementation of Components</a><ul>
+<li><a class="reference internal" href="#executor">Executor</a></li>
+<li><a class="reference internal" href="#evaluator">Evaluator</a></li>
+<li><a class="reference internal" href="#datapoolmanipulator">DataPoolManipulator</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-hook">Pipeline Hook</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#customized-sandbox-pipeline">Customized Sandbox Pipeline</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#watcher">Watcher</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#details-of-context-infos">Details of Context Infos</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-manager">Environment Manager</a></li>
+<li><a class="reference internal" href="#pipeline-hook">Pipeline Hook</a></li>
+<li><a class="reference internal" href="#customized-sandbox-pipeline">Customized Sandbox Pipeline</a></li>
+<li><a class="reference internal" href="#watcher">Watcher</a></li>
+<li><a class="reference internal" href="#details-of-context-infos">Details of Context Infos</a></li>
+<li><a class="reference internal" href="#environment-manager">Environment Manager</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#q-a">Q&amp;A</a></li>
+<li><a class="reference internal" href="#q-a">Q&amp;A</a></li>
 </ul>
-  </nav></div>
+</li>
+</ul>
 
-  <div class="sidebar-secondary-item">
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/docs/Sandbox.md.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div></div>
-
-</div></div>
-              
-            
           </div>
-          <footer class="bd-footer-content">
-            
-          </footer>
-        
-      </main>
+        </aside>
+      </div>
+      <nav class="prev-next">
+        <a href="RecipeGallery.html" class="prev-next-link prev">
+          <span class="prev-next-label">Previous</span>
+          <span class="prev-next-title">Data Recipe Gallery</span>
+        </a>
+        <a href="awesome_llm_data.html" class="prev-next-link next">
+          <span class="prev-next-label">Next</span>
+          <span class="prev-next-title">Awesome Data-Model Co-Development of MLLMs </span>
+        </a>
+      </nav>
+      <footer class="footer">
+        <p>© 2024, Data-Juicer Team — Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> &amp; Data-Juicer Theme</p>
+      </footer>
+    </main>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Search Modal -->
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-modal">
+      <div class="search-modal-input">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14" stroke-linecap="round"/></svg>
+        <input type="text" id="search-modal-input" placeholder="Search documentation..." autocomplete="off" />
+      </div>
+      <div class="search-modal-results" id="search-modal-results"></div>
+      <div class="search-modal-footer">
+        <span><kbd>↵</kbd> to select</span>
+        <span><kbd>↑↓</kbd> to navigate</span>
+        <span><kbd>esc</kbd> to close</span>
+      </div>
     </div>
   </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
-
-  <footer class="bd-footer">
-<div class="bd-footer__inner bd-page-width">
-  
-    <div class="footer-items__start">
-      
-        <div class="footer-item">
-
-  <p class="copyright">
-    
-      © Copyright 2024, Data-Juicer Team.
-      <br/>
-    
-  </p>
-</div>
-      
-    </div>
-  
-  
-  
-    <div class="footer-items__end">
-      
-        <div class="footer-item">
-
-  <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
-    <br/>
-  </p>
-</div>
-      
-        <div class="footer-item">
-<p class="theme-version">
-  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
-</p></div>
-      
-    </div>
-  
-</div>
-
-  </footer>
-  </body>
+  <script src="../_static/js/theme.js"></script>
+  <script>window.JUICER_API_URL = 'https://datajuicer.online:443';</script>
+  <script src="../_static/documentation_options.js"></script>
+  <script src="../_static/doctools.js"></script>
+  <script src="../_static/sphinx_highlight.js"></script>
+  <script src="../_static/clipboard.min.js"></script>
+  <script src="../_static/copybutton.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="../_static/ask-ai-widget.js"></script>
+</body>
 </html>
