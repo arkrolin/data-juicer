@@ -13,7 +13,7 @@ This page lists all global parameters available in a Data-Juicer recipe YAML, al
 | `project_name` | str | `hello_world` | Project name (used in output paths and logs) |
 | `dataset_path` | str | `""` | Input dataset path; supports weighted mixing: `<w1> path1 <w2> path2` |
 | `dataset` | list/dict | `[]` | Advanced dataset config (local/remote), see [Dataset Configuration](DatasetCfg.md) |
-| `export_path` | str | `./outputs/.../hello_world.jsonl` | Output file path |
+| `export_path` | str | `./outputs/hello_world/hello_world.jsonl` | Output file path |
 | `work_dir` | str | `None` | Working directory (defaults to export_path's parent) |
 | `temp_dir` | str | `None` | Temp file directory (used when cache is disabled) |
 
@@ -25,7 +25,7 @@ This page lists all global parameters available in a Data-Juicer recipe YAML, al
 |-----------|------|---------|-------------|
 | `executor_type` | str | `default` | Engine: `default` (local multiprocess) / `ray` / `ray_partitioned` |
 | `np` | int | `4` | Number of parallel worker processes |
-| `ray_address` | str | — | Ray cluster address (ray mode only) |
+| `ray_address` | str | `"auto"` | Ray cluster address (ray mode only) |
 
 ---
 

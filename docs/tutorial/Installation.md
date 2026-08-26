@@ -6,7 +6,7 @@ This guide covers all the ways to install Data-Juicer: from PyPI, from source, o
 
 Ensure your environment meets the following conditions:
 
-- Python >= 3.10 & <= 3.12
+- Python >= 3.10
 - Git (for source installation)
 - uv (recommended package installer)
 

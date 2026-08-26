@@ -13,7 +13,7 @@
 | `project_name` | str | `hello_world` | 项目名称，用于标识输出目录和日志 |
 | `dataset_path` | str | `""` | 输入数据集路径，支持权重混合格式：`<w1> path1 <w2> path2` |
 | `dataset` | list/dict | `[]` | 高级数据集配置（本地/远程），详见[数据集配置](DatasetCfg_ZH.md) |
-| `export_path` | str | `./outputs/.../hello_world.jsonl` | 输出文件路径 |
+| `export_path` | str | `./outputs/hello_world/hello_world.jsonl` | 输出文件路径 |
 | `work_dir` | str | `None` | 工作目录（默认取 export_path 的父目录） |
 | `temp_dir` | str | `None` | 临时文件目录（禁用缓存时使用） |
 
@@ -25,7 +25,7 @@
 |------|------|--------|------|
 | `executor_type` | str | `default` | 执行引擎：`default`（本地多进程）/ `ray` / `ray_partitioned` |
 | `np` | int | `4` | 并行 worker 进程数 |
-| `ray_address` | str | — | Ray 集群地址（仅 ray 模式） |
+| `ray_address` | str | `"auto"` | Ray 集群地址（仅 ray 模式） |
 
 ---
 
