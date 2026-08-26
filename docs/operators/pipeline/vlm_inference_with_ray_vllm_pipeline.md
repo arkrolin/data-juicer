@@ -1,4 +1,4 @@
-# vlm_ray_vllm_engine_pipeline
+# vlm_inference_with_ray_vllm_pipeline
 
 Pipeline to generate response using vLLM engine on Ray. This pipeline leverages the vLLM engine for efficient large vision language model inference. More details about ray vLLM engine can be found at: https://docs.ray.io/en/latest/data/working-with-llms.html
 
