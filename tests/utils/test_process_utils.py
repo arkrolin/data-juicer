@@ -594,5 +594,161 @@ class CalculateRayNPTest(DataJuicerTestCaseBase):
         self.assertEqual(op3.memory, None)
 
 
+class SetupWorkerThreadsTest(DataJuicerTestCaseBase):
+
+    def setUp(self):
+        import data_juicer.utils.process_utils as mod
+        self._orig = mod._WORKER_THREADS_CONFIGURED
+        mod._WORKER_THREADS_CONFIGURED = False
+
+    def tearDown(self):
+        import data_juicer.utils.process_utils as mod
+        mod._WORKER_THREADS_CONFIGURED = self._orig
+
+    @TEST_TAG("standalone")
+    def test_sets_torch_threads(self):
+        from data_juicer.utils.process_utils import setup_worker_threads
+        mock_torch = MagicMock()
+        with patch.dict('sys.modules', {'torch': mock_torch}):
+            setup_worker_threads(num_threads=2)
+        mock_torch.set_num_threads.assert_called_once_with(2)
+        mock_torch.set_num_interop_threads.assert_called_once_with(2)
+
+    @TEST_TAG("standalone")
+    def test_runtime_error_torch(self):
+        import data_juicer.utils.process_utils as mod
+        from data_juicer.utils.process_utils import setup_worker_threads
+        mod._WORKER_THREADS_CONFIGURED = False
+        mock_torch = MagicMock()
+        mock_torch.set_num_interop_threads.side_effect = RuntimeError("already set")
+        with patch.dict('sys.modules', {'torch': mock_torch}):
+            setup_worker_threads(num_threads=1)
+        mock_torch.set_num_threads.assert_called_once_with(1)
+
+    @TEST_TAG("standalone")
+    def test_only_configures_once(self):
+        import data_juicer.utils.process_utils as mod
+        from data_juicer.utils.process_utils import setup_worker_threads
+        mod._WORKER_THREADS_CONFIGURED = True
+        mock_torch = MagicMock()
+        with patch.dict('sys.modules', {'torch': mock_torch}):
+            setup_worker_threads(num_threads=4)
+        mock_torch.set_num_threads.assert_not_called()
+
+
+class SetupMpMockTest(DataJuicerTestCaseBase):
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.mp')
+    def test_non_main_process_returns_early(self, mock_mp):
+        from data_juicer.utils.process_utils import setup_mp
+        mock_mp.current_process.return_value.name = "Worker-1"
+        setup_mp()
+        mock_mp.set_start_method.assert_not_called()
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.mp')
+    def test_env_method_override(self, mock_mp):
+        from data_juicer.utils.process_utils import setup_mp
+        mock_mp.current_process.return_value.name = "MainProcess"
+        mock_mp.get_all_start_methods.return_value = ['fork', 'spawn', 'forkserver']
+        with patch.dict('os.environ', {'MP_START_METHOD': 'spawn'}):
+            setup_mp(method=['fork', 'spawn'])
+        mock_mp.set_start_method.assert_called_once_with('spawn', force=True)
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.mp')
+    def test_method_not_available(self, mock_mp):
+        from data_juicer.utils.process_utils import setup_mp
+        mock_mp.current_process.return_value.name = "MainProcess"
+        mock_mp.get_all_start_methods.return_value = ['spawn']
+        setup_mp(method='forkserver')
+        mock_mp.set_start_method.assert_not_called()
+
+
+class FindOptimalConcurrencyTest(DataJuicerTestCaseBase):
+
+    @TEST_TAG("standalone")
+    def test_empty_input(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        result = _find_optimal_concurrency([], 1.0)
+        self.assertEqual(result, (None, 0, 0))
+
+    @TEST_TAG("standalone")
+    def test_all_zero_ratios(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        result = _find_optimal_concurrency([0, 0, 0], 1.0)
+        self.assertEqual(result, (None, 0, 0))
+
+    @TEST_TAG("standalone")
+    def test_single_operator(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        combo, usage, std = _find_optimal_concurrency([0.25], 1.0)
+        self.assertIsNotNone(combo)
+        self.assertEqual(len(combo), 1)
+        self.assertGreater(usage, 0)
+
+    @TEST_TAG("standalone")
+    def test_two_operators_equal_resource(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        combo, usage, std = _find_optimal_concurrency([0.2, 0.2], 1.0)
+        self.assertIsNotNone(combo)
+        self.assertEqual(len(combo), 2)
+        self.assertLessEqual(usage, 1.0 + 1e-10)
+
+    @TEST_TAG("standalone")
+    def test_resource_constraint_respected(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        combo, usage, std = _find_optimal_concurrency([0.5, 0.5], 0.8)
+        if combo is not None:
+            total_used = sum(c * r for c, r in zip(combo, [0.5, 0.5]))
+            self.assertLessEqual(total_used, 0.8 + 1e-10)
+
+    @TEST_TAG("standalone")
+    def test_unequal_ratios(self):
+        from data_juicer.utils.process_utils import _find_optimal_concurrency
+        combo, usage, std = _find_optimal_concurrency([0.1, 0.3, 0.2], 1.0)
+        self.assertIsNotNone(combo)
+        self.assertEqual(len(combo), 3)
+
+
+class CalculateNpMockTest(DataJuicerTestCaseBase):
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.cpu_count', return_value=16)
+    @patch('data_juicer.utils.process_utils.available_memories', return_value=[16384, 16384])
+    def test_cpu_with_memory(self, mock_mem, mock_cpu):
+        result = calculate_np("test_op", memory=4, num_cpus=2, use_cuda=False, num_gpus=0)
+        self.assertGreater(result, 0)
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.cpu_count', return_value=8)
+    @patch('data_juicer.utils.process_utils.available_memories', return_value=[8192])
+    def test_cpu_only_no_memory(self, mock_mem, mock_cpu):
+        result = calculate_np("test_op", memory=0, num_cpus=2, use_cuda=False, num_gpus=0)
+        self.assertEqual(result, 4)
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.cpu_count', return_value=4)
+    @patch('data_juicer.utils.process_utils.available_memories', return_value=[1024])
+    def test_cpu_insufficient_resources(self, mock_mem, mock_cpu):
+        result = calculate_np("test_op", memory=8, num_cpus=8, use_cuda=False, num_gpus=0)
+        self.assertEqual(result, 1)
+
+    @TEST_TAG("standalone")
+    def test_use_cuda_false_but_num_gpus_raises(self):
+        with self.assertRaises(ValueError) as ctx:
+            calculate_np("test_op", memory=0, num_cpus=0, use_cuda=False, num_gpus=2)
+        self.assertIn("GPU resources", str(ctx.exception))
+
+    @TEST_TAG("standalone")
+    @patch('data_juicer.utils.process_utils.cpu_count', return_value=16)
+    @patch('data_juicer.utils.process_utils.cuda_device_count', return_value=4)
+    @patch('data_juicer.utils.process_utils.available_gpu_memories', return_value=[8192, 8192, 8192, 8192])
+    def test_cuda_no_memory_no_gpus(self, mock_gpu_mem, mock_cuda_count, mock_cpu):
+        result = calculate_np("test_op", memory=0, num_cpus=0, use_cuda=True, num_gpus=0)
+        self.assertEqual(result, 4)
+
+
 if __name__ == '__main__':
     unittest.main()
