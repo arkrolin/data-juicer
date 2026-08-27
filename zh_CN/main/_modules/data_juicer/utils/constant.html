@@ -413,6 +413,7 @@
         <article class="article" role="main">
   <h1>data_juicer.utils.constant 源代码</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -693,15 +694,15 @@
             <span class="n">tmp_dj_cfg</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">dj_cfg</span><span class="p">)</span>
             <span class="c1"># the access has been skipped due to the use of cache</span>
             <span class="c1"># we will using a temp data sample to get the access log</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="s2">"jsonl"</span> <span class="ow">in</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span> <span class="ow">or</span> <span class="s2">"jsonl.zst"</span> <span class="ow">in</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">".jsonl.zst"</span><span class="p">,</span> <span class="s2">".jsonl.gz"</span><span class="p">,</span> <span class="s2">".jsonl"</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Begin to track the usage of ops with a dummy data sample"</span><span class="p">)</span>
 
                 <span class="c1"># load the first line as tmp_data</span>
                 <span class="n">tmp_f_name</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">first_line</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="s2">"jsonl.zst"</span> <span class="ow">in</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl.zst"</span><span class="p">):</span>
                     <span class="n">tmp_f_name</span> <span class="o">=</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".jsonl.zst"</span><span class="p">,</span> <span class="s2">".tmp.jsonl"</span><span class="p">)</span>
                     <span class="c1"># Open the file in binary mode and</span>
                     <span class="c1"># create a Zstandard decompression context</span>
@@ -712,7 +713,11 @@
                         <span class="k">with</span> <span class="n">dctx</span><span class="o">.</span><span class="n">stream_reader</span><span class="p">(</span><span class="n">compressed_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
                             <span class="n">text_stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
                             <span class="n">first_line</span> <span class="o">=</span> <span class="n">text_stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">elif</span> <span class="s2">"jsonl"</span> <span class="ow">in</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl.gz"</span><span class="p">):</span>
+                    <span class="n">tmp_f_name</span> <span class="o">=</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".jsonl.gz"</span><span class="p">,</span> <span class="s2">".tmp.jsonl"</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">orig_file</span><span class="p">:</span>
+                        <span class="n">first_line</span> <span class="o">=</span> <span class="n">orig_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl"</span><span class="p">):</span>
                     <span class="n">tmp_f_name</span> <span class="o">=</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".jsonl"</span><span class="p">,</span> <span class="s2">".tmp.jsonl"</span><span class="p">)</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">orig_file</span><span class="p">:</span>
                         <span class="n">first_line</span> <span class="o">=</span> <span class="n">orig_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -736,14 +741,16 @@
                         <span class="n">op_config</span><span class="p">[</span><span class="n">op_name</span><span class="p">][</span><span class="s2">"auto_op_parallelism"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
                         <span class="n">op_config</span><span class="p">[</span><span class="n">op_name</span><span class="p">][</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_init_configs</span>
-                <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Analyzer</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_init_configs</span>
+                    <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Analyzer</span>
 
-                <span class="n">tmp_analyzer</span> <span class="o">=</span> <span class="n">Analyzer</span><span class="p">(</span><span class="n">get_init_configs</span><span class="p">(</span><span class="n">tmp_dj_cfg</span><span class="p">))</span>
-                <span class="c1"># do not overwrite the true analysis results</span>
-                <span class="n">tmp_analyzer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">skip_export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_f_name</span><span class="p">)</span>
+                    <span class="n">tmp_analyzer</span> <span class="o">=</span> <span class="n">Analyzer</span><span class="p">(</span><span class="n">get_init_configs</span><span class="p">(</span><span class="n">tmp_dj_cfg</span><span class="p">))</span>
+                    <span class="c1"># do not overwrite the true analysis results</span>
+                    <span class="n">tmp_analyzer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">skip_export</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp_f_name</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_f_name</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"For now, the dummy data is supported for only jsonl type"</span>

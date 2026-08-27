@@ -147,8 +147,10 @@
   // ==================== Sidebar Collapsible ====================
   function getSidebarKey(li) {
     var link = li.querySelector(':scope > a');
-    if (link) return link.getAttribute('href') || link.textContent.trim();
-    return null;
+    if (!link) return null;
+    var href = link.getAttribute('href');
+    if (href && href !== '#') return link.pathname;
+    return link.textContent.trim();
   }
 
   function saveSidebarState(nav) {
@@ -194,32 +196,48 @@
       }
     });
 
-    // Restore previously expanded sections
+    // Restore user-toggled expanded sections
     restoreSidebarState(nav);
 
-    // Expand current page's ancestor path
-    var current = window.location.pathname;
-    var matched = false;
-    nav.querySelectorAll('a').forEach(function(link) {
-      var href = link.getAttribute('href');
-      if (!href) return;
-      var hrefPath = href.replace('.html', '').replace(/\/index$/, '/');
-      if (current.endsWith(href) || current.includes(hrefPath)) {
-        var li = link.closest('li');
-        if (li && !matched) {
-          li.classList.add('current');
-          matched = true;
-        }
-        // Expand all ancestors
-        var parent = li;
-        while (parent) {
-          if (parent.tagName === 'LI') {
-            parent.classList.add('expanded');
-          }
-          parent = parent.parentElement;
+    // Find the current page item:
+    // 1. Use Sphinx-generated "current" class on <a> (most reliable)
+    // 2. Fallback: match resolved pathname
+    var currentLi = null;
+    var currentLink = nav.querySelector('a.current');
+    if (currentLink) {
+      currentLi = currentLink.closest('li');
+    }
+
+    if (!currentLi) {
+      var currentPath = window.location.pathname;
+      var links = nav.querySelectorAll('a');
+      for (var i = 0; i < links.length; i++) {
+        var href = links[i].getAttribute('href');
+        if (!href || href === '#') continue;
+        if (links[i].pathname === currentPath) {
+          currentLi = links[i].closest('li');
+          break;
         }
       }
-    });
+    }
+
+    // Also check the sidebar-home entry
+    if (!currentLi) {
+      var homeCurrent = nav.querySelector('.sidebar-home li.current');
+      if (homeCurrent) currentLi = homeCurrent;
+    }
+
+    // Mark current and expand all ancestors
+    if (currentLi) {
+      currentLi.classList.add('current');
+      var parent = currentLi.parentElement;
+      while (parent && parent !== nav) {
+        if (parent.tagName === 'LI') {
+          parent.classList.add('expanded');
+        }
+        parent = parent.parentElement;
+      }
+    }
 
     // Toggle on click — persist state
     nav.addEventListener('click', function(e) {
