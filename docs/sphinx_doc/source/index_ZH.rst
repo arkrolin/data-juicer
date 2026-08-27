@@ -49,6 +49,7 @@
    docs/OperatorPlugins_ZH
    docs/DJ_service_ZH
    docs/DJ_SORA_ZH
+   docs/Juicer_ZH
    docs/DeveloperGuide_ZH
 
 .. toctree::

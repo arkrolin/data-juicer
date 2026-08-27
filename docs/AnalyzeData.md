@@ -108,7 +108,6 @@ column_wise.analyze()
 Programmatically choose analysis operators based on data modality—useful for automated pipelines:
 
 ```python
-from data_juicer.ops import load_ops
 from data_juicer.core import Analyzer, NestedDataset
 from data_juicer.config import init_configs
 
@@ -134,9 +133,10 @@ if 'images' in sample and sample['images']:
     ])
 
 cfg = init_configs(args=[
+    '--auto',
     '--dataset_path', 'input.jsonl',
     '--export_path', './analysis/stats.jsonl',
-])
+], allow_auto=True)
 cfg.process = process_config
 
 analyzer = Analyzer(cfg)

@@ -1,6 +1,6 @@
 # Global Configuration Reference
 
-This page lists all global parameters available in a Data-Juicer recipe YAML, along with their defaults. These are set at the top level of the YAML and can be overridden via `--param value` on the command line.
+This page lists common global parameters available in a Data-Juicer recipe YAML, along with their defaults. These are set at the top level of the YAML and can be overridden via `--param value` on the command line. For the complete parameter list, run `dj-process --help`.
 
 > Operator-specific parameters are not covered here—see the [Operator Schemas](Operators.md) or individual operator detail pages.
 

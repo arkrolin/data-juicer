@@ -14,6 +14,13 @@
 uv pip install "py-data-juicer[nlp]"
 ```
 
+克隆仓库以获取后续步骤用到的示例菜谱和样例数据：
+
+```bash
+git clone https://github.com/datajuicer/data-juicer.git --depth 1
+cd data-juicer
+```
+
 验证 CLI 可用：
 
 ```bash

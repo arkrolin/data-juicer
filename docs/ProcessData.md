@@ -32,7 +32,7 @@ dj-process --config recipe.yaml --language_id_score_filter.lang=en
 dj-install --config my-recipe.yaml
 ```
 
-Resolves and installs all per-operator dependencies in one pass. See [Installation §5](tutorial/Installation.md#5-op-specific-installation).
+Resolves and installs all per-operator dependencies in one pass. See [Installation §5](tutorial/Installation.md#5-installation-for-specific-ops).
 
 ---
 

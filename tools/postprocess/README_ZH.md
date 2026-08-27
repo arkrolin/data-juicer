@@ -1,6 +1,6 @@
 # 后处理工具
 
-[`tools/postprocess`](https://github.com/datajuicer/data-juicer/tree/main/tools/postprocess) 中的脚本用于对 Data-Juicer 处理后的数据集进行 token 计数、数据混合、元字段反序列化等操作。
+[`tools/postprocess`](.) 中的脚本用于对 Data-Juicer 处理后的数据集进行 token 计数、数据混合、元字段反序列化等操作。
 
 ## 用法
 

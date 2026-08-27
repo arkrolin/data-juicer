@@ -1,6 +1,6 @@
 # 视频生成测评工具
 
-[`tools/mm_eval/inception_metrics`](https://github.com/datajuicer/data-juicer/tree/main/tools/mm_eval/inception_metrics) 中的脚本用于计算模型生成视频的 FVD、ISV 等质量指标。
+[`tools/mm_eval/inception_metrics`](.) 中的脚本用于计算模型生成视频的 FVD、ISV 等质量指标。
 
 ## 用法
 

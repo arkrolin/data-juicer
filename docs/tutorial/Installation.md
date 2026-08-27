@@ -157,7 +157,7 @@ docker build -t datajuicer/data-juicer:<version_tag> .
 
 > 💡 **Note**: `<version_tag>` follows the release version tag, e.g. `v0.2.0`.
 
-For running commands inside the container, see [For Docker Users](QuickStart.md#10-for-docker-users) in the Quick Start.
+Once the container is running, use the same CLI commands (`dj-process`, `dj-analyze`, etc.) as on a native installation.
 
 ## 7. Verify the Installation
 

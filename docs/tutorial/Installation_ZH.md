@@ -157,7 +157,7 @@ docker build -t datajuicer/data-juicer:<version_tag> .
 
 > 💡 **注意**：`<version_tag>` 与发布版本标签一致，例如 `v0.2.0`。
 
-关于在容器内运行命令，请参见快速上手中的[对于 Docker 用户](QuickStart_ZH.md#10-对于-docker-用户)。
+容器启动后，可使用与本地安装相同的 CLI 命令（`dj-process`、`dj-analyze` 等）。
 
 ## 7. 验证安装
 

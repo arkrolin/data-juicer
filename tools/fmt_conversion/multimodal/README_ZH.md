@@ -1,6 +1,6 @@
 # 多模态格式转换工具
 
-[`tools/fmt_conversion/multimodal`](https://github.com/datajuicer/data-juicer/tree/main/tools/fmt_conversion/multimodal) 提供多模态数据集与 Data-Juicer 中间格式之间的双向转换，以及处理后的路径管理。
+[`tools/fmt_conversion/multimodal`](.) 提供多模态数据集与 Data-Juicer 中间格式之间的双向转换，以及处理后的路径管理。
 
 ## 绝对路径转相对路径
 

@@ -23,6 +23,10 @@
    :maxdepth: 2
    :caption: 使用指南
 
+   docs/ProcessData_ZH
+   docs/AnalyzeData_ZH
+   docs/Playground_ZH
+   docs/GlobalConfig_ZH
    docs/Operators
    docs/DatasetCfg_ZH
    docs/Export_ZH
@@ -44,6 +48,7 @@
    docs/OperatorPlugins_ZH
    docs/DJ_service_ZH
    docs/DJ_SORA_ZH
+   docs/Juicer_ZH
    docs/DeveloperGuide_ZH
 
 .. toctree::

@@ -49,6 +49,7 @@
    docs/OperatorPlugins
    docs/DJ_service
    docs/DJ_SORA
+   docs/Juicer
    docs/DeveloperGuide
 
 .. toctree::

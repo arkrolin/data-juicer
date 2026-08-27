@@ -45,22 +45,9 @@ dataset:
 
 完整示例参见 [remote_huggingface.yaml](https://github.com/datajuicer/data-juicer-hub/blob/main/dataset_config/remote_huggingface.yaml)。
 
-### 远程 arXiv 数据集
+### arXiv 数据
 
-直接下载和处理 arXiv 论文。将 `type` 设为 `remote`，`source` 设为 `arxiv`。
-
-```yaml
-dataset:
-  configs:
-    - type: 'remote'
-      source: 'arxiv'
-      lang: 'en'
-      dump_date: 'latest'       # 或指定日期
-      force_download: false
-      url_limit: 2              # 下载的论文数量
-```
-
-完整示例参见 [remote_arxiv.yaml](https://github.com/datajuicer/data-juicer-hub/blob/main/dataset_config/remote_arxiv.yaml)。
+arXiv 论文请使用[预处理工具](../tools/preprocess/README_ZH.md)下载并将 arXiv tar 包转为 Data-Juicer 可直接处理的 JSONL 格式。
 
 ### 其他格式
 

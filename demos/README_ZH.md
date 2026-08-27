@@ -1,6 +1,6 @@
 # 演示
 
-[`demos`](https://github.com/datajuicer/data-juicer/tree/main/demos) 包含用于体验 Data-Juicer 的交互式演示和功能示例。样例数据集位于 [`demos/data`](https://github.com/datajuicer/data-juicer/tree/main/demos/data)。
+[`demos`](.) 包含用于体验 Data-Juicer 的交互式演示和功能示例。样例数据集位于 [`demos/data`](./data)。
 
 ## 交互式演示
 

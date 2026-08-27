@@ -14,6 +14,13 @@ Install the core package with NLP extras needed for this guide:
 uv pip install "py-data-juicer[nlp]"
 ```
 
+Clone the repository for demo recipes and sample data used below:
+
+```bash
+git clone https://github.com/datajuicer/data-juicer.git --depth 1
+cd data-juicer
+```
+
 Verify the CLI is available:
 
 ```bash
@@ -84,7 +91,7 @@ Override any recipe parameter from the command line without editing the YAML:
 dj-process --config demos/process_simple/process.yaml --language_id_score_filter.lang=en
 ```
 
-> Use `dj-install --config your-recipe.yaml` to automatically install operator dependencies. See [Installation §5](Installation.md#5-operator-specific-installation).
+> Use `dj-install --config your-recipe.yaml` to automatically install operator dependencies. See [Installation §5](Installation.md#5-installation-for-specific-ops).
 
 ---
 

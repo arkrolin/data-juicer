@@ -23,6 +23,10 @@ Welcome to the Data-Juicer documentation.
    :maxdepth: 2
    :caption: Guides
 
+   docs/ProcessData
+   docs/AnalyzeData
+   docs/Playground
+   docs/GlobalConfig
    docs/Operators
    docs/DatasetCfg
    docs/Export
@@ -44,6 +48,7 @@ Welcome to the Data-Juicer documentation.
    docs/OperatorPlugins
    docs/DJ_service
    docs/DJ_SORA
+   docs/Juicer
    docs/DeveloperGuide
 
 .. toctree::

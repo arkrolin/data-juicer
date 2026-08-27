@@ -45,22 +45,9 @@ dataset:
 
 See [remote_huggingface.yaml](https://github.com/datajuicer/data-juicer-hub/blob/main/dataset_config/remote_huggingface.yaml) for a complete example.
 
-### Remote arXiv dataset
+### arXiv data
 
-Download and process arXiv papers directly. Set `type` to `remote` and `source` to `arxiv`.
-
-```yaml
-dataset:
-  configs:
-    - type: 'remote'
-      source: 'arxiv'
-      lang: 'en'
-      dump_date: 'latest'       # or a specific date
-      force_download: false
-      url_limit: 2              # number of papers to download
-```
-
-See [remote_arxiv.yaml](https://github.com/datajuicer/data-juicer-hub/blob/main/dataset_config/remote_arxiv.yaml) for a complete example.
+For arXiv papers, use the [preprocessing tools](../tools/preprocess/README.md) to download and convert arXiv tar archives into JSONL format that Data-Juicer can process directly.
 
 ### Other formats
 
