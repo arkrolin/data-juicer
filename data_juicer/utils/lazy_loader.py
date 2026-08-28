@@ -252,10 +252,8 @@ class LazyLoader(types.ModuleType):
             self._package_name = package_name
 
         # Standardize package_url to use git+ format
-        if package_url and "@" in package_url.split("git+")[0]:
-            # Convert from package@git+ format to git+ format. Only split on the
-            # 'name @ url' separator, never on a 'url.git@ref' revision pin.
-            self._package_url = package_url.split("@", 1)[1]
+        if package_url and " @ " in package_url:
+            self._package_url = package_url.split(" @ ", 1)[1]
         else:
             self._package_url = package_url
         self._package_url = self._package_url.strip() if self._package_url else self._package_url
