@@ -8,7 +8,7 @@
 
 ## 1. 安装 Data-Juicer
 
-克隆仓库并从源码安装。本指南会用到自带的示例菜谱和样例数据，从源码安装可一步到位：
+克隆仓库并从源码安装。本指南会用到仓库中的示例菜谱和样例数据：
 
 ```bash
 git clone https://github.com/datajuicer/data-juicer.git --depth 1

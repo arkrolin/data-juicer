@@ -8,7 +8,7 @@ This guide walks you through a complete Data-Juicer workflow in under 5 minutes:
 
 ## 1. Install Data-Juicer
 
-Clone the repository and install from source. This guide uses the bundled demo recipes and sample data, so a source checkout is the quickest way to get everything in one step:
+Clone the repository and install from source. This guide uses the demo recipes and sample data included in the repo:
 
 ```bash
 git clone https://github.com/datajuicer/data-juicer.git --depth 1
