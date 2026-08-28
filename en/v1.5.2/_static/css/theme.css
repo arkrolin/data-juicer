@@ -770,6 +770,31 @@ a:hover {
   margin: 1rem 0;
 }
 
+/* ==================== Sample Cards (operator pages) ==================== */
+[data-theme="dark"] .sample-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+[data-theme="dark"] .sample-header {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-left-color: rgb(var(--primary)) !important;
+}
+
+[data-theme="dark"] .media-label {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .sample-card details summary {
+  color: rgb(var(--primary)) !important;
+}
+
+[data-theme="dark"] .sample-card video {
+  border-radius: var(--radius-sm);
+}
+
 /* ==================== Prev/Next Navigation ==================== */
 .prev-next {
   display: flex;
