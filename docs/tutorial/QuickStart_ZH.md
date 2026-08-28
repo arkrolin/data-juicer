@@ -8,17 +8,12 @@
 
 ## 1. 安装 Data-Juicer
 
-安装核心包及本指南所需的 NLP extras：
-
-```bash
-uv pip install "py-data-juicer[nlp]"
-```
-
-克隆仓库以获取后续步骤用到的示例菜谱和样例数据：
+克隆仓库并从源码安装。本指南会用到自带的示例菜谱和样例数据，从源码安装可一步到位：
 
 ```bash
 git clone https://github.com/datajuicer/data-juicer.git --depth 1
 cd data-juicer
+uv pip install -e ".[nlp]"
 ```
 
 验证 CLI 可用：
@@ -27,7 +22,7 @@ cd data-juicer
 dj-process --help
 ```
 
-> 完整的安装方式（场景化 extras、源码安装、Docker）请参见[安装文档](Installation_ZH.md)。
+> **提示：** 如果不需要示例文件，`uv pip install "py-data-juicer[nlp]"` 可直接从 PyPI 安装相同的包。完整的安装方式（场景化 extras、Docker 等）请参见[安装文档](Installation_ZH.md)。
 
 ---
 

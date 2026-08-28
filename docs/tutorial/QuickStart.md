@@ -8,17 +8,12 @@ This guide walks you through a complete Data-Juicer workflow in under 5 minutes:
 
 ## 1. Install Data-Juicer
 
-Install the core package with NLP extras needed for this guide:
-
-```bash
-uv pip install "py-data-juicer[nlp]"
-```
-
-Clone the repository for demo recipes and sample data used below:
+Clone the repository and install from source. This guide uses the bundled demo recipes and sample data, so a source checkout is the quickest way to get everything in one step:
 
 ```bash
 git clone https://github.com/datajuicer/data-juicer.git --depth 1
 cd data-juicer
+uv pip install -e ".[nlp]"
 ```
 
 Verify the CLI is available:
@@ -27,7 +22,7 @@ Verify the CLI is available:
 dj-process --help
 ```
 
-> For all installation methods (extras, source install, Docker), see [Installation](Installation.md).
+> **Tip:** If you don't need the demo files, `uv pip install "py-data-juicer[nlp]"` installs the same package from PyPI without cloning. For all installation methods (extras, Docker, etc.), see [Installation](Installation.md).
 
 ---
 
