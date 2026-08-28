@@ -4,7 +4,7 @@ from data_juicer.core import NestedDataset
 from data_juicer.ops.base_op import Mapper, OP
 from data_juicer.ops.load import load_ops
 from data_juicer.ops.op_fusion import fuse_operators, GeneralFusedOP
-from data_juicer.utils.constant import Fields
+from data_juicer.utils.constant import Fields, InterVars
 from data_juicer.utils.unittest_utils import DataJuicerTestCaseBase
 
 
@@ -2225,6 +2225,139 @@ class GeneralFusedOPMapperBugTest(DataJuicerTestCaseBase):
         }
         result = fused_op.process_batched(samples)
         self.assertEqual(result['text'], ['hello_END', 'world_END'])
+
+
+class FusedContextKeyIsolationTest(DataJuicerTestCaseBase):
+    """Fusion must not change any statistic.
+
+    Ops in a fused group share one `Fields.context` dict. The cache key for
+    each intermediate variable therefore has to identify everything the
+    cached value depends on -- the source column (`text_key`) and the
+    tokenizer (`model_key`). If two ops in the same group disagree on either
+    one but build the same key, the second op silently reads the first op's
+    value and reports a statistic for a column it never looked at.
+    """
+
+    def _stats_fused_vs_unfused(self, process_list, row):
+        def make_batch():
+            batch = {key: [value] for key, value in row.items()}
+            batch[Fields.stats] = [{}]
+            batch[Fields.context] = [{}]
+            return batch
+
+        fused_ops = fuse_operators(load_ops(process_list))
+        self.assertEqual(len(fused_ops), 1,
+                         'ops under test are expected to fuse into one op')
+
+        fused_batch = make_batch()
+        fused_ops[0].compute_stats_batched(fused_batch)
+        fused_stats = fused_batch[Fields.stats][0]
+
+        unfused_stats = {}
+        for op in load_ops(process_list):
+            batch = make_batch()
+            op.compute_stats_batched(batch)
+            unfused_stats.update(batch[Fields.stats][0])
+
+        return fused_stats, unfused_stats
+
+    def test_inter_words_ops_differing_in_text_key(self):
+        process_list = [{
+            'words_num_filter': {
+                'lang': 'en',
+                'min_num': 1,
+                'max_num': 10000,
+                'tokenization': False,
+                'text_key': 'text'
+            }
+        }, {
+            'word_repetition_filter': {
+                'lang': 'en',
+                'rep_len': 2,
+                'min_ratio': 0.0,
+                'max_ratio': 1.0,
+                'tokenization': False,
+                'text_key': 'translation'
+            }
+        }]
+        # 'text' is all-identical 2-grams, 'translation' has no repetition, so
+        # reading the wrong column flips word_rep_ratio from 0.0 to 1.0.
+        row = {
+            'text': 'ha ha ha ha ha ha ha ha',
+            'translation': 'alpha beta gamma delta epsilon zeta eta theta'
+        }
+        fused_stats, unfused_stats = self._stats_fused_vs_unfused(
+            process_list, row)
+        self.assertEqual(fused_stats, unfused_stats)
+
+    def test_inter_lines_ops_differing_in_text_key(self):
+        process_list = [{
+            'average_line_length_filter': {
+                'min_len': 1,
+                'max_len': 100000,
+                'text_key': 'text'
+            }
+        }, {
+            'maximum_line_length_filter': {
+                'min_len': 1,
+                'max_len': 100000,
+                'text_key': 'translation'
+            }
+        }]
+        # 'text' splits into three 1-char lines, 'translation' is one long
+        # line, so reading the wrong column reports max_line_length 1 not 30.
+        row = {'text': 'a\nb\nc', 'translation': 'x' * 30}
+        fused_stats, unfused_stats = self._stats_fused_vs_unfused(
+            process_list, row)
+        self.assertEqual(fused_stats, unfused_stats)
+
+    def test_words_keys_separate_text_key_and_tokenizer(self):
+        ops = load_ops([{
+            'words_num_filter': {
+                'lang': 'en',
+                'tokenization': False,
+                'text_key': 'text'
+            }
+        }, {
+            'words_num_filter': {
+                'lang': 'en',
+                'tokenization': False,
+                'text_key': 'translation'
+            }
+        }])
+        keys = [f'{InterVars.words}-{op.model_key}-{op.text_key}'
+                for op in ops]
+        self.assertEqual(len(set(keys)), 2,
+                         'ops reading different columns must not share a key')
+
+    def test_refined_words_keys_separate_tokenizers(self):
+        # Two ops identical except for the tokenizer. `refined_words` is
+        # derived from `words`, so it has to be keyed by model_key too.
+        untokenized, tokenized = load_ops([{
+            'flagged_words_filter': {
+                'lang': 'en',
+                'tokenization': False,
+                'text_key': 'text'
+            }
+        }, {
+            'flagged_words_filter': {
+                'lang': 'en',
+                'tokenization': False,
+                'text_key': 'text'
+            }
+        }])
+        tokenized.model_key = 'a-different-tokenizer'
+
+        def refined_words_key(op):
+            return (f'{InterVars.refined_words}'
+                    f'-{op.model_key}-{op.text_key}'
+                    '-True-SPECIAL_CHARS-'
+                    f'{op.use_words_aug}-'
+                    f'{op.words_aug_group_sizes}-'
+                    f'{op.words_aug_join_char}')
+
+        self.assertNotEqual(refined_words_key(untokenized),
+                            refined_words_key(tokenized))
 
 
 if __name__ == '__main__':
